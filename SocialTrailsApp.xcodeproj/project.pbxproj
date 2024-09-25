@@ -1,0 +1,632 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		022DA9BA2CA46DA8008C426C /* SocialTrailsAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9B92CA46DA8008C426C /* SocialTrailsAppApp.swift */; };
+		022DA9BC2CA46DA8008C426C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9BB2CA46DA8008C426C /* ContentView.swift */; };
+		022DA9BE2CA46DAC008C426C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 022DA9BD2CA46DAC008C426C /* Assets.xcassets */; };
+		022DA9C12CA46DAC008C426C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 022DA9C02CA46DAC008C426C /* Preview Assets.xcassets */; };
+		022DA9C32CA46DAC008C426C /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9C22CA46DAC008C426C /* Persistence.swift */; };
+		022DA9C62CA46DAC008C426C /* SocialTrailsApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9C42CA46DAC008C426C /* SocialTrailsApp.xcdatamodeld */; };
+		022DA9D02CA46DAC008C426C /* SocialTrailsAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9CF2CA46DAC008C426C /* SocialTrailsAppTests.swift */; };
+		022DA9DA2CA46DAC008C426C /* SocialTrailsAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9D92CA46DAC008C426C /* SocialTrailsAppUITests.swift */; };
+		022DA9DC2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9DB2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		022DA9CC2CA46DAC008C426C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 022DA9AE2CA46DA8008C426C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 022DA9B52CA46DA8008C426C;
+			remoteInfo = SocialTrailsApp;
+		};
+		022DA9D62CA46DAC008C426C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 022DA9AE2CA46DA8008C426C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 022DA9B52CA46DA8008C426C;
+			remoteInfo = SocialTrailsApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		022DA9B62CA46DA8008C426C /* SocialTrailsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SocialTrailsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		022DA9B92CA46DA8008C426C /* SocialTrailsAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialTrailsAppApp.swift; sourceTree = "<group>"; };
+		022DA9BB2CA46DA8008C426C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		022DA9BD2CA46DAC008C426C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		022DA9C02CA46DAC008C426C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		022DA9C22CA46DAC008C426C /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		022DA9C52CA46DAC008C426C /* SocialTrailsApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SocialTrailsApp.xcdatamodel; sourceTree = "<group>"; };
+		022DA9CB2CA46DAC008C426C /* SocialTrailsAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SocialTrailsAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		022DA9CF2CA46DAC008C426C /* SocialTrailsAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialTrailsAppTests.swift; sourceTree = "<group>"; };
+		022DA9D52CA46DAC008C426C /* SocialTrailsAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SocialTrailsAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		022DA9D92CA46DAC008C426C /* SocialTrailsAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialTrailsAppUITests.swift; sourceTree = "<group>"; };
+		022DA9DB2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialTrailsAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		022DA9B32CA46DA8008C426C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		022DA9C82CA46DAC008C426C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		022DA9D22CA46DAC008C426C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		022DA9AD2CA46DA8008C426C = {
+			isa = PBXGroup;
+			children = (
+				022DA9B82CA46DA8008C426C /* SocialTrailsApp */,
+				022DA9CE2CA46DAC008C426C /* SocialTrailsAppTests */,
+				022DA9D82CA46DAC008C426C /* SocialTrailsAppUITests */,
+				022DA9B72CA46DA8008C426C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		022DA9B72CA46DA8008C426C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				022DA9B62CA46DA8008C426C /* SocialTrailsApp.app */,
+				022DA9CB2CA46DAC008C426C /* SocialTrailsAppTests.xctest */,
+				022DA9D52CA46DAC008C426C /* SocialTrailsAppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		022DA9B82CA46DA8008C426C /* SocialTrailsApp */ = {
+			isa = PBXGroup;
+			children = (
+				022DA9EA2CA46E1E008C426C /* Utility */,
+				022DA9E92CA46E14008C426C /* ModelData */,
+				022DA9E82CA46E05008C426C /* Interface */,
+				022DA9B92CA46DA8008C426C /* SocialTrailsAppApp.swift */,
+				022DA9BB2CA46DA8008C426C /* ContentView.swift */,
+				022DA9BD2CA46DAC008C426C /* Assets.xcassets */,
+				022DA9C22CA46DAC008C426C /* Persistence.swift */,
+				022DA9C42CA46DAC008C426C /* SocialTrailsApp.xcdatamodeld */,
+				022DA9BF2CA46DAC008C426C /* Preview Content */,
+			);
+			path = SocialTrailsApp;
+			sourceTree = "<group>";
+		};
+		022DA9BF2CA46DAC008C426C /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				022DA9C02CA46DAC008C426C /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		022DA9CE2CA46DAC008C426C /* SocialTrailsAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				022DA9CF2CA46DAC008C426C /* SocialTrailsAppTests.swift */,
+			);
+			path = SocialTrailsAppTests;
+			sourceTree = "<group>";
+		};
+		022DA9D82CA46DAC008C426C /* SocialTrailsAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				022DA9D92CA46DAC008C426C /* SocialTrailsAppUITests.swift */,
+				022DA9DB2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift */,
+			);
+			path = SocialTrailsAppUITests;
+			sourceTree = "<group>";
+		};
+		022DA9E82CA46E05008C426C /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
+		022DA9E92CA46E14008C426C /* ModelData */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ModelData;
+			sourceTree = "<group>";
+		};
+		022DA9EA2CA46E1E008C426C /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		022DA9B52CA46DA8008C426C /* SocialTrailsApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 022DA9DF2CA46DAC008C426C /* Build configuration list for PBXNativeTarget "SocialTrailsApp" */;
+			buildPhases = (
+				022DA9B22CA46DA8008C426C /* Sources */,
+				022DA9B32CA46DA8008C426C /* Frameworks */,
+				022DA9B42CA46DA8008C426C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SocialTrailsApp;
+			productName = SocialTrailsApp;
+			productReference = 022DA9B62CA46DA8008C426C /* SocialTrailsApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		022DA9CA2CA46DAC008C426C /* SocialTrailsAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 022DA9E22CA46DAC008C426C /* Build configuration list for PBXNativeTarget "SocialTrailsAppTests" */;
+			buildPhases = (
+				022DA9C72CA46DAC008C426C /* Sources */,
+				022DA9C82CA46DAC008C426C /* Frameworks */,
+				022DA9C92CA46DAC008C426C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				022DA9CD2CA46DAC008C426C /* PBXTargetDependency */,
+			);
+			name = SocialTrailsAppTests;
+			productName = SocialTrailsAppTests;
+			productReference = 022DA9CB2CA46DAC008C426C /* SocialTrailsAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		022DA9D42CA46DAC008C426C /* SocialTrailsAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 022DA9E52CA46DAC008C426C /* Build configuration list for PBXNativeTarget "SocialTrailsAppUITests" */;
+			buildPhases = (
+				022DA9D12CA46DAC008C426C /* Sources */,
+				022DA9D22CA46DAC008C426C /* Frameworks */,
+				022DA9D32CA46DAC008C426C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				022DA9D72CA46DAC008C426C /* PBXTargetDependency */,
+			);
+			name = SocialTrailsAppUITests;
+			productName = SocialTrailsAppUITests;
+			productReference = 022DA9D52CA46DAC008C426C /* SocialTrailsAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		022DA9AE2CA46DA8008C426C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					022DA9B52CA46DA8008C426C = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					022DA9CA2CA46DAC008C426C = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 022DA9B52CA46DA8008C426C;
+					};
+					022DA9D42CA46DAC008C426C = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 022DA9B52CA46DA8008C426C;
+					};
+				};
+			};
+			buildConfigurationList = 022DA9B12CA46DA8008C426C /* Build configuration list for PBXProject "SocialTrailsApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 022DA9AD2CA46DA8008C426C;
+			productRefGroup = 022DA9B72CA46DA8008C426C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				022DA9B52CA46DA8008C426C /* SocialTrailsApp */,
+				022DA9CA2CA46DAC008C426C /* SocialTrailsAppTests */,
+				022DA9D42CA46DAC008C426C /* SocialTrailsAppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		022DA9B42CA46DA8008C426C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				022DA9C12CA46DAC008C426C /* Preview Assets.xcassets in Resources */,
+				022DA9BE2CA46DAC008C426C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		022DA9C92CA46DAC008C426C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		022DA9D32CA46DAC008C426C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		022DA9B22CA46DA8008C426C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				022DA9C32CA46DAC008C426C /* Persistence.swift in Sources */,
+				022DA9BC2CA46DA8008C426C /* ContentView.swift in Sources */,
+				022DA9BA2CA46DA8008C426C /* SocialTrailsAppApp.swift in Sources */,
+				022DA9C62CA46DAC008C426C /* SocialTrailsApp.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		022DA9C72CA46DAC008C426C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				022DA9D02CA46DAC008C426C /* SocialTrailsAppTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		022DA9D12CA46DAC008C426C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				022DA9DC2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift in Sources */,
+				022DA9DA2CA46DAC008C426C /* SocialTrailsAppUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		022DA9CD2CA46DAC008C426C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 022DA9B52CA46DA8008C426C /* SocialTrailsApp */;
+			targetProxy = 022DA9CC2CA46DAC008C426C /* PBXContainerItemProxy */;
+		};
+		022DA9D72CA46DAC008C426C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 022DA9B52CA46DA8008C426C /* SocialTrailsApp */;
+			targetProxy = 022DA9D62CA46DAC008C426C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		022DA9DD2CA46DAC008C426C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		022DA9DE2CA46DAC008C426C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		022DA9E02CA46DAC008C426C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SocialTrailsApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.SocialTrailsApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		022DA9E12CA46DAC008C426C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SocialTrailsApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.SocialTrailsApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		022DA9E32CA46DAC008C426C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.SocialTrailsAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SocialTrailsApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SocialTrailsApp";
+			};
+			name = Debug;
+		};
+		022DA9E42CA46DAC008C426C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.SocialTrailsAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SocialTrailsApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SocialTrailsApp";
+			};
+			name = Release;
+		};
+		022DA9E62CA46DAC008C426C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.SocialTrailsAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SocialTrailsApp;
+			};
+			name = Debug;
+		};
+		022DA9E72CA46DAC008C426C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.SocialTrailsAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SocialTrailsApp;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		022DA9B12CA46DA8008C426C /* Build configuration list for PBXProject "SocialTrailsApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				022DA9DD2CA46DAC008C426C /* Debug */,
+				022DA9DE2CA46DAC008C426C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		022DA9DF2CA46DAC008C426C /* Build configuration list for PBXNativeTarget "SocialTrailsApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				022DA9E02CA46DAC008C426C /* Debug */,
+				022DA9E12CA46DAC008C426C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		022DA9E22CA46DAC008C426C /* Build configuration list for PBXNativeTarget "SocialTrailsAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				022DA9E32CA46DAC008C426C /* Debug */,
+				022DA9E42CA46DAC008C426C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		022DA9E52CA46DAC008C426C /* Build configuration list for PBXNativeTarget "SocialTrailsAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				022DA9E62CA46DAC008C426C /* Debug */,
+				022DA9E72CA46DAC008C426C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		022DA9C42CA46DAC008C426C /* SocialTrailsApp.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				022DA9C52CA46DAC008C426C /* SocialTrailsApp.xcdatamodel */,
+			);
+			currentVersion = 022DA9C52CA46DAC008C426C /* SocialTrailsApp.xcdatamodel */;
+			path = SocialTrailsApp.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 022DA9AE2CA46DA8008C426C /* Project object */;
+}
