@@ -1,3 +1,7 @@
 SocialTrailsApp.xcodeproj/project.xcworkspace/xcuserdata/barsharoka.xcuserdatad/UserInterfaceState.xcuserstate
 
 .DS_Store
+
+# Ignore Xcode user data
+*.xcuserdatad/
+xcuserdata/
