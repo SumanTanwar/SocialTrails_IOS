@@ -16,6 +16,14 @@
 		022DA9D02CA46DAC008C426C /* SocialTrailsAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9CF2CA46DAC008C426C /* SocialTrailsAppTests.swift */; };
 		022DA9DA2CA46DAC008C426C /* SocialTrailsAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9D92CA46DAC008C426C /* SocialTrailsAppUITests.swift */; };
 		022DA9DC2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9DB2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift */; };
+		84948BAC2CAA2EDA006BE6A1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84948BAB2CAA2EDA006BE6A1 /* GoogleService-Info.plist */; };
+		84948BAF2CAA2F56006BE6A1 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 84948BAE2CAA2F56006BE6A1 /* FirebaseAuth */; };
+		84948BB12CAA2F56006BE6A1 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 84948BB02CAA2F56006BE6A1 /* FirebaseDatabase */; };
+		84948BB32CAA3063006BE6A1 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BB22CAA3063006BE6A1 /* SignUpView.swift */; };
+		84948BB52CAA30A2006BE6A1 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BB42CAA30A2006BE6A1 /* Utils.swift */; };
+		84948BB72CAA30FB006BE6A1 /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BB62CAA30FB006BE6A1 /* Users.swift */; };
+		84948BBB2CAA335B006BE6A1 /* UserRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BBA2CAA335B006BE6A1 /* UserRole.swift */; };
+		84948BBD2CAA33D6006BE6A1 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BBC2CAA33D6006BE6A1 /* UserService.swift */; };
 		84C5CC382CAA24CB002641EA /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C5CC372CAA24CB002641EA /* SplashScreenView.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +57,12 @@
 		022DA9D52CA46DAC008C426C /* SocialTrailsAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SocialTrailsAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		022DA9D92CA46DAC008C426C /* SocialTrailsAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialTrailsAppUITests.swift; sourceTree = "<group>"; };
 		022DA9DB2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialTrailsAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		84948BAB2CAA2EDA006BE6A1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		84948BB22CAA3063006BE6A1 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		84948BB42CAA30A2006BE6A1 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = "SocialTrailsApp/Preview Content/Utils.swift"; sourceTree = SOURCE_ROOT; };
+		84948BB62CAA30FB006BE6A1 /* Users.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Users.swift; path = "SocialTrailsApp/Preview Content/Users.swift"; sourceTree = SOURCE_ROOT; };
+		84948BBA2CAA335B006BE6A1 /* UserRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserRole.swift; path = "SocialTrailsApp/Preview Content/UserRole.swift"; sourceTree = SOURCE_ROOT; };
+		84948BBC2CAA33D6006BE6A1 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserService.swift; path = "SocialTrailsApp/Preview Content/UserService.swift"; sourceTree = SOURCE_ROOT; };
 		84C5CC372CAA24CB002641EA /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,6 +71,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84948BB12CAA2F56006BE6A1 /* FirebaseDatabase in Frameworks */,
+				84948BAF2CAA2F56006BE6A1 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,9 +116,9 @@
 		022DA9B82CA46DA8008C426C /* SocialTrailsApp */ = {
 			isa = PBXGroup;
 			children = (
+				84948BAB2CAA2EDA006BE6A1 /* GoogleService-Info.plist */,
 				022DA9EA2CA46E1E008C426C /* Utility */,
 				022DA9E92CA46E14008C426C /* ModelData */,
-				022DA9E82CA46E05008C426C /* Interface */,
 				022DA9B92CA46DA8008C426C /* SocialTrailsAppApp.swift */,
 				022DA9BB2CA46DA8008C426C /* ContentView.swift */,
 				022DA9BD2CA46DAC008C426C /* Assets.xcassets */,
@@ -118,6 +134,7 @@
 			children = (
 				022DA9C02CA46DAC008C426C /* Preview Assets.xcassets */,
 				84C5CC372CAA24CB002641EA /* SplashScreenView.swift */,
+				84948BB22CAA3063006BE6A1 /* SignUpView.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -139,16 +156,11 @@
 			path = SocialTrailsAppUITests;
 			sourceTree = "<group>";
 		};
-		022DA9E82CA46E05008C426C /* Interface */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Interface;
-			sourceTree = "<group>";
-		};
 		022DA9E92CA46E14008C426C /* ModelData */ = {
 			isa = PBXGroup;
 			children = (
+				84948BB62CAA30FB006BE6A1 /* Users.swift */,
+				84948BBA2CAA335B006BE6A1 /* UserRole.swift */,
 			);
 			path = ModelData;
 			sourceTree = "<group>";
@@ -156,6 +168,8 @@
 		022DA9EA2CA46E1E008C426C /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				84948BB42CAA30A2006BE6A1 /* Utils.swift */,
+				84948BBC2CAA33D6006BE6A1 /* UserService.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -248,6 +262,9 @@
 				Base,
 			);
 			mainGroup = 022DA9AD2CA46DA8008C426C;
+			packageReferences = (
+				84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 022DA9B72CA46DA8008C426C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -266,6 +283,7 @@
 			files = (
 				022DA9C12CA46DAC008C426C /* Preview Assets.xcassets in Resources */,
 				022DA9BE2CA46DAC008C426C /* Assets.xcassets in Resources */,
+				84948BAC2CAA2EDA006BE6A1 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,10 +308,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84948BB72CAA30FB006BE6A1 /* Users.swift in Sources */,
 				022DA9C32CA46DAC008C426C /* Persistence.swift in Sources */,
 				022DA9BC2CA46DA8008C426C /* ContentView.swift in Sources */,
 				84C5CC382CAA24CB002641EA /* SplashScreenView.swift in Sources */,
+				84948BB52CAA30A2006BE6A1 /* Utils.swift in Sources */,
 				022DA9BA2CA46DA8008C426C /* SocialTrailsAppApp.swift in Sources */,
+				84948BBD2CAA33D6006BE6A1 /* UserService.swift in Sources */,
+				84948BBB2CAA335B006BE6A1 /* UserRole.swift in Sources */,
+				84948BB32CAA3063006BE6A1 /* SignUpView.swift in Sources */,
 				022DA9C62CA46DAC008C426C /* SocialTrailsApp.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -618,6 +641,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		84948BAE2CAA2F56006BE6A1 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		84948BB02CAA2F56006BE6A1 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		022DA9C42CA46DAC008C426C /* SocialTrailsApp.xcdatamodeld */ = {
