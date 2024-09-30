@@ -18,8 +18,9 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 if sessionManager.isLoggedIn {
+                    Divider().background(Color.blue)
+                    BottomNavigationView(selectedTab: selectedTab)
                     
-                    DashboardView()
                     
                 } else {
                     SignInView()
