@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseDatabase
 
-class UserManager : ObservableObject{
+class UserService : ObservableObject{
     
     private var reference: DatabaseReference
     private let _collection = "users";
@@ -32,6 +32,39 @@ class UserManager : ObservableObject{
                 }
             }
         }
-    
+    func fetchUserByUserID(withID id: String, completion: @escaping (SessionUsers?) -> Void) {
+        let usersRef = reference.child(_collection)
+        
+        usersRef.child(id)
+            .observeSingleEvent(of: .value) { snapshot in
+                if snapshot.exists() {
+                    print("Snapshot exists: \(snapshot)")
+                    
+                    if let userData = snapshot.value as? [String: Any] {
+                        print("data parse started")
+                       
+                        let username = userData["username"] as? String ?? ""
+                        let email = userData["email"] as? String ?? ""
+                        let roles = userData["roles"] as? String ?? ""
+                        let notification = userData["notification"] as? Bool ?? true
+                        
+                       
+                        let user = SessionUsers(id: id,
+                                                username: username,
+                                                email: email,
+                                                notification: notification, roleType: roles)
+                        
+                        completion(user)
+                    } else {
+                        print("Failed to parse user data for id: \(id)")
+                        completion(nil)
+                    }
+                } else {
+                    print("No user found for id: \(id)")
+                    completion(nil)
+                }
+            }
+    }
+
 
 }

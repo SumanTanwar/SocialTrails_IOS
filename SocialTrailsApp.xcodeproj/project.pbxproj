@@ -26,6 +26,7 @@
 		84948BBD2CAA33D6006BE6A1 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BBC2CAA33D6006BE6A1 /* UserService.swift */; };
 		84948BBF2CAA705F006BE6A1 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BBE2CAA705F006BE6A1 /* SignInView.swift */; };
 		84948BC12CAA70ED006BE6A1 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BC02CAA70ED006BE6A1 /* DashboardView.swift */; };
+		84948BC32CAA7995006BE6A1 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BC22CAA7995006BE6A1 /* SessionManager.swift */; };
 		84C5CC382CAA24CB002641EA /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C5CC372CAA24CB002641EA /* SplashScreenView.swift */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +68,7 @@
 		84948BBC2CAA33D6006BE6A1 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserService.swift; path = "SocialTrailsApp/Preview Content/UserService.swift"; sourceTree = SOURCE_ROOT; };
 		84948BBE2CAA705F006BE6A1 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		84948BC02CAA70ED006BE6A1 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		84948BC22CAA7995006BE6A1 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SessionManager.swift; path = "SocialTrailsApp/Preview Content/SessionManager.swift"; sourceTree = SOURCE_ROOT; };
 		84C5CC372CAA24CB002641EA /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -176,6 +178,7 @@
 			children = (
 				84948BB42CAA30A2006BE6A1 /* Utils.swift */,
 				84948BBC2CAA33D6006BE6A1 /* UserService.swift */,
+				84948BC22CAA7995006BE6A1 /* SessionManager.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -326,6 +329,7 @@
 				84948BB32CAA3063006BE6A1 /* SignUpView.swift in Sources */,
 				84948BBF2CAA705F006BE6A1 /* SignInView.swift in Sources */,
 				022DA9C62CA46DAC008C426C /* SocialTrailsApp.xcdatamodeld in Sources */,
+				84948BC32CAA7995006BE6A1 /* SessionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

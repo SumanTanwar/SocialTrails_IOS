@@ -34,3 +34,10 @@ struct Users {
            ]
        }
 }
+struct SessionUsers :Identifiable,Codable{
+    var id : String
+    var username : String
+    var email : String
+    var notification = true
+    var roleType : String
+}
