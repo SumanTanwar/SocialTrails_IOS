@@ -117,7 +117,7 @@ struct SignUpView: View {
                         .foregroundColor(.gray)
                         .italic()
                     
-                    NavigationLink(destination: SplashScreenView(), isActive: $navigateToSignIn) {
+                    NavigationLink(destination: SignInView(), isActive: $navigateToSignIn) {
                         Text("Sign In")
                             .italic()
                             .foregroundColor(.blue)
@@ -229,7 +229,7 @@ struct SignUpView: View {
 
                         let userID = user.uid
                         var newUser = Users(userId: userID, username: userName, email: emailAddress, roles: UserRole.user.role)
-                        UserManager().registerUser(_user: &newUser) { success in
+                        UserManager().registerUser(_user: newUser) { success in
                             if success {
                                 showAlert(message: "User registered successfully. Please verify your email.")
                                 navigateToSignIn = true
