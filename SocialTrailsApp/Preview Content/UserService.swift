@@ -18,11 +18,8 @@ class UserManager : ObservableObject{
         self.reference = Database.database().reference()
     }
  
-    func registerUser(_user: inout Users, completion: @escaping (Bool) -> Void) {
-        let newItemKey = reference.child(_collection).childByAutoId().key
-        
-        if let newItemKey = newItemKey {
-            _user.userId = newItemKey
+    func registerUser(_user:  Users, completion: @escaping (Bool) -> Void) {
+       
             
             let itemRef = reference.child(_collection).child(_user.userId)
             
@@ -34,10 +31,7 @@ class UserManager : ObservableObject{
                     completion(true) // Call completion with true if the data is successfully written
                 }
             }
-        } else {
-            print("Failed to generate a new item key.")
-            completion(false)
         }
-    }
+    
 
 }
