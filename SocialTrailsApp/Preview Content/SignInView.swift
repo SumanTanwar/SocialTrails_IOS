@@ -146,10 +146,16 @@ struct SignInView: View {
                     } else if let authResult = authResult {
                         let user = authResult.user
                         
-                        // Check if the email is verified
+                       
                         if user.isEmailVerified {
                             print("User ID: \(user.uid)")
-                            self.navigateToDashboard = true
+                            SessionManager.shared.loginUser(userid: user.uid) { success in
+                                if success {
+                                    self.navigateToDashboard = true
+                                } else {
+                                    self.showAlert(message: "Failed to log in. Please try again later.")
+                                }
+                            }
                             // Proceed to the dashboard
                         } else {
                             self.showAlert(message: "Please verify your email before signing in.")
