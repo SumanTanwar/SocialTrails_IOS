@@ -66,7 +66,7 @@ struct SignInView: View {
                     Text("Forgot Password?")
                         .foregroundColor(.gray)
                     
-                    NavigationLink(destination:SignUpView()) {
+                    NavigationLink(destination:ForgotPasswordView()) {
                         Text("Reset it here")
                             .foregroundColor(.blue)
                             .underline(true, color: .blue)

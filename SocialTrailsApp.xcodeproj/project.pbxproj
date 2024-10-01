@@ -16,6 +16,7 @@
 		022DA9D02CA46DAC008C426C /* SocialTrailsAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9CF2CA46DAC008C426C /* SocialTrailsAppTests.swift */; };
 		022DA9DA2CA46DAC008C426C /* SocialTrailsAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9D92CA46DAC008C426C /* SocialTrailsAppUITests.swift */; };
 		022DA9DC2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9DB2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift */; };
+		02FFBD3E2CAB032D006BCEFD /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FFBD3D2CAB0320006BCEFD /* ForgotPasswordView.swift */; };
 		84948BAC2CAA2EDA006BE6A1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84948BAB2CAA2EDA006BE6A1 /* GoogleService-Info.plist */; };
 		84948BAF2CAA2F56006BE6A1 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 84948BAE2CAA2F56006BE6A1 /* FirebaseAuth */; };
 		84948BB12CAA2F56006BE6A1 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 84948BB02CAA2F56006BE6A1 /* FirebaseDatabase */; };
@@ -61,6 +62,7 @@
 		022DA9D52CA46DAC008C426C /* SocialTrailsAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SocialTrailsAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		022DA9D92CA46DAC008C426C /* SocialTrailsAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialTrailsAppUITests.swift; sourceTree = "<group>"; };
 		022DA9DB2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialTrailsAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		02FFBD3D2CAB0320006BCEFD /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		84948BAB2CAA2EDA006BE6A1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		84948BB22CAA3063006BE6A1 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		84948BB42CAA30A2006BE6A1 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = "SocialTrailsApp/Preview Content/Utils.swift"; sourceTree = SOURCE_ROOT; };
@@ -141,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				022DA9C02CA46DAC008C426C /* Preview Assets.xcassets */,
+				02FFBD3D2CAB0320006BCEFD /* ForgotPasswordView.swift */,
 				84C5CC372CAA24CB002641EA /* SplashScreenView.swift */,
 				84948BB22CAA3063006BE6A1 /* SignUpView.swift */,
 				84948BBE2CAA705F006BE6A1 /* SignInView.swift */,
@@ -328,6 +331,7 @@
 				84948BB52CAA30A2006BE6A1 /* Utils.swift in Sources */,
 				022DA9BA2CA46DA8008C426C /* SocialTrailsAppApp.swift in Sources */,
 				84948BBD2CAA33D6006BE6A1 /* UserService.swift in Sources */,
+				02FFBD3E2CAB032D006BCEFD /* ForgotPasswordView.swift in Sources */,
 				84948BBB2CAA335B006BE6A1 /* UserRole.swift in Sources */,
 				84948BB32CAA3063006BE6A1 /* SignUpView.swift in Sources */,
 				84948BBF2CAA705F006BE6A1 /* SignInView.swift in Sources */,
