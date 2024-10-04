@@ -26,9 +26,9 @@ struct BottomNavigationView: View {
                 }
                 .tag(1)
             
-            DashboardView()
+            CreatePostView()
                 .tabItem {
-                    Image(systemName: "arrow.up.circle.fill")
+                    Image(systemName: "plus.app")
                     
                 }
                 .tag(2)
