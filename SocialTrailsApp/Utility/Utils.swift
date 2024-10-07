@@ -20,4 +20,10 @@ struct Utils {
         let passwordPredicate = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
         return passwordPredicate.evaluate(with: password)
     }
+    static func getCurrentDatetime() -> String {
+              let dateFormatter = DateFormatter()
+              dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+              dateFormatter.locale = Locale.current
+              return dateFormatter.string(from: Date())
+          }
 }

@@ -10,7 +10,7 @@ struct Users {
     var userId : String
     var username: String
     var email: String
-    var createdon = Date().timeIntervalSince1970
+    var createdon = Utils.getCurrentDatetime()
     var profilepicture: String?
     var roles: String
     var profiledeleted=false
@@ -18,6 +18,8 @@ struct Users {
     var admindeleted = false
     var suspended = false
     var isactive = true
+    var suspendedreason : String?
+    var suspendedby : String?
     
     func toDictionary() -> [String: Any] {
            return [
@@ -30,6 +32,8 @@ struct Users {
                "notification": notification,
                "admindeleted": admindeleted,
                "suspended": suspended,
+               "suspendedreason": suspendedreason ?? "",
+               "suspendedby": suspendedby ?? "",
                "isactive": isactive as Any
            ]
        }

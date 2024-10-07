@@ -11,7 +11,7 @@ class UserPost {
     var postId: String = ""
     var userId: String = ""
     var captiontext: String = ""
-    var createdon = Date().timeIntervalSince1970
+    var createdon = Utils.getCurrentDatetime()
     var updatedon: String?
     var location: String?
     var postdeleted=false
@@ -26,7 +26,7 @@ class UserPost {
          
            self.userId = userId
            self.captiontext = captionText
-           self.createdon = Date().timeIntervalSince1970
+        self.createdon = Utils.getCurrentDatetime()
            self.imageUris = imageUris
            self.postdeleted = false
            self.location = location
