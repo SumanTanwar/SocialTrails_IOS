@@ -12,8 +12,10 @@ struct AdminUserManageView: View {
     @State private var reason: String = ""
     @State private var showReason: Bool = false
     @State private var showDeleteText: Bool = false
+    @State private var deleteText : String = ""
     @State private var isSuspended: Bool = false
     @State private var profiledeleted: Bool = false
+    @State private var userprofiledeleted: Bool = false
     @State private var showingAlert: Bool = false
     @State private var alertMessage: String = ""
     @ObservedObject private var sessionManager = SessionManager.shared
@@ -60,56 +62,72 @@ struct AdminUserManageView: View {
                 .font(.system(size: 12))
                 .foregroundColor(.black)
 
-            if showReason {
-                Text("Suspended profile: \(reason)")
+            if userprofiledeleted {
+                Text("user deleted own profile")
                     .font(.system(size: 12))
                     .padding(4)
                     .foregroundColor(.white)
-                    .background(Color.orange)
+                    .background(Color.red)
                     .cornerRadius(5)
             }
 
-            if showDeleteText {
-                Text("This account will be deleted")
-                    .font(.system(size: 12))
-                    .foregroundColor(.black)
-                    .padding(4)
-            }
-
-            HStack {
-                Button(action: {
-                    if isSuspended {
-                        adminUnSuspendProfile()
-                    } else {
-                        showSuspendDialog()
-                    }
-                }) {
-                    Text(isSuspended ? "UnSuspend Profile" : "Suspend Profile")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .background(Color.gray.opacity(0.2))
-                        .foregroundColor(.black)
+            else
+            {
+                if showReason {
+                    Text("Suspended profile: \(reason)")
+                        .font(.system(size: 12))
+                        .padding(4)
+                        .foregroundColor(.white)
+                        .background(Color.orange)
                         .cornerRadius(5)
                 }
-                .padding(.horizontal, 8)
-
-                Button(action: {
-                    if profiledeleted {
-                        adminUnDeleteProfile()
-                    } else {
-                        adminDeleteProfile()
-                    }
-                }) {
-                    Text(profiledeleted ? "Activate Profile" : "Delete Profile")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .background(Color.gray.opacity(0.2))
-                        .foregroundColor(.black)
+                
+                if showDeleteText {
+                    Text(deleteText)
+                        .font(.system(size: 12))
+                        .padding(4)
+                        .foregroundColor(.white)
+                        .background(Color.red)
                         .cornerRadius(5)
                 }
-                .padding(.horizontal, 8)
+                
+                
+                HStack {
+                    Button(action: {
+                        if isSuspended {
+                            adminUnSuspendProfile()
+                        } else {
+                            showSuspendDialog()
+                        }
+                    }) {
+                        Text(isSuspended ? "UnSuspend Profile" : "Suspend Profile")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(Color.gray.opacity(0.2))
+                            .foregroundColor(.black)
+                            .cornerRadius(5)
+                    }
+                    .padding(.horizontal, 8)
+                    
+                    Button(action: {
+                        if profiledeleted {
+                            adminUnDeleteProfile()
+                        } else {
+                            adminDeleteProfile()
+                        }
+                    }) {
+                        Text(profiledeleted ? "Activate Profile" : "Delete Profile")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(Color.gray.opacity(0.2))
+                            .foregroundColor(.black)
+                            .cornerRadius(5)
+                    }
+                    .padding(.horizontal, 8)
+                }
+                
+                .padding(.top, 10)
             }
-            .padding(.top, 10)
         }
         .padding(8)
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -131,9 +149,12 @@ struct AdminUserManageView: View {
             self.email = userData["email"] as? String ?? ""
             self.bio = userData["bio"] as? String ?? ""
             self.isSuspended = userData["suspended"] as? Bool ?? false
-            self.showDeleteText = userData["profiledeleted"] as? Bool ?? false
-            self.profiledeleted = userData["profiledeleted"] as? Bool ?? false
+            self.showDeleteText = userData["admindeleted"] as? Bool ?? false
+            self.profiledeleted = userData["admindeleted"] as? Bool ?? false
+            self.userprofiledeleted = userData["profiledeleted"] as? Bool ?? false
             self.showReason = userData["suspended"] as? Bool ?? false
+            self.reason = userData["suspendedreason"] as? String ?? ""
+            self.deleteText = "Deleted profile by admin on  \(userData["admindeletedon"] as? String ?? "")"
         }
     }
 
@@ -187,16 +208,34 @@ struct AdminUserManageView: View {
     }
 
     private func adminDeleteProfile() {
-        // Implementation for deleting a profile
+        userService.adminDeleteProfile(userId: userId) { success in
+            if success {
+                self.showDeleteText = true
+                self.profiledeleted = true
+                self.deleteText = "Deleted profile by admin on \(Utils.getCurrentDatetime())"
+              
+            } else {
+                showAlert(message: "delete profile failed! Please try again later.")
+            }
+        }
     }
 
     private func adminUnDeleteProfile() {
-        // Implementation for undeleting a profile
+        userService.adminUnDeleteProfile(userId: userId) { success in
+            if success {
+                self.showDeleteText = false
+                self.profiledeleted = false
+                self.deleteText = ""
+              
+            } else {
+                showAlert(message: "activate profile failed! Please try again later.")
+            }
+        }
     }
 }
 
 struct AdminUserManageView_Previews: PreviewProvider {
     static var previews: some View {
-        AdminUserManageView(userId: "sampleUserId")
+        AdminUserManageView(userId: "m2IMctFyVmS4jVZzPdl0EgIXSBL2")
     }
 }

@@ -20,6 +20,7 @@ struct Users {
     var isactive = true
     var suspendedreason : String?
     var suspendedby : String?
+    var admindeletedon : String?
     
     func toDictionary() -> [String: Any] {
            return [
@@ -34,6 +35,7 @@ struct Users {
                "suspended": suspended,
                "suspendedreason": suspendedreason ?? "",
                "suspendedby": suspendedby ?? "",
+               "admindeletedon": admindeletedon ?? "",
                "isactive": isactive as Any
            ]
        }
