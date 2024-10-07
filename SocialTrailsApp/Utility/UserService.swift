@@ -127,4 +127,35 @@ class UserService : ObservableObject{
                 }
             }
         }
+    func adminDeleteProfile(userId: String, completion: @escaping (Bool) -> Void) {
+            let updates: [String: Any] = [
+                "admindeleted": true,
+                "admindeletedon": Utils.getCurrentDatetime(),
+                "isactive": false
+            ]
+
+            reference.child(_collection).child(userId).updateChildValues(updates) { error, _ in
+                if let error = error {
+                    completion(false)
+                } else {
+                    completion(true)
+                }
+            }
+        }
+
+        func adminUnDeleteProfile(userId: String, completion: @escaping (Bool) -> Void) {
+            let updates: [String: Any] = [
+                "admindeleted": false,
+                "admindeletedon": NSNull(),
+                "isactive": true
+            ]
+
+            reference.child(_collection).child(userId).updateChildValues(updates) { error, _ in
+                if let error = error {
+                    completion(false)
+                } else {
+                    completion(true)
+                }
+            }
+        }
 }
