@@ -12,7 +12,7 @@ struct DashboardView: View {
     @State private var navigateToSignIn: Bool = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 Text("Hello, World!")
                 
@@ -38,7 +38,8 @@ struct DashboardView: View {
                 }
                 .padding()
             }
-           
+            .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
             .fullScreenCover(isPresented: $navigateToSignIn) {
                 SignInView() // Replace with your actual sign-in view
             }

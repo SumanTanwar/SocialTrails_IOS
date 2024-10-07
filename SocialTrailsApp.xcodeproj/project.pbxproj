@@ -23,6 +23,9 @@
 		84948BB32CAA3063006BE6A1 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BB22CAA3063006BE6A1 /* SignUpView.swift */; };
 		84948BBF2CAA705F006BE6A1 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BBE2CAA705F006BE6A1 /* SignInView.swift */; };
 		84948BC12CAA70ED006BE6A1 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BC02CAA70ED006BE6A1 /* DashboardView.swift */; };
+		84A10BFA2CB3980200B1DC56 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 84A10BF92CB3980200B1DC56 /* GoogleMaps */; };
+		84A10BFF2CB39A3500B1DC56 /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 84A10BFE2CB39A3500B1DC56 /* GooglePlaces */; };
+		84A10C012CB39C9F00B1DC56 /* ChooseAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A10C002CB39C9F00B1DC56 /* ChooseAddressView.swift */; };
 		84A1C98F2CAB02D000A53D40 /* BottomNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A1C98E2CAB02D000A53D40 /* BottomNavigationView.swift */; };
 		84AA79302CAF6C5900519AD6 /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AA792F2CAF6C5900519AD6 /* CreatePostView.swift */; };
 		84B081C02CAFA6D800F4F582 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 84B081BF2CAFA6D800F4F582 /* FirebaseStorage */; };
@@ -64,6 +67,8 @@
 		84948BB22CAA3063006BE6A1 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		84948BBE2CAA705F006BE6A1 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		84948BC02CAA70ED006BE6A1 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		84A10C002CB39C9F00B1DC56 /* ChooseAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseAddressView.swift; sourceTree = "<group>"; };
+		84A10C022CB39F0000B1DC56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		84A1C98E2CAB02D000A53D40 /* BottomNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomNavigationView.swift; sourceTree = "<group>"; };
 		84AA792F2CAF6C5900519AD6 /* CreatePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostView.swift; sourceTree = "<group>"; };
 		84C5CC372CAA24CB002641EA /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
@@ -79,8 +84,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A10BFA2CB3980200B1DC56 /* GoogleMaps in Frameworks */,
 				84948BB12CAA2F56006BE6A1 /* FirebaseDatabase in Frameworks */,
 				84948BAF2CAA2F56006BE6A1 /* FirebaseAuth in Frameworks */,
+				84A10BFF2CB39A3500B1DC56 /* GooglePlaces in Frameworks */,
 				84B081C02CAFA6D800F4F582 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -125,6 +132,7 @@
 		022DA9B82CA46DA8008C426C /* SocialTrailsApp */ = {
 			isa = PBXGroup;
 			children = (
+				84A10C022CB39F0000B1DC56 /* Info.plist */,
 				84AA793E2CAF842600519AD6 /* ModelData */,
 				84AA793D2CAF83EB00519AD6 /* Utility */,
 				84948BAB2CAA2EDA006BE6A1 /* GoogleService-Info.plist */,
@@ -149,6 +157,7 @@
 				84948BC02CAA70ED006BE6A1 /* DashboardView.swift */,
 				84A1C98E2CAB02D000A53D40 /* BottomNavigationView.swift */,
 				84AA792F2CAF6C5900519AD6 /* CreatePostView.swift */,
+				84A10C002CB39C9F00B1DC56 /* ChooseAddressView.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -264,6 +273,8 @@
 			mainGroup = 022DA9AD2CA46DA8008C426C;
 			packageReferences = (
 				84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				84A10BF82CB3980200B1DC56 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
+				84A10BFD2CB39A3500B1DC56 /* XCRemoteSwiftPackageReference "ios-places-sdk" */,
 			);
 			productRefGroup = 022DA9B72CA46DA8008C426C /* Products */;
 			projectDirPath = "";
@@ -313,6 +324,7 @@
 				022DA9BC2CA46DA8008C426C /* ContentView.swift in Sources */,
 				84AA79302CAF6C5900519AD6 /* CreatePostView.swift in Sources */,
 				84C5CC382CAA24CB002641EA /* SplashScreenView.swift in Sources */,
+				84A10C012CB39C9F00B1DC56 /* ChooseAddressView.swift in Sources */,
 				022DA9BA2CA46DA8008C426C /* SocialTrailsAppApp.swift in Sources */,
 				02FFBD3E2CAB032D006BCEFD /* ForgotPasswordView.swift in Sources */,
 				84948BB32CAA3063006BE6A1 /* SignUpView.swift in Sources */,
@@ -484,6 +496,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SocialTrailsApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SocialTrailsApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -512,6 +525,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SocialTrailsApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SocialTrailsApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -652,6 +666,22 @@
 				minimumVersion = 11.2.0;
 			};
 		};
+		84A10BF82CB3980200B1DC56 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
+			requirement = {
+				kind = exactVersion;
+				version = 9.1.1;
+			};
+		};
+		84A10BFD2CB39A3500B1DC56 /* XCRemoteSwiftPackageReference "ios-places-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-places-sdk.git";
+			requirement = {
+				kind = exactVersion;
+				version = 9.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -664,6 +694,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseDatabase;
+		};
+		84A10BF92CB3980200B1DC56 /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84A10BF82CB3980200B1DC56 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
+		};
+		84A10BFE2CB39A3500B1DC56 /* GooglePlaces */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84A10BFD2CB39A3500B1DC56 /* XCRemoteSwiftPackageReference "ios-places-sdk" */;
+			productName = GooglePlaces;
 		};
 		84B081BF2CAFA6D800F4F582 /* FirebaseStorage */ = {
 			isa = XCSwiftPackageProductDependency;
