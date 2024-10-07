@@ -14,115 +14,137 @@ struct CreatePostView: View {
     @State private var showingAlert: Bool = false
     @State private var alertMessage: String = ""
     @ObservedObject private var sessionManager = SessionManager.shared
-    
+    @State private var showingChooseAddressView: Bool = false
+    @State private var selectedLocationData: Location?
+    @State private var navigateToSuccess: Bool = false
+
     var body: some View {
-        VStack(spacing: 16) {
-            HStack(spacing: 8) {
-                Image("user")
-                    .resizable()
-                    .frame(width: 48, height: 48)
-                    .scaledToFit()
+        NavigationStack {
+            VStack(spacing: 16) {
+                HStack(spacing: 8) {
+                    Image("user")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .scaledToFit()
+                    
+                    if let currentUser = sessionManager.getCurrentUser() {
+                        Text(currentUser.username)
+                            .font(.title)
+                            .padding(.leading, 10)
+                    } else {
+                        Text("Unknown User")
+                            .font(.title)
+                            .padding(.leading, 10)
+                    }
+                }
+                .padding(.top, 10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                TextEditor(text: $caption)
+                    .frame(height: 150)
+                    .padding(12)
+                    .background(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                    .foregroundColor(.black)
+                    .font(.body)
+                    .multilineTextAlignment(.leading)
+                    .padding(.bottom, 5)
+
+                Divider().background(Color.gray)
+
+                HStack {
+                    Image("location")
+                        .resizable()
+                        .frame(width: 25, height: 25)
+                        .onTapGesture {
+                            showingChooseAddressView.toggle()
+                        }
+                    Text(selectedLocation)
+                        .foregroundColor(.primary)
+                        .italic()
+                        .font(.subheadline)
+                }
+                .padding(.vertical, 5)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 
-                Text("User Name")
-                    .font(.headline)
-                    .foregroundColor(.primary)
-            }
-            .padding(.top, 24)
-            .padding(.bottom, 8)
-
-            TextEditor(text: $caption)
-                .frame(height: 150)
-                .padding(12)
-                .background(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                .foregroundColor(.black)
-                .font(.body)
-                .multilineTextAlignment(.leading)
-                .padding(.bottom, 10)
-
-            Divider()
-                .background(Color.gray)
-
-            HStack {
-                Image("location")
-                    .resizable()
-                    .frame(width: 30, height: 30)
-                    .padding(.trailing, 10)
-
-                Text(selectedLocation)
-                    .foregroundColor(.primary)
-                    .italic()
-                    .font(.subheadline)
-            }
-            .padding(.vertical, 10)
-            
-            if !selectedImages.isEmpty {
-                TabView {
-                    ForEach(selectedImages.indices, id: \.self) { index in
-                        ZStack(alignment: .topTrailing) {
-                            Image(uiImage: selectedImages[index])
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: UIScreen.main.bounds.width, height: 250)
-                                .clipped()
-                            
-                            Button(action: {
-                                selectedImages.remove(at: index)
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
+                if !selectedImages.isEmpty {
+                    TabView {
+                        ForEach(selectedImages.indices, id: \.self) { index in
+                            ZStack(alignment: .topTrailing) {
+                                Image(uiImage: selectedImages[index])
                                     .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 30, height: 30)
-                                    .foregroundColor(.red)
-                                    .padding(10)
-                                    .padding(.trailing, 10)
+                                    .scaledToFill()
+                                    .frame(width: UIScreen.main.bounds.width, height: 180)
+                                    .clipped()
+                                
+                                Button(action: {
+                                    selectedImages.remove(at: index)
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 30, height: 30)
+                                        .foregroundColor(.red)
+                                        .padding(10)
+                                        .padding(.trailing, 10)
+                                }
                             }
                         }
                     }
+                    .tabViewStyle(PageTabViewStyle())
+                    .frame(height: 180)
                 }
-                .tabViewStyle(PageTabViewStyle())
-                .frame(height: 250)
+
+                Divider().background(Color.gray)
+
+                HStack {
+                    Button(action: {
+                        showingImagePicker = true
+                    }) {
+                        Image("photo")
+                            .resizable()
+                            .frame(width: 35, height: 35)
+                            .padding(8)
+                    }
+
+                    Spacer()
+
+                    Button(action: {
+                        postAction()
+                    }) {
+                        Image("share")
+                            .resizable()
+                            .frame(width: 35, height: 35)
+                            .padding(8)
+                    }
+                    .padding(.trailing, 18)
+                }
+                .background(Color.gray.opacity(0.1))
+                .padding(3)
             }
-
-            Divider()
-                .background(Color.gray)
-
-            HStack {
-                Button(action: {
-                    showingImagePicker = true
-                }) {
-                    Image("photo")
-                        .resizable()
-                        .frame(width: 48, height: 48)
-                        .padding(8)
-                        .background(Color.white)
-                        .cornerRadius(24)
-                }
-
-                Spacer()
-
-                Button(action: {
-                    postAction()
-                }) {
-                    Image("share")
-                        .resizable()
-                        .frame(width: 30, height: 48)
-                        .padding(8)
-                        .background(Color.white)
-                        .cornerRadius(24)
-                }
-                .padding(.trailing, 16)
+            .padding(16)
+            
+           // .navigationTitle("Create Post")
+            .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
+            .sheet(isPresented: $showingImagePicker) {
+                ImagePicker(selectedImages: $selectedImages)
             }
-            .background(Color.gray.opacity(0.1))
-            .padding(3)
-        }
-        .padding(16)
-        .background(Color("background_color"))
-        .navigationTitle("Create Post")
-        .sheet(isPresented: $showingImagePicker) {
-            ImagePicker(selectedImages: $selectedImages)
-        }
-        .alert(isPresented: $showingAlert) {
-            Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            .alert(isPresented: $showingAlert) {
+                Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            }
+            .sheet(isPresented: $showingChooseAddressView) {
+                ChooseAddressView(show: $showingChooseAddressView, selectedLocation: $selectedLocationData)
+                    .onDisappear {
+                        if let location = selectedLocationData {
+                            selectedLocation = location.address // Update the selected location text
+                        }
+                    }
+            }
+            .background(
+                NavigationLink(destination: DashboardView(), isActive: $navigateToSuccess) {
+                    EmptyView()
+                }
+            )
         }
     }
 
@@ -137,20 +159,25 @@ struct CreatePostView: View {
             showAlert(message: "Caption is required.")
             return
         }
-        
+        if selectedLocationData == nil {
+            showAlert(message: "Please tag the location.")
+            return
+        }
         if selectedImages.isEmpty {
             showAlert(message: "Please select a photo.")
             return
         }
-        
+
         let userId = sessionManager.getCurrentUser()?.id ?? ""
-        let userPost = UserPost(userId: userId, captionText: captiontxt, imageUris: selectedImages)
+        let userPost = UserPost(userId: userId, captionText: captiontxt, imageUris: selectedImages, location: selectedLocationData?.address, latitude: selectedLocationData?.latitude, longitude: selectedLocationData?.longitude)
         let userPostService = UserPostService()
-        print("userr post service call")
+
         userPostService.createPost(userPost: userPost) { result in
             switch result {
             case .success:
-                break
+                DispatchQueue.main.async {
+                    self.navigateToSuccess = true
+                }
             case .failure(_):
                 alertMessage = "Create post failed! Please try again later."
                 showingAlert = true

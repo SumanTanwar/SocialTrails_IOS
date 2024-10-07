@@ -10,32 +10,39 @@ import UIKit
 class UserPost {
     var postId: String = ""
     var userId: String = ""
-    var captionText: String = ""
-    var createdOn = Date().timeIntervalSince1970
-    var updatedOn: String?
+    var captiontext: String = ""
+    var createdon = Date().timeIntervalSince1970
+    var updatedon: String?
     var location: String?
-    var postDeleted=false
+    var postdeleted=false
     var flagged: Bool?
     var moderationStatus: Bool?
     var imageUris: [UIImage]?
+    var latitude: Double?
+    var longitude: Double?
     
     
-    init( userId: String, captionText: String,imageUris: [UIImage]) {
+    init( userId: String, captionText: String,imageUris: [UIImage],location: String?,latitude : Double?,longitude : Double?) {
          
            self.userId = userId
-           self.captionText = captionText
-           self.createdOn = Date().timeIntervalSince1970
+           self.captiontext = captionText
+           self.createdon = Date().timeIntervalSince1970
            self.imageUris = imageUris
-           self.postDeleted = false
+           self.postdeleted = false
+           self.location = location
+           self.latitude = latitude
+           self.longitude = latitude
        }
     func toDictionary() -> [String: Any] {
            return [
                "postId": postId,
                "userId": userId,
-               "captionText": captionText,
-               "createdOn": createdOn,
+               "captiontext": captiontext,
+               "createdon": createdon,
                "location": location ?? "",
-               "postDeleted": postDeleted as Any
+               "latitude": latitude ?? "",
+               "longitude": longitude ?? "",
+               "postdeleted": postdeleted as Any
                
            ]
        }
