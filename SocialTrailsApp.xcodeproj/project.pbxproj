@@ -75,6 +75,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		8460ECB52CB43A720044CAD9 /* AdminPanel */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AdminPanel; sourceTree = "<group>"; };
 		84AA793D2CAF83EB00519AD6 /* Utility */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utility; sourceTree = "<group>"; };
 		84AA793E2CAF842600519AD6 /* ModelData */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ModelData; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -149,6 +150,7 @@
 		022DA9BF2CA46DAC008C426C /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				8460ECB52CB43A720044CAD9 /* AdminPanel */,
 				022DA9C02CA46DAC008C426C /* Preview Assets.xcassets */,
 				02FFBD3D2CAB0320006BCEFD /* ForgotPasswordView.swift */,
 				84C5CC372CAA24CB002641EA /* SplashScreenView.swift */,
@@ -195,6 +197,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				8460ECB52CB43A720044CAD9 /* AdminPanel */,
 				84AA793D2CAF83EB00519AD6 /* Utility */,
 				84AA793E2CAF842600519AD6 /* ModelData */,
 			);
