@@ -39,7 +39,7 @@ struct AdminSettingsView: View {
                         .background(Color.gray)
                     
                     // Create Moderator Button
-                    NavigationLink(destination: DashboardView()) {
+                    NavigationLink(destination: AdminCreateModeratorView()) {
                         Text("Create Moderator")
                             .font(.system(size: 18))
                             .foregroundColor(.black)
