@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+
 struct Utils {
     static func isValidEmail(_ email: String) -> Bool {
         
@@ -26,4 +28,16 @@ struct Utils {
               dateFormatter.locale = Locale.current
               return dateFormatter.string(from: Date())
           }
+    
+    //MARK: font size
+    static let fontSize8: CGFloat = 8
+    static let fontSize16: CGFloat = 16
+    static let fontSize20: CGFloat = 20
+    static let fontSize24: CGFloat = 24
+    static let fontSize28: CGFloat = 28
+    
+    //MARK: Color
+    static let blackListColor: Color = .black
+   
+    
 }

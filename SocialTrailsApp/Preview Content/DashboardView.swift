@@ -25,18 +25,6 @@ struct DashboardView: View {
                         .padding(.leading, 10)
                 }
 
-                HStack {
-                    Button(action: {
-                        sessionManager.logoutUser()
-                        navigateToSignIn = true
-                    }) {
-                        Text("Log Out")
-                            .foregroundColor(.black)
-                            .padding(.leading,10)
-                    }
-                    Spacer()
-                }
-                .padding()
             }
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
