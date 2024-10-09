@@ -14,8 +14,7 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Hello, World!")
-                
+            
                 if let currentUser = sessionManager.getCurrentUser() {
                     Text(currentUser.username)
                         .font(.title)
@@ -33,6 +32,7 @@ struct DashboardView: View {
                     }) {
                         Text("Log Out")
                             .foregroundColor(.black)
+                            .padding(.leading,10)
                     }
                     Spacer()
                 }

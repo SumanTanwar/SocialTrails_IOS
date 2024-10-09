@@ -19,7 +19,7 @@ struct BottomNavigationView: View {
                 }
                 .tag(0)
             
-            SignInView()
+            DashboardView()
                 .tabItem {
                     Image(systemName: "magnifyingglass")
                     
@@ -40,7 +40,7 @@ struct BottomNavigationView: View {
                 }
                 .tag(3)
             
-            ProfileView()
+            UserSettingView()
                 .tabItem {
                     Image(systemName: "gearshape.fill")
                   
