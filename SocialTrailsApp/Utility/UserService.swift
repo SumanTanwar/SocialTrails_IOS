@@ -204,4 +204,18 @@ class UserService : ObservableObject{
         }
     }
     
+    
+    func setbackdeleteProfile(_ userID: String) {
+     
+        let reference = Database.database().reference()
+
+        reference.child("users").child(userID).updateChildValues(["isDeleted": false]) { error, _ in
+            if let error = error {
+                print("Error restoring profile: \(error.localizedDescription)")
+            } else {
+                print("Profile restored successfully.")
+            }
+        }
+    }
+    
 }
