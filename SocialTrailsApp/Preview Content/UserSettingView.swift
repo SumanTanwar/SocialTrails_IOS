@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseAuth
+
 
 struct UserSettingView: View {
     
     @ObservedObject var sessionManager = SessionManager.shared
     @State private var notificationsEnabled = true
     @State private var navigateToSignIn = false
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
+    
     private var dividerView: some View {
         Divider()
             .background(.gray)
@@ -88,11 +94,21 @@ struct UserSettingView: View {
                     dividerView
                     
                     Button(action: {
-                        // Delete Profile
+                        navigateToSignIn = true
                     }){
                         Text("Delete Profile")
                             .foregroundStyle(Utils.blackListColor)
                             .font(.system(size: Utils.fontSize16))
+                    }
+                    .alert(alertMessage, isPresented: $showAlert) {
+                        Button("OK", role: .cancel) {}
+                    }
+                    .confirmationDialog("Delete Account", isPresented: $navigateToSignIn) {
+                        Text("Are you sure you want to delete your account?")
+                        Button("Yes", role: .destructive) {
+                            deleteAccount()
+                        }
+                        Button("No", role: .cancel) {}
                     }
                     
                     dividerView
@@ -116,11 +132,52 @@ struct UserSettingView: View {
             .navigationBarHidden(true)
         }
     }
-}
+    
+    private func deleteAccount() {
+        guard let user = Auth.auth().currentUser else {
+            alertMessage = "Delete profile failed, please try again later."
+            showAlert = true
+            return
+        }
+        
+        let userService = UserService()
+        guard let userID = sessionManager.getCurrentUser()?.id else {
+            alertMessage = "Delete profile failed, please try again later."
+            showAlert = true
+            return
+        }
 
-struct UserSettingView_Previews: PreviewProvider {
-    static var previews: some View {
-        UserSettingView()
+        userService.deleteProfile(userID) { result in
+            switch result {
+            case .success:
+                user.delete { error in
+                    if let error = error {
+                        userService.setbackdeleteProfile(userID)
+                        alertMessage = "Delete profile failed: \(error.localizedDescription)"
+                        showAlert = true
+                    } else {
+                        SessionManager.shared.logoutUser()
+                        do {
+                            try Auth.auth().signOut()
+                        } catch {
+                            alertMessage = "Failed to log out: \(error.localizedDescription)"
+                            showAlert = true
+                        }
+                    }
+                }
+            case .failure(let error):
+                userService.setbackdeleteProfile(userID)
+                alertMessage = "Delete profile failed: \(error.localizedDescription)"
+                showAlert = true
+            }
+        }
     }
-}
 
+}
+  
+
+  struct UserSettingView_Previews: PreviewProvider {
+      static var previews: some View {
+          UserSettingView()
+      }
+  }
