@@ -13,7 +13,7 @@ struct ViewProfileView: View {
     @State public var userId: String
     @State private var username: String = "User"
     @State private var email: String = ""
-    @State private var bio: String = "Bio"
+    @State private var bio: String = ""
     @State private var postsCount: Int = 0
     @State private var followersCount: Int = 0
     @State private var followingsCount: Int = 0
@@ -83,11 +83,11 @@ struct ViewProfileView: View {
                 }
                
             }
-            Text(bio)
+            Text(sessionManager.getCurrentUser()?.bio ?? "")
                 .font(.system(size: 12))
                 .foregroundColor(.black)
                 .padding(.leading, 10)
-            NavigationLink(destination: ChangePasswordView()) {
+            NavigationLink(destination: EditProfileView()) {
                 Text("Edit Profile")
                     .foregroundColor(.white)
                     .padding()
@@ -99,6 +99,8 @@ struct ViewProfileView: View {
             .padding(.vertical, 5)
             Spacer()
         }.padding(.top,20)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
     }
 }
 struct ViewProfileView_Previews: PreviewProvider {
