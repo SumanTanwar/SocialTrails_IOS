@@ -13,7 +13,8 @@ import FirebaseAuth
 struct UserSettingView: View {
     
     @ObservedObject var sessionManager = SessionManager.shared
-    @State private var notificationsEnabled = true
+    let userService = UserService()
+    @State private var notification = true
     @State private var navigateToSignIn = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
@@ -76,11 +77,13 @@ struct UserSettingView: View {
                     
                     HStack {
                         
-                        Toggle(isOn: $notificationsEnabled){
-                            Text("Activate Notifications")
-                                .foregroundStyle(Utils.blackListColor)
-                                .font(.system(size: Utils.fontSize16))
-                        }
+                        Toggle("Activate Notifications", isOn: $notification)
+                                               .onChange(of: notification) { value in
+                                                   updateNotificationSetting(isEnabled: value)
+                                               }
+                                               .foregroundColor(Utils.blackListColor)
+                                               .font(.system(size: Utils.fontSize16))
+                                           
                     }
                     
                     dividerView
@@ -133,6 +136,30 @@ struct UserSettingView: View {
         }
     }
     
+    private func updateNotificationSetting(isEnabled: Bool) {
+        guard let userID = sessionManager.getCurrentUser()?.id else {
+            showAlertWithMessage("User ID is not available.")
+            return
+        }
+
+        userService.setNotification(userID, isEnabled: isEnabled) { result in
+            switch result {
+            case .success:
+                sessionManager.setNotificationStatus(isEnabled)
+                showAlertWithMessage(isEnabled ? "Notifications turned ON" : "Notifications turned OFF.")
+            case .failure(let error):
+                notification.toggle() 
+                showAlertWithMessage("Failed to update notification setting: \(error.localizedDescription)")
+            }
+        }
+    }
+
+       
+       private func showAlertWithMessage(_ message: String) {
+           alertMessage = message
+           showAlert = true
+       }
+    
     private func deleteAccount() {
         guard let user = Auth.auth().currentUser else {
             alertMessage = "Delete profile failed, please try again later."
@@ -140,7 +167,6 @@ struct UserSettingView: View {
             return
         }
         
-        let userService = UserService()
         guard let userID = sessionManager.getCurrentUser()?.id else {
             alertMessage = "Delete profile failed, please try again later."
             showAlert = true

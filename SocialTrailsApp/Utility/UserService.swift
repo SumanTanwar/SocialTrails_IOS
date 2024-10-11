@@ -14,9 +14,9 @@ class UserService : ObservableObject{
     private var reference: DatabaseReference
     private let _collection = "users";
     
-    init() {
-        self.reference = Database.database().reference()
-    }
+        init() {
+            self.reference = Database.database().reference()
+        }
     
     func registerUser(_user:  Users, completion: @escaping (Bool) -> Void) {
         
@@ -49,16 +49,17 @@ class UserService : ObservableObject{
                             let username = userData["username"] as? String ?? ""
                             let email = userData["email"] as? String ?? ""
                             let roles = userData["roles"] as? String ?? ""
-                            let notification = userData["notification"] as? Bool ?? true
+                            let notification = userData["notification"] as? Bool ?? false
                             
                             
                             let user = SessionUsers(id: id,
                                                     username: username,
                                                     email: email,
-                                                    notification: notification, roleType: roles)
+                                                    notification: notification,
+                                                    roleType: roles)
                             
                             completion(user)
-                        }else {
+                        } else {
                             print("No User found")
                             completion(nil)
                         }
@@ -135,7 +136,7 @@ class UserService : ObservableObject{
         ]
         
         reference.child(_collection).child(userId).updateChildValues(updates) { error, _ in
-            if let error = error {
+            if error != nil {
                 completion(false)
             } else {
                 completion(true)
@@ -185,7 +186,8 @@ class UserService : ObservableObject{
                                 userId: key,
                                 username: userData["username"] as? String ?? "",
                                 email: userData["email"] as? String ?? "",
-                                roles: role // Add only the fields you need
+                                roles: role,
+                                notification: userData["notification"] as? Bool ?? true 
                             )
                             moderatorsList.append(user)
                         }
@@ -217,5 +219,18 @@ class UserService : ObservableObject{
             }
         }
     }
+    
+    func setNotification(_ userID: String, isEnabled: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+            let userRef = reference.child(_collection).child(userID)
+
+            userRef.updateChildValues(["notification": isEnabled]) { error, _ in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
+
     
 }
