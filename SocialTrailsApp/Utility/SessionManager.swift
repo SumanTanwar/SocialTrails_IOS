@@ -45,4 +45,13 @@ class SessionManager : ObservableObject {
     func getCurrentUser() -> SessionUsers? {
         return currentUser
     }
+    
+    func getNotificationStatus() -> Bool {
+          return currentUser?.notification ?? false
+      }
+
+      func setNotificationStatus(_ isEnabled: Bool) {
+       
+          UserDefaults.standard.set(isEnabled, forKey: "notification")
+      }
 }
