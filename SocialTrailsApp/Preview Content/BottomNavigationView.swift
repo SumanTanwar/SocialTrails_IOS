@@ -33,7 +33,7 @@ struct BottomNavigationView: View {
                 }
                 .tag(2)
             
-            DashboardView()  
+            ViewProfileView()
                 .tabItem {
                     Image(systemName: "person.circle.fill")
                     
