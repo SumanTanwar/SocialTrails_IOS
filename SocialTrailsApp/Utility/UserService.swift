@@ -14,9 +14,9 @@ class UserService : ObservableObject{
     private var reference: DatabaseReference
     private let _collection = "users";
     
-        init() {
-            self.reference = Database.database().reference()
-        }
+    init() {
+        self.reference = Database.database().reference()
+    }
     
     func registerUser(_user:  Users, completion: @escaping (Bool) -> Void) {
         
@@ -48,13 +48,15 @@ class UserService : ObservableObject{
                         if !isProfileDeleted && !isAdminDeleted {
                             let username = userData["username"] as? String ?? ""
                             let email = userData["email"] as? String ?? ""
+                            let bio = userData["bio"] as? String ?? ""
                             let roles = userData["roles"] as? String ?? ""
                             let notification = userData["notification"] as? Bool ?? false
                             
                             
                             let user = SessionUsers(id: id,
+                                                    
                                                     username: username,
-                                                    email: email,
+                                                    email: email, bio: bio,
                                                     notification: notification,
                                                     roleType: roles)
                             
@@ -161,16 +163,16 @@ class UserService : ObservableObject{
     }
     
     func deleteProfile(_ userID: String, completion: @escaping (Result<Void, Error>) -> Void) {
-           reference.child(_collection).child(userID).removeValue { error, _ in
-               if let error = error {
-                   // On failure
-                   completion(.failure(error))
-               } else {
-                   // On success
-                   completion(.success(()))
-               }
-           }
-       }
+        reference.child(_collection).child(userID).removeValue { error, _ in
+            if let error = error {
+                // On failure
+                completion(.failure(error))
+            } else {
+                // On success
+                completion(.success(()))
+            }
+        }
+    }
     
     func getModeratorList(completion: @escaping (Result<[Users], Error>) -> Void) {
         var moderatorsList = [Users]()
@@ -185,9 +187,9 @@ class UserService : ObservableObject{
                             let user = Users(
                                 userId: key,
                                 username: userData["username"] as? String ?? "",
-                                email: userData["email"] as? String ?? "",
+                                email: userData["email"] as? String ?? "", bio: "",
                                 roles: role,
-                                notification: userData["notification"] as? Bool ?? true 
+                                notification: userData["notification"] as? Bool ?? true
                             )
                             moderatorsList.append(user)
                         }
@@ -208,9 +210,9 @@ class UserService : ObservableObject{
     
     
     func setbackdeleteProfile(_ userID: String) {
-     
+        
         let reference = Database.database().reference()
-
+        
         reference.child("users").child(userID).updateChildValues(["isDeleted": false]) { error, _ in
             if let error = error {
                 print("Error restoring profile: \(error.localizedDescription)")
@@ -221,16 +223,16 @@ class UserService : ObservableObject{
     }
     
     func setNotification(_ userID: String, isEnabled: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
-            let userRef = reference.child(_collection).child(userID)
-
-            userRef.updateChildValues(["notification": isEnabled]) { error, _ in
-                if let error = error {
-                    completion(.failure(error))
-                } else {
-                    completion(.success(()))
-                }
+        let userRef = reference.child(_collection).child(userID)
+        
+        userRef.updateChildValues(["notification": isEnabled]) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
             }
         }
-
+    }
+    
     
 }

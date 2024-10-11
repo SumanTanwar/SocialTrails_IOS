@@ -228,7 +228,8 @@ struct SignUpView: View {
                         print("send creation started")
 
                         let userID = user.uid
-                        var newUser = Users(userId: userID, username: userName, email: emailAddress, roles: UserRole.user.role)
+                        var newUser = Users(userId: userID, username: userName, email: emailAddress,bio: ""
+                                            , roles: UserRole.user.role)
                         UserService().registerUser(_user: newUser) { success in
                             if success {
                                 showAlert(message: "User registered successfully. Please verify your email.")

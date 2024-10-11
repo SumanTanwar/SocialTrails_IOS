@@ -18,6 +18,8 @@
 		022DA9DC2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DA9DB2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift */; };
 		02FFBD3E2CAB032D006BCEFD /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FFBD3D2CAB0320006BCEFD /* ForgotPasswordView.swift */; };
 		6C35BA7C2CB9505B00E85D7C /* ViewProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C35BA7B2CB9505B00E85D7C /* ViewProfileView.swift */; };
+		6C35BAC42CB960C100E85D7C /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C35BAC32CB960C100E85D7C /* EditProfileView.swift */; };
+		6C35BAC62CB979BA00E85D7C /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6C35BAC52CB979BA00E85D7C /* FirebaseFirestore */; };
 		6C4D42172CB60C780071342B /* UserSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4D42162CB60C780071342B /* UserSettingView.swift */; };
 		6CEFD1A62CB63B070030BB7A /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CEFD1A52CB63B070030BB7A /* ChangePasswordView.swift */; };
 		84948BAC2CAA2EDA006BE6A1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84948BAB2CAA2EDA006BE6A1 /* GoogleService-Info.plist */; };
@@ -67,6 +69,7 @@
 		022DA9DB2CA46DAC008C426C /* SocialTrailsAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialTrailsAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		02FFBD3D2CAB0320006BCEFD /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		6C35BA7B2CB9505B00E85D7C /* ViewProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewProfileView.swift; sourceTree = "<group>"; };
+		6C35BAC32CB960C100E85D7C /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		6C4D42162CB60C780071342B /* UserSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingView.swift; sourceTree = "<group>"; };
 		6CEFD1A52CB63B070030BB7A /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		84948BAB2CAA2EDA006BE6A1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -96,6 +99,7 @@
 				84948BAF2CAA2F56006BE6A1 /* FirebaseAuth in Frameworks */,
 				84A10BFF2CB39A3500B1DC56 /* GooglePlaces in Frameworks */,
 				84B081C02CAFA6D800F4F582 /* FirebaseStorage in Frameworks */,
+				6C35BAC62CB979BA00E85D7C /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +173,7 @@
 				84A10C002CB39C9F00B1DC56 /* ChooseAddressView.swift */,
 				6CEFD1A52CB63B070030BB7A /* ChangePasswordView.swift */,
 				6C35BA7B2CB9505B00E85D7C /* ViewProfileView.swift */,
+				6C35BAC32CB960C100E85D7C /* EditProfileView.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -334,6 +339,7 @@
 				6C4D42172CB60C780071342B /* UserSettingView.swift in Sources */,
 				84948BC12CAA70ED006BE6A1 /* DashboardView.swift in Sources */,
 				022DA9C32CA46DAC008C426C /* Persistence.swift in Sources */,
+				6C35BAC42CB960C100E85D7C /* EditProfileView.swift in Sources */,
 				022DA9BC2CA46DA8008C426C /* ContentView.swift in Sources */,
 				84AA79302CAF6C5900519AD6 /* CreatePostView.swift in Sources */,
 				84C5CC382CAA24CB002641EA /* SplashScreenView.swift in Sources */,
@@ -696,6 +702,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6C35BAC52CB979BA00E85D7C /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FirebaseFirestore;
+		};
 		84948BAE2CAA2F56006BE6A1 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

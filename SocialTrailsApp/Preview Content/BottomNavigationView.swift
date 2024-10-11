@@ -9,16 +9,14 @@ import SwiftUI
 
 struct BottomNavigationView: View {
     @State public var selectedTab: Int
-
+    
     var body: some View {
         TabView(selection: $selectedTab) {
             DashboardView()
                 .tabItem {
                     Image(systemName: "house")
-                   
                 }
                 .tag(0)
-            
             DashboardView()
                 .tabItem {
                     Image(systemName: "magnifyingglass")
@@ -43,7 +41,7 @@ struct BottomNavigationView: View {
             UserSettingView()
                 .tabItem {
                     Image(systemName: "gearshape.fill")
-                  
+                    
                 }
                 .tag(4)
         }

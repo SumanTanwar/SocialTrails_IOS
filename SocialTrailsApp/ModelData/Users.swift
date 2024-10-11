@@ -10,6 +10,7 @@ struct Users {
     var userId : String
     var username: String
     var email: String
+    var bio: String
     var createdon = Utils.getCurrentDatetime()
     var profilepicture: String?
     var roles: String
@@ -27,6 +28,7 @@ struct Users {
                "userId": userId,
                "username": username,
                "email": email,
+               "bio": bio,
                "createdon": createdon,
                "roles": roles,
                "profiledeleted": profiledeleted,
@@ -44,6 +46,8 @@ struct SessionUsers :Identifiable,Codable{
     var id : String
     var username : String
     var email : String
+    var bio : String
     var notification = true
     var roleType : String
 }
+
