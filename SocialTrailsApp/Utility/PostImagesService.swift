@@ -92,4 +92,30 @@ class PostImagesService {
             }
         }
     }
+    
+    func getAllPhotosByPostId(uid: String, completion: @escaping (Result<[String], Error>) -> Void) {
+
+        reference.child(collectionName).queryOrdered(byChild: "postId").queryEqual(toValue: uid).observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                var photosList: [PostImages] = []
+
+                for childSnapshot in snapshot.children {
+                    if let childData = childSnapshot as? DataSnapshot,
+                       let photo = try? childData.data(as: PostImages.self) {
+                        photosList.append(photo)
+                    }
+                }
+
+                photosList.sort { $0.order < $1.order }
+
+                let imageUrls: [String] = photosList.compactMap { $0.imagePath }
+
+                completion(.success(imageUrls))
+            } else {
+                completion(.failure(NSError(domain: "PhotoErrorDomain", code: 404, userInfo: [NSLocalizedDescriptionKey: "Photos not found"])))
+            }
+        } withCancel: { error in
+            completion(.failure(error))
+        }
+    }
 }

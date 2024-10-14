@@ -5,7 +5,6 @@ import FirebaseStorage
 struct ViewProfileView: View {
     
     @StateObject private var userService = UserService()
-    @State public var userId: String
     @State private var username: String = "User"
     @State private var email: String = ""
     @State private var bio: String = ""
@@ -14,13 +13,10 @@ struct ViewProfileView: View {
     @State private var followingsCount: Int = 0
     @State private var profileImageUrl: String?
     @ObservedObject private var sessionManager = SessionManager.shared
-    
-    init(userId: String = SessionManager.shared.getCurrentUser()?.id ?? "") {
-        self.userId = userId
-    }
+    @State private var userPosts: [UserPost] = []
     
     var body: some View {
-        NavigationStack{
+        NavigationStack {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     VStack {
@@ -105,6 +101,38 @@ struct ViewProfileView: View {
                 }
                 .padding(.vertical, 5)
                 
+                if !userPosts.isEmpty {
+                    let columns = [
+                        GridItem(.flexible()),
+                        GridItem(.flexible()),
+                        GridItem(.flexible())
+                    ]
+                    
+                    LazyVGrid(columns: columns, spacing: 0) {
+                        ForEach(userPosts, id: \.postId) { post in
+                            if let imageUrls = post.uploadedImageUris, let firstImageUrl = imageUrls.first {
+                                AsyncImage(url: URL(string: firstImageUrl)) { image in
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 130, height: 130)
+                                        .clipped()
+                                        .cornerRadius(0)
+                                        .overlay(RoundedRectangle(cornerRadius: 0)
+                                                    .stroke(Color.gray, lineWidth: 1))
+                                } placeholder: {
+                                    ProgressView()
+                                        .frame(width: 130, height: 130)
+                                        .background(Color.gray.opacity(0.2))
+                                        .overlay(RoundedRectangle(cornerRadius: 0)
+                                                    .stroke(Color.gray, lineWidth: 1))
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 10)
+                }
+                
                 Spacer()
             }
         }
@@ -115,17 +143,19 @@ struct ViewProfileView: View {
     }
     
     private func loadUserProfile() {
-        let db = Firestore.firestore()
-        db.collection("users").document(userId).getDocument { snapshot, error in
-            if let document = snapshot, document.exists {
-                if let data = document.data() {
-                    self.username = data["username"] as? String ?? "User"
-                    self.email = data["email"] as? String ?? ""
-                    self.bio = data["bio"] as? String ?? ""
-                    self.profileImageUrl = data["profileImageUrl"] as? String // Fetch profile image URL
-                }
-            } else {
-                print("Document does not exist")
+        let userId = sessionManager.getCurrentUser()?.id ?? ""
+        self.username = sessionManager.getCurrentUser()?.username as? String ?? "Unknown User"
+        self.email = sessionManager.getCurrentUser()?.email as? String ?? ""
+        self.bio = sessionManager.getCurrentUser()?.bio as? String ?? ""
+        self.profileImageUrl = sessionManager.getCurrentUser()?.profileImageUrl as? String
+        
+        UserPostService().getAllUserPosts(userId: userId) { result in
+            switch result {
+            case .success(let posts):
+                self.userPosts = posts
+                self.postsCount = posts.count
+            case .failure(let error):
+                print("Error fetching user posts: \(error.localizedDescription)")
             }
         }
     }

@@ -45,5 +45,64 @@ class UserPostService {
             }
         }
     }
+    
+
+
+    func getAllUserPosts(userId: String, completion: @escaping (Result<[UserPost], Error>) -> Void) {
+        
+
+        reference.child(collectionName).observe(.value) { snapshot in
+           
+
+            guard let snapshot = snapshot as? DataSnapshot else {
+                completion(.failure(NSError(domain: "DataSnapshotError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not cast snapshot to DataSnapshot."])))
+                return
+            }
+
+            var postList: [UserPost] = []
+            var tempList: [UserPost] = []
+
+            for child in snapshot.children {
+                if let childSnapshot = child as? DataSnapshot,
+                   let post = try? childSnapshot.data(as: UserPost.self) {
+                    if post.userId == userId,
+                       post.postdeleted == false
+                        {
+                        var mutablePost = post
+                        mutablePost.postId = childSnapshot.key
+                        tempList.append(mutablePost)
+                    }
+                }
+            }
+
+            if tempList.isEmpty {
+                completion(.success(postList.sorted(by: { $0.createdon > $1.createdon })))
+                return
+            }
+
+            let pendingRequests = DispatchGroup()
+
+            for post in tempList {
+                pendingRequests.enter()
+                self.postImagesService.getAllPhotosByPostId(uid: post.postId) { result in
+                    switch result {
+                    case .success(let imageUrls):
+                        var mutablePost = post
+                        mutablePost.uploadedImageUris = imageUrls
+                        postList.append(mutablePost)
+                    case .failure(let error):
+                        // Handle the error if needed, for example, log it
+                        print("Error fetching photos for post ID \(post.postId): \(error.localizedDescription)")
+                    }
+                    pendingRequests.leave()
+                }
+            }
+
+            pendingRequests.notify(queue: .main) {
+                completion(.success(postList.sorted(by: { $0.createdon > $1.createdon })))
+            }
+        }
+    }
+
 
 }
