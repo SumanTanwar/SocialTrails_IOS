@@ -38,8 +38,8 @@ struct Users {
                "suspendedreason": suspendedreason ?? "",
                "suspendedby": suspendedby ?? "",
                "admindeletedon": admindeletedon ?? "",
-               "isactive": isactive as Any
-           ]
+               "isactive": isactive as Any,
+               "profileImageUrl": profilepicture ?? ""           ]
        }
 }
 struct SessionUsers :Identifiable,Codable{
@@ -49,5 +49,6 @@ struct SessionUsers :Identifiable,Codable{
     var bio : String
     var notification = true
     var roleType : String
+    var profileImageUrl: String?
 }
 

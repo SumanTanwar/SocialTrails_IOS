@@ -234,5 +234,18 @@ class UserService : ObservableObject{
         }
     }
     
+    func updateUser(_ user: Users, completion: @escaping (Bool) -> Void) {
+        let userRef = reference.child(_collection).child(user.userId)
+        
+        userRef.updateChildValues(user.toDictionary()) { error, _ in
+            if let error = error {
+                print("Error updating user: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                completion(true)
+            }
+        }
+    }
+
     
 }
