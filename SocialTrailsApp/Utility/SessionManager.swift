@@ -61,7 +61,7 @@ class SessionManager : ObservableObject {
            if var currentUser = currentUser {
                currentUser.username = username
                currentUser.bio = bio
-               currentUser.profileImageUrl = profileImageUrl
+               currentUser.profilepicture = profileImageUrl
                self.currentUser = currentUser
                
                // Optionally, you might want to persist these changes to the database here
@@ -71,7 +71,7 @@ class SessionManager : ObservableObject {
                    username: currentUser.username,
                    email: currentUser.email,
                    bio: currentUser.bio,
-                   profilepicture: profileImageUrl ?? currentUser.profileImageUrl,
+                   profilepicture: profileImageUrl ?? currentUser.profilepicture,
                    roles: currentUser.roleType
                )
                userService.updateUser(updatedUser) { success in

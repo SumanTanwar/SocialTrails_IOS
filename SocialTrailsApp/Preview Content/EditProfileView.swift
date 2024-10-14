@@ -98,7 +98,7 @@ struct EditProfileView: View {
         username = currentUser.username
         email = currentUser.email
         bio = currentUser.bio
-        profileImageUrl = currentUser.profileImageUrl
+        profileImageUrl = currentUser.profilepicture
     }
     
     private func uploadProfileImage() {
@@ -130,14 +130,14 @@ struct EditProfileView: View {
             username: username,
             email: currentUser.email,
             bio: bio,
-            profilepicture: profileImageUrl ?? currentUser.profileImageUrl, // Ensure this is set correctly
+            profilepicture: profileImageUrl ?? currentUser.profilepicture, // Ensure this is set correctly
             roles: "",
             notification: currentUser.notification
         )
         
         userService.updateUser(updatedUser) { success in
             if success {
-                sessionManager.updateUserInfo(username: username, bio: bio, profileImageUrl: profileImageUrl ?? currentUser.profileImageUrl)
+                sessionManager.updateUserInfo(username: username, bio: bio, profileImageUrl: profileImageUrl ?? currentUser.profilepicture)
                 navigateToProfile = true
             } else {
                 print("Error saving user profile.")

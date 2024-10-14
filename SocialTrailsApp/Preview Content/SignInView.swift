@@ -162,12 +162,6 @@ struct SignInView: View {
                     print("User ID: \(user.uid)")
                     SessionManager.shared.loginUser(userid: user.uid) { success in
                         if success {
-                            UserService().fetchUserByUserID(withID: user.uid){ userData in
-                                if let userData = userData {
-                                    let notificationEnabled = userData.notification
-                                    SessionManager.shared.setNotificationStatus(notificationEnabled)
-                                }
-                            }
                             self.navigateToDashboard = true // Navigate to the regular user dashboard
                         } else {
                             self.showAlert(message: "Failed to log in. Please try again later.")

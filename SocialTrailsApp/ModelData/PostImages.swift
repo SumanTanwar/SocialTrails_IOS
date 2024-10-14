@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class  PostImages {
+class  PostImages : Codable{
     var imageId: String?
     var postId: String
     var imagePath: String
