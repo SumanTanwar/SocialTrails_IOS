@@ -37,10 +37,11 @@ struct UserSettingView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 10)  {
                 HStack(spacing: 20) {
+                   
                     Image(systemName: "person.circle.fill")
                         .resizable()
-                        .frame(width: 80,height: 80)
-                        .clipShape(Circle())
+                        .frame(width: 80, height: 80)
+                        .foregroundColor(Color(.systemGray4))
                         .padding()
                     
                     VStack(alignment: .leading) {
