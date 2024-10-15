@@ -27,11 +27,30 @@ struct UserSettingView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 20) {
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .frame(width: 80, height: 80)
-                        .foregroundColor(Color(.systemGray4))
-                        .padding()
+                    if let url = sessionManager.getCurrentUser()?.profilepicture, let imageUrl = URL(string: url) {
+                        AsyncImage(url: imageUrl) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                                .clipShape(Circle()) // Clip the image to a circle
+                        } placeholder: {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                                .foregroundColor(Color(.systemGray4))
+                                .clipShape(Circle()) // Clip the placeholder to a circle as well
+                        }
+                    } else {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 80, height: 80)
+                            .foregroundColor(Color(.systemGray4))
+                            .clipShape(Circle()) // Clip the default placeholder to a circle
+                    }
+
                     
                     VStack(alignment: .leading) {
                         if let currentUser = sessionManager.getCurrentUser() {
@@ -114,7 +133,7 @@ struct UserSettingView: View {
                     .alert("Are you sure you want to delete your profile?", isPresented: $showConfirmationDialog) {
                         Button("Cancel", role: .cancel) {}
                         Button("OK") {
-                            userService.setbackdeleteProfile()
+                            userService.userprofiledelete()
                             sessionManager.logoutUser()
                             isLoggedOut = true
                         }

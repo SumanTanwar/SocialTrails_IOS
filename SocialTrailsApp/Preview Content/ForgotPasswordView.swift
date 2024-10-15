@@ -67,6 +67,7 @@ struct ForgotPasswordView: View {
             .padding()
             .background(Color.white)
             .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
         }
     }
 

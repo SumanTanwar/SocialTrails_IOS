@@ -26,19 +26,24 @@ struct ViewProfileView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 80, height: 80)
-                                    .cornerRadius(40)
+                                    .clipShape(Circle()) // Clip the image to a circle
                             } placeholder: {
                                 Image(systemName: "person.circle.fill")
                                     .resizable()
+                                    .scaledToFit()
                                     .frame(width: 80, height: 80)
                                     .foregroundColor(Color(.systemGray4))
+                                    .clipShape(Circle()) // Clip the placeholder to a circle as well
                             }
                         } else {
                             Image(systemName: "person.circle.fill")
                                 .resizable()
+                                .scaledToFit()
                                 .frame(width: 80, height: 80)
                                 .foregroundColor(Color(.systemGray4))
+                                .clipShape(Circle()) // Clip the default placeholder to a circle
                         }
+
                         
                         if let currentUser = sessionManager.getCurrentUser() {
                             Text(currentUser.username)
@@ -149,6 +154,7 @@ struct ViewProfileView: View {
         self.bio = sessionManager.getCurrentUser()?.bio as? String ?? ""
         self.profilepicture = sessionManager.getCurrentUser()?.profilepicture as? String
         
+        print("profile pictuer \(sessionManager.getCurrentUser())")
         UserPostService().getAllUserPosts(userId: userId) { result in
             switch result {
             case .success(let posts):

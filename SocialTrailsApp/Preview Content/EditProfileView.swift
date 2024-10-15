@@ -25,10 +25,30 @@ struct EditProfileView: View {
                             .frame(width: 80, height: 80)
                             .clipShape(Circle())
                     } else {
-                        Image(systemName: "person.circle.fill")
-                            .resizable()
-                            .frame(width: 80, height: 80)
-                            .foregroundColor(Color(.systemGray4))
+                        if let url = profilePicture, let imageUrl = URL(string: url) {
+                            AsyncImage(url: imageUrl) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 80, height: 80)
+                                    .clipShape(Circle()) // Clip the image to a circle
+                            } placeholder: {
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 80, height: 80)
+                                    .foregroundColor(Color(.systemGray4))
+                                    .clipShape(Circle()) // Clip the placeholder to a circle as well
+                            }
+                        } else {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                                .foregroundColor(Color(.systemGray4))
+                                .clipShape(Circle()) // Clip the default placeholder to a circle
+                        }
+
                     }
                 }
                 .onChange(of: viewModel.selectedItem) { _ in
