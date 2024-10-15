@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AdminUserManageView: View {
-    @StateObject private var userService = UserService()
+   
     @State public var userId: String
     @State private var username: String = "User"
     @State private var email: String = ""
@@ -12,13 +12,17 @@ struct AdminUserManageView: View {
     @State private var reason: String = ""
     @State private var showReason: Bool = false
     @State private var showDeleteText: Bool = false
-    @State private var deleteText : String = ""
+    @State private var deleteText: String = ""
     @State private var isSuspended: Bool = false
     @State private var profiledeleted: Bool = false
     @State private var userprofiledeleted: Bool = false
     @State private var showingAlert: Bool = false
     @State private var alertMessage: String = ""
+    @State private var userPosts: [UserPost] = []
+    
     @ObservedObject private var sessionManager = SessionManager.shared
+    @StateObject private var userService = UserService()
+    @StateObject private var userPostService = UserPostService()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -29,50 +33,71 @@ struct AdminUserManageView: View {
                         .scaledToFit()
                         .frame(width: 80, height: 80)
                         .cornerRadius(40)
-                    Text(username)
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundColor(.black)
-                        .padding(.top, 5)
+                    
+                    if let currentUser = sessionManager.getCurrentUser() {
+                        Text(currentUser.username)
+                            .font(.system(size: 16))
+                            .foregroundColor(.black)
+                            .padding(.leading, 10)
+                    } else {
+                        Text("Unknown User")
+                            .font(.system(size: 16))
+                            .foregroundColor(.black)
+                            .padding(.leading, 10)
+                    }
                 }
                 
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("\(postsCount) Posts")
-                            .font(.system(size: 12))
-                            .foregroundColor(.gray)
-                        Spacer()
-                        Text("\(followersCount) Followers")
-                            .font(.system(size: 12))
-                            .foregroundColor(.gray)
-                        Spacer()
-                        Text("\(followingsCount) Followings")
-                            .font(.system(size: 12))
-                            .foregroundColor(.gray)
+                        VStack {
+                            Text("\(postsCount) ")
+                                .font(.system(size: 14))
+                                .foregroundColor(.black)
+                            Text("Posts")
+                                .font(.system(size: 14))
+                                .foregroundColor(.black)
+                        }.padding(.leading, 15)
+                        
+                        VStack {
+                            Text("\(followersCount) ")
+                                .font(.system(size: 14))
+                                .foregroundColor(.black)
+                            Text("Followers")
+                                .font(.system(size: 14))
+                                .foregroundColor(.black)
+                        }.padding(.leading, 20)
+                        
+                        VStack {
+                            Text("\(followingsCount) ")
+                                .font(.system(size: 14))
+                                .foregroundColor(.black)
+                            Text("Followings")
+                                .font(.system(size: 14))
+                                .foregroundColor(.black)
+                        }.padding(.leading, 20)
                     }
                 }
-                .padding(.leading, 10)
             }
             .padding(.top, 10)
 
             Text(bio)
                 .font(.system(size: 12))
                 .foregroundColor(.black)
+                .padding(.leading, 10)
 
             Text(email)
                 .font(.system(size: 12))
                 .foregroundColor(.black)
+                .padding(.leading, 10)
 
             if userprofiledeleted {
-                Text("user deleted own profile")
+                Text("User deleted own profile")
                     .font(.system(size: 12))
                     .padding(4)
                     .foregroundColor(.white)
                     .background(Color.red)
                     .cornerRadius(5)
-            }
-
-            else
-            {
+            } else {
                 if showReason {
                     Text("Suspended profile: \(reason)")
                         .font(.system(size: 12))
@@ -90,7 +115,6 @@ struct AdminUserManageView: View {
                         .background(Color.red)
                         .cornerRadius(5)
                 }
-                
                 
                 HStack {
                     Button(action: {
@@ -125,14 +149,48 @@ struct AdminUserManageView: View {
                     }
                     .padding(.horizontal, 8)
                 }
-                
                 .padding(.top, 10)
+               
+            }
+            
+            // User Posts Section
+            if !userPosts.isEmpty {
+                let columns = [
+                    GridItem(.flexible()),
+                    GridItem(.flexible()),
+                    GridItem(.flexible())
+                ]
+                
+                LazyVGrid(columns: columns, spacing: 0) {
+                    ForEach(userPosts, id: \.postId) { post in
+                        if let imageUrls = post.uploadedImageUris, let firstImageUrl = imageUrls.first {
+                            AsyncImage(url: URL(string: firstImageUrl)) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 130, height: 130)
+                                    .clipped()
+                                    .cornerRadius(0)
+                                    .overlay(RoundedRectangle(cornerRadius: 0)
+                                                .stroke(Color.gray, lineWidth: 1))
+                            } placeholder: {
+                                ProgressView()
+                                    .frame(width: 130, height: 130)
+                                    .background(Color.gray.opacity(0.2))
+                                    .overlay(RoundedRectangle(cornerRadius: 0)
+                                                .stroke(Color.gray, lineWidth: 1))
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, 17)
             }
         }
-        .padding(8)
+        .padding()
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .onAppear {
             fetchUserDetails()
+            fetchUserPosts() // Fetch user posts on appear
         }
         .alert(isPresented: $showingAlert) {
             Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -155,7 +213,21 @@ struct AdminUserManageView: View {
             self.userprofiledeleted = userData["profiledeleted"] as? Bool ?? false
             self.showReason = userData["suspended"] as? Bool ?? false
             self.reason = userData["suspendedreason"] as? String ?? ""
-            self.deleteText = "Deleted profile by admin on  \(userData["admindeletedon"] as? String ?? "")"
+            self.deleteText = "Deleted profile by admin on \(userData["admindeletedon"] as? String ?? "")"
+        }
+    }
+
+    // New method to fetch user posts
+    private func fetchUserPosts() {
+        userPostService.getAllUserPosts(userId: userId) { result in
+            switch result {
+            case .success(let posts):
+                self.userPosts = posts
+                self.postsCount = posts.count
+            case .failure(let error):
+                print("Error fetching user posts: \(error.localizedDescription)")
+                showAlert(message: "Error fetching user posts: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -165,7 +237,7 @@ struct AdminUserManageView: View {
     }
 
     private func showSuspendDialog() {
-        let alert = UIAlertController(title: "Suspend Profile", message: "Please provide a reason for suspending \(self.username) profile", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Suspend Profile", message: "Please provide a reason for suspending \(self.username)'s profile", preferredStyle: .alert)
         alert.addTextField { textField in
             textField.placeholder = "Reason for suspension"
         }
@@ -214,9 +286,8 @@ struct AdminUserManageView: View {
                 self.showDeleteText = true
                 self.profiledeleted = true
                 self.deleteText = "Deleted profile by admin on \(Utils.getCurrentDatetime())"
-              
             } else {
-                showAlert(message: "delete profile failed! Please try again later.")
+                showAlert(message: "Delete profile failed! Please try again later.")
             }
         }
     }
@@ -227,9 +298,8 @@ struct AdminUserManageView: View {
                 self.showDeleteText = false
                 self.profiledeleted = false
                 self.deleteText = ""
-              
             } else {
-                showAlert(message: "activate profile failed! Please try again later.")
+                showAlert(message: "Activate profile failed! Please try again later.")
             }
         }
     }
@@ -240,3 +310,25 @@ struct AdminUserManageView_Previews: PreviewProvider {
         AdminUserManageView(userId: "m2IMctFyVmS4jVZzPdl0EgIXSBL2")
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
