@@ -1,3 +1,4 @@
+
 //
 //  UserService.swift
 //  SocialTrailsApp
@@ -203,7 +204,7 @@ class UserService : ObservableObject{
                 completion(.success(()))
             }
         }
-    } 
+    }
     
     func getModeratorList(completion: @escaping (Result<[Users], Error>) -> Void) {
         var moderatorsList = [Users]()
