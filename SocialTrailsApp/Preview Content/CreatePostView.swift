@@ -141,7 +141,7 @@ struct CreatePostView: View {
                     }
             }
             .background(
-                NavigationLink(destination: DashboardView(), isActive: $navigateToSuccess) {
+                NavigationLink(destination: ViewProfileView(), isActive: $navigateToSuccess) {
                     EmptyView()
                 }
             )

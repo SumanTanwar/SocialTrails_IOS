@@ -6,7 +6,9 @@
 //
 
 import Foundation
-struct Users {
+struct Users: Identifiable, Decodable {
+    var id: String { userId }
+    
     var userId : String
     var username: String
     var email: String
@@ -38,8 +40,8 @@ struct Users {
                "suspendedreason": suspendedreason ?? "",
                "suspendedby": suspendedby ?? "",
                "admindeletedon": admindeletedon ?? "",
-               "isactive": isactive as Any
-           ]
+               "isactive": isactive as Any,
+               "profilepicture": profilepicture ?? ""           ]
        }
 }
 struct SessionUsers :Identifiable,Codable{
@@ -49,5 +51,6 @@ struct SessionUsers :Identifiable,Codable{
     var bio : String
     var notification = true
     var roleType : String
+    var profilepicture: String?
 }
 

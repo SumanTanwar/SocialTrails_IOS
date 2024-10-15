@@ -21,6 +21,8 @@
 		6C35BAC42CB960C100E85D7C /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C35BAC32CB960C100E85D7C /* EditProfileView.swift */; };
 		6C35BAC62CB979BA00E85D7C /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6C35BAC52CB979BA00E85D7C /* FirebaseFirestore */; };
 		6C4D42172CB60C780071342B /* UserSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4D42162CB60C780071342B /* UserSettingView.swift */; };
+		6C70D4632CBEA72C00CDB905 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6C70D4622CBEA72C00CDB905 /* SDWebImage */; };
+		6C70D4652CBEA72C00CDB905 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6C70D4642CBEA72C00CDB905 /* SDWebImageMapKit */; };
 		6CEFD1A62CB63B070030BB7A /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CEFD1A52CB63B070030BB7A /* ChangePasswordView.swift */; };
 		84948BAC2CAA2EDA006BE6A1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84948BAB2CAA2EDA006BE6A1 /* GoogleService-Info.plist */; };
 		84948BAF2CAA2F56006BE6A1 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 84948BAE2CAA2F56006BE6A1 /* FirebaseAuth */; };
@@ -28,13 +30,13 @@
 		84948BB32CAA3063006BE6A1 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BB22CAA3063006BE6A1 /* SignUpView.swift */; };
 		84948BBF2CAA705F006BE6A1 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BBE2CAA705F006BE6A1 /* SignInView.swift */; };
 		84948BC12CAA70ED006BE6A1 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84948BC02CAA70ED006BE6A1 /* DashboardView.swift */; };
+		84A10BFA2CB3980200B1DC56 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 84A10BF92CB3980200B1DC56 /* GoogleMaps */; };
+		84A10BFF2CB39A3500B1DC56 /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 84A10BFE2CB39A3500B1DC56 /* GooglePlaces */; };
 		84A10C012CB39C9F00B1DC56 /* ChooseAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A10C002CB39C9F00B1DC56 /* ChooseAddressView.swift */; };
 		84A1C98F2CAB02D000A53D40 /* BottomNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A1C98E2CAB02D000A53D40 /* BottomNavigationView.swift */; };
 		84AA79302CAF6C5900519AD6 /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AA792F2CAF6C5900519AD6 /* CreatePostView.swift */; };
 		84B081C02CAFA6D800F4F582 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 84B081BF2CAFA6D800F4F582 /* FirebaseStorage */; };
 		84C5CC382CAA24CB002641EA /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C5CC372CAA24CB002641EA /* SplashScreenView.swift */; };
-		84CB34F42CBCE07800858DB3 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 84CB34F32CBCE07800858DB3 /* GoogleMaps */; };
-		84CB34F72CBCE35500858DB3 /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 84CB34F62CBCE35500858DB3 /* GooglePlaces */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,11 +96,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A10BFA2CB3980200B1DC56 /* GoogleMaps in Frameworks */,
 				84948BB12CAA2F56006BE6A1 /* FirebaseDatabase in Frameworks */,
 				84948BAF2CAA2F56006BE6A1 /* FirebaseAuth in Frameworks */,
-				84CB34F42CBCE07800858DB3 /* GoogleMaps in Frameworks */,
-				84CB34F72CBCE35500858DB3 /* GooglePlaces in Frameworks */,
+				6C70D4632CBEA72C00CDB905 /* SDWebImage in Frameworks */,
+				84A10BFF2CB39A3500B1DC56 /* GooglePlaces in Frameworks */,
 				84B081C02CAFA6D800F4F582 /* FirebaseStorage in Frameworks */,
+				6C70D4652CBEA72C00CDB905 /* SDWebImageMapKit in Frameworks */,
 				6C35BAC62CB979BA00E85D7C /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -290,8 +294,9 @@
 			mainGroup = 022DA9AD2CA46DA8008C426C;
 			packageReferences = (
 				84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				84CB34F22CBCE07800858DB3 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
-				84CB34F52CBCE35500858DB3 /* XCRemoteSwiftPackageReference "ios-places-sdk" */,
+				84A10BF82CB3980200B1DC56 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
+				84A10BFD2CB39A3500B1DC56 /* XCRemoteSwiftPackageReference "ios-places-sdk" */,
+				6C70D4612CBEA72C00CDB905 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			productRefGroup = 022DA9B72CA46DA8008C426C /* Products */;
 			projectDirPath = "";
@@ -675,6 +680,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		6C70D4612CBEA72C00CDB905 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.19.7;
+			};
+		};
 		84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -683,7 +696,7 @@
 				minimumVersion = 11.2.0;
 			};
 		};
-		84CB34F22CBCE07800858DB3 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+		84A10BF82CB3980200B1DC56 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
 			requirement = {
@@ -691,9 +704,9 @@
 				version = 9.1.1;
 			};
 		};
-		84CB34F52CBCE35500858DB3 /* XCRemoteSwiftPackageReference "ios-places-sdk" */ = {
+		84A10BFD2CB39A3500B1DC56 /* XCRemoteSwiftPackageReference "ios-places-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/googlemaps/ios-places-sdk";
+			repositoryURL = "https://github.com/googlemaps/ios-places-sdk.git";
 			requirement = {
 				kind = exactVersion;
 				version = 9.1.0;
@@ -706,6 +719,16 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = FirebaseFirestore;
 		};
+		6C70D4622CBEA72C00CDB905 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6C70D4612CBEA72C00CDB905 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+		6C70D4642CBEA72C00CDB905 /* SDWebImageMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6C70D4612CBEA72C00CDB905 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImageMapKit;
+		};
 		84948BAE2CAA2F56006BE6A1 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -716,20 +739,20 @@
 			package = 84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseDatabase;
 		};
+		84A10BF92CB3980200B1DC56 /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84A10BF82CB3980200B1DC56 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
+		};
+		84A10BFE2CB39A3500B1DC56 /* GooglePlaces */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84A10BFD2CB39A3500B1DC56 /* XCRemoteSwiftPackageReference "ios-places-sdk" */;
+			productName = GooglePlaces;
+		};
 		84B081BF2CAFA6D800F4F582 /* FirebaseStorage */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 84948BAD2CAA2F56006BE6A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
-		};
-		84CB34F32CBCE07800858DB3 /* GoogleMaps */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 84CB34F22CBCE07800858DB3 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
-			productName = GoogleMaps;
-		};
-		84CB34F62CBCE35500858DB3 /* GooglePlaces */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 84CB34F52CBCE35500858DB3 /* XCRemoteSwiftPackageReference "ios-places-sdk" */;
-			productName = GooglePlaces;
 		};
 /* End XCSwiftPackageProductDependency section */
 
