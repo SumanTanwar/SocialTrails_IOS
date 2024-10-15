@@ -3,141 +3,185 @@ import Firebase
 import FirebaseAuth
 
 struct AdminChangePasswordView: View {
-    @State private var currentPassword: String = ""
+    @State private var password: String = ""
     @State private var newPassword: String = ""
     @State private var confirmPassword: String = ""
-    @State private var isCurrentPasswordVisible: Bool = false
+    @State private var isPasswordVisible: Bool = false
     @State private var isNewPasswordVisible: Bool = false
     @State private var isConfirmPasswordVisible: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
     @State private var navigateToSignIn: Bool = false
-
+    
     var body: some View {
         NavigationView {
             VStack {
                 Image("socialtrails_logo")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 180,height: 180)
+                    .frame(width: 180, height: 180)
 
                 Text("Change Password")
                     .font(.system(size: Utils.fontSize24))
                     .foregroundStyle(Utils.blackListColor)
-                    .padding(.top,-1)
+                    .padding(.top, -1)
 
-                VStack(spacing: 10) {
-                    passwordField(placeholder: "Current Password", password: $currentPassword, isVisible: $isCurrentPasswordVisible)
-                    passwordField(placeholder: "New Password", password: $newPassword, isVisible: $isNewPasswordVisible)
-                    passwordField(placeholder: "Confirm New Password", password: $confirmPassword, isVisible: $isConfirmPasswordVisible)
-                }.padding(10)
+                
+                VStack(spacing: 15) {
+                    
+                    HStack {
+                        if isPasswordVisible {
+                            TextField("Current Password", text: $password)
+                                .padding()
+                        } else {
+                            SecureField("Current Password", text: $password)
+                                .padding()
+                        }
+                        Button(action: {
+                            isPasswordVisible.toggle()
+                        }) {
+                            Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
+                                .foregroundColor(.gray)
+                                .padding(10)
+                        }
+                    }
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+                    
+                    HStack {
+                        if isNewPasswordVisible {
+                            TextField("New Password", text: $newPassword)
+                                .padding()
+                        }else {
+                            SecureField("New Password", text: $newPassword)
+                                .padding()
+                        }
+                        Button(action: {
+                            isNewPasswordVisible.toggle()
+                        }) {
+                            Image(systemName: isNewPasswordVisible ? "eye.slash.fill" : "eye.fill")
+                                .foregroundColor(.gray)
+                                .padding(10)
+                        }
+                    }
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+                    
+                    HStack {
+                        if isConfirmPasswordVisible {
+                            TextField("Confirm Password", text: $confirmPassword)
+                                .padding()
+                        }else {
+                            SecureField("Confirm Password", text: $confirmPassword)
+                                .padding()
+                        }
+                        Button(action: {
+                            isConfirmPasswordVisible.toggle()
+                        }) {
+                            Image(systemName: isConfirmPasswordVisible ? "eye.slash.fill" : "eye.fill")
+                                .foregroundColor(.gray)
+                                .padding(10)
+                        }
+                    }
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+                    
+                    
+                }   .padding(.horizontal, 25)
+                
 
-                Button(action: {
-                    changePassword()
-                }) {
+                
+                Button(action:changePassword) {
                     Text("Change Password")
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.purple)
                         .cornerRadius(10)
-                        .padding(.horizontal, 10)
+                        .padding(.horizontal, 30)
                 }
-                .padding(.vertical, 10)
-
-                NavigationLink(destination: AdminSettingsView(), label: {
-                    Text("Back")
-                        .foregroundColor(.blue)
-                })
+                .padding(.vertical, 20)
+                NavigationLink(destination: SignInView(), isActive: $navigateToSignIn) {
+                    EmptyView()
+                }
+            }.alert(alertMessage, isPresented: $showAlert) {
+                Button("OK", role: .cancel) { }
+                
             }
             Spacer()
+            .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-            }
-            .fullScreenCover(isPresented: $navigateToSignIn, content: {
-                SignInView()
-            })
         }
-        .navigationBarBackButtonHidden(true)
     }
 
-    // Function to create the password fields with visibility toggle
-    private func passwordField(placeholder: String, password: Binding<String>, isVisible: Binding<Bool>) -> some View {
-        HStack {
-            if isVisible.wrappedValue {
-                TextField(placeholder, text: password)
-                    .padding()
-            } else {
-                SecureField(placeholder, text: password)
-                    .padding()
-            }
-            Button(action: {
-                isVisible.wrappedValue.toggle()
-            }) {
-                Image(systemName: isVisible.wrappedValue ? "eye.slash.fill" : "eye.fill")
-                    .foregroundColor(.gray)
-                    .padding(10)
-            }
-        }
-        .background(Color.gray.opacity(0.2))
-        .cornerRadius(10)
-    }
-
-    // Function to change password
     private func changePassword() {
-        // Validate passwords
-        guard !currentPassword.isEmpty, !newPassword.isEmpty, !confirmPassword.isEmpty else {
-            showAlert(message: "All fields are required.")
-            return
-        }
-
-        guard newPassword == confirmPassword else {
-            showAlert(message: "New password and confirmation do not match.")
-            return
-        }
-
-        guard newPassword.count >= 8 else {
-            showAlert(message: "New password should be at least 8 characters long.")
-            return
-        }
-
+        showAlert = false
+        alertMessage = ""
         
-        let user = Auth.auth().currentUser
-        let credential = EmailAuthProvider.credential(withEmail: user?.email ?? "", password: currentPassword)
+        guard let user = Auth.auth().currentUser else { return }
 
-        user?.reauthenticate(with: credential) { result, error in
+        if password.isEmpty {
+            showAlert(message: "Current Password is required.")
+            return
+        } else if password.count < 8 {
+            showAlert(message: "Password should be more than 8 characters.")
+            return
+        } else if !Utils.isPasswordValid(password) {
+            showAlert(message: "Password must contain at least one letter and one digit.")
+            return
+        }
+        
+        if newPassword.isEmpty {
+            showAlert(message: "New Password is required.")
+            return
+        } else if newPassword.count < 8 {
+            showAlert(message: "Password should be more than 8 characters.")
+            return
+        } else if !Utils.isPasswordValid(newPassword) {
+            showAlert(message: "Password must contain at least one letter and one digit.")
+            return
+        }
+        
+        if confirmPassword.isEmpty {
+            showAlert(message: "Please confirm your password.")
+            return
+        } else if newPassword != confirmPassword {
+            showAlert(message: "Passwords do not match.")
+            return
+        }
+        
+        let credential = EmailAuthProvider.credential(withEmail: user.email!, password: password)
+        
+        user.reauthenticate(with: credential) { (result, error) in
             if let error = error {
-                self.showAlert(message: error.localizedDescription)
+                showAlert(message: "Authentication failed: \(error.localizedDescription)")
                 return
             }
 
-            user?.updatePassword(to: newPassword) { error in
+            user.updatePassword(to: newPassword) { error in
                 if let error = error {
-                    self.showAlert(message: error.localizedDescription)
+                    showAlert(message: "Failed to change password: \(error.localizedDescription)")
                 } else {
-                    showAlert(message: "Password changed successfully. Please sign in again.")
-                
+                    showAlert(message: "Password successfully changed! Please sign in with your new password.")
+             
                     do {
                         try Auth.auth().signOut()
-                        navigateToSignIn = true
+                        SessionManager.shared.logoutUser()
+                        
                     } catch {
-                        showAlert(message: "Failed to sign out.")
+                        showAlert(message: "Failed to log out: \(error.localizedDescription)")
                     }
                 }
             }
         }
     }
 
-   
     private func showAlert(message: String) {
         alertMessage = message
         showAlert = true
     }
 }
 
-struct AdminChangePasswordView_Previews: PreviewProvider {
-    static var previews: some View {
-        AdminChangePasswordView()
-    }
+#Preview {
+    AdminChangePasswordView()
 }
