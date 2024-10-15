@@ -46,32 +46,23 @@ class SessionManager : ObservableObject {
         return currentUser
     }
     
-    func getNotificationStatus() -> Bool {
-          return currentUser?.notification ?? false
-      }
-
-      func setNotificationStatus(_ isEnabled: Bool) {
-       UserDefaults.standard.set(isEnabled, forKey: "notification")}
-    
     func getUserID() -> String {
            return currentUser?.id ?? ""
        }
 
-       func updateUserInfo(username: String, bio: String, profileImageUrl: String?) {
+       func updateUserInfo(username: String, bio: String, profilepicture: String?) {
            if var currentUser = currentUser {
                currentUser.username = username
                currentUser.bio = bio
-               currentUser.profilepicture = profileImageUrl
+               currentUser.profilepicture = profilepicture
                self.currentUser = currentUser
                
-               // Optionally, you might want to persist these changes to the database here
-               // For example:
                let updatedUser = Users(
                    userId: currentUser.id,
                    username: currentUser.username,
                    email: currentUser.email,
                    bio: currentUser.bio,
-                   profilepicture: profileImageUrl ?? currentUser.profilepicture,
+                   profilepicture: profilepicture ?? currentUser.profilepicture,
                    roles: currentUser.roleType
                )
                userService.updateUser(updatedUser) { success in
