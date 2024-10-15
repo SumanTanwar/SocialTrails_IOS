@@ -1,14 +1,13 @@
 import SwiftUI
 import PhotosUI
-import FirebaseAuth
 import FirebaseStorage
-import FirebaseFirestore
 
 struct EditProfileView: View {
     @State private var username: String = ""
     @State private var email: String = ""
     @State private var bio: String = ""
-    @State private var profileImageUrl: String?
+    @State private var profilePicture: String?
+    
     @State private var navigateToProfile = false
     @StateObject var viewModel = ProfileViewModel()
     
@@ -42,9 +41,7 @@ struct EditProfileView: View {
                 
                 if let currentUser = sessionManager.getCurrentUser() {
                     TextField("User Name", text: $username)
-                        .onAppear {
-                            username = currentUser.username
-                        }
+                        .onAppear { username = currentUser.username }
                         .padding(10)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(10)
@@ -59,15 +56,14 @@ struct EditProfileView: View {
                 .cornerRadius(10)
                 .disabled(true)
                 
-                if let currentBio = sessionManager.getCurrentUser()?.bio {
+                if let currentUser = sessionManager.getCurrentUser(){
                     TextField("Bio", text: $bio)
-                        .onAppear {
-                            bio = currentBio
-                        }
+                        .onAppear { bio = currentUser.bio }
                         .padding(10)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(10)
                 }
+              
                 
                 Button(action: saveProfile) {
                     Text("Save")
@@ -98,55 +94,53 @@ struct EditProfileView: View {
         username = currentUser.username
         email = currentUser.email
         bio = currentUser.bio
-        profileImageUrl = currentUser.profilepicture
+        profilePicture = currentUser.profilepicture
     }
     
     private func uploadProfileImage() {
-        guard let selectedImage = viewModel.selectedItem else { return }
-        
-        Task {
-            do {
-                if let imageData = try await selectedImage.loadTransferable(type: Data.self),
-                   let image = UIImage(data: imageData) {
-                    
-                    let storageRef = Storage.storage().reference().child("profile_images/\(sessionManager.getUserID()).jpg")
-                    if let imageData = image.jpegData(compressionQuality: 0.8) {
-                        _ = try await storageRef.putDataAsync(imageData)
-                        let downloadURL = try await storageRef.downloadURL()
-                        profileImageUrl = downloadURL.absoluteString
-                    }
-                }
-            } catch {
-                print("Error uploading image: \(error)")
-            }
-        }
-    }
+         guard let selectedImage = viewModel.selectedItem else { return }
+         
+         Task {
+             do {
+                 if let imageData = try await selectedImage.loadTransferable(type: Data.self),
+                    let image = UIImage(data: imageData) {
+                     
+                     let imageData = image.jpegData(compressionQuality: 0.8)!
+                     try await userService.uploadProfileImage(userId: sessionManager.getUserID(), imageData: imageData) { result in
+                         switch result {
+                         case .success(let url):
+                             profilePicture = url
+                         case .failure(let error):
+                             print("Error uploading image: \(error)")
+                         }
+                     }
+                 }
+             } catch {
+                 print("Error uploading image: \(error)")
+             }
+         }
+     }
 
-    private func saveProfile() {
-        guard let currentUser = sessionManager.getCurrentUser() else { return }
-        
-        let updatedUser = Users(
-            userId: currentUser.id,
-            username: username,
-            email: currentUser.email,
-            bio: bio,
-            profilepicture: profileImageUrl ?? currentUser.profilepicture, // Ensure this is set correctly
-            roles: "",
-            notification: currentUser.notification
-        )
-        
-        userService.updateUser(updatedUser) { success in
-            if success {
-                sessionManager.updateUserInfo(username: username, bio: bio, profileImageUrl: profileImageUrl ?? currentUser.profilepicture)
-                navigateToProfile = true
-            } else {
-                print("Error saving user profile.")
-            }
-        }
-    }
+     private func saveProfile() {
+         guard let currentUser = sessionManager.getCurrentUser() else { return }
+         
+         let newProfileImage = profilePicture ?? currentUser.profilepicture
+         if username != currentUser.username || bio != currentUser.bio || newProfileImage != currentUser.profilepicture {
+             userService.updateNameAndBio(userId: currentUser.id, bio: bio, username: username) { result in
+                 switch result {
+                 case .success:
+                     sessionManager.updateUserInfo(username: username, bio: bio, profilepicture: newProfileImage)
+                     navigateToProfile = true
+                 case .failure(let error):
+                     print("Error saving user profile: \(error)")
+                 }
+             }
+         } else {
+             navigateToProfile = true
+         }
+     }
+ }
 
-  }
-
-#Preview {
-    EditProfileView()
-}
+ #Preview {
+     EditProfileView()
+ }

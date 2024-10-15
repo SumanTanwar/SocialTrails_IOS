@@ -11,7 +11,7 @@ struct ViewProfileView: View {
     @State private var postsCount: Int = 0
     @State private var followersCount: Int = 0
     @State private var followingsCount: Int = 0
-    @State private var profileImageUrl: String?
+    @State private var profilepicture: String?
     @ObservedObject private var sessionManager = SessionManager.shared
     @State private var userPosts: [UserPost] = []
     
@@ -20,7 +20,7 @@ struct ViewProfileView: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     VStack {
-                        if let url = profileImageUrl, let imageUrl = URL(string: url) {
+                        if let url = profilepicture, let imageUrl = URL(string: url) {
                             AsyncImage(url: imageUrl) { image in
                                 image
                                     .resizable()
@@ -147,7 +147,7 @@ struct ViewProfileView: View {
         self.username = sessionManager.getCurrentUser()?.username as? String ?? "Unknown User"
         self.email = sessionManager.getCurrentUser()?.email as? String ?? ""
         self.bio = sessionManager.getCurrentUser()?.bio as? String ?? ""
-        self.profileImageUrl = sessionManager.getCurrentUser()?.profileImageUrl as? String
+        self.profilepicture = sessionManager.getCurrentUser()?.profilepicture as? String
         
         UserPostService().getAllUserPosts(userId: userId) { result in
             switch result {
