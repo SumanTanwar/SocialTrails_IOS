@@ -21,22 +21,20 @@ struct ForgotPasswordView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 200)
-                    .padding(5)
+                    .padding(.bottom,1)
                 Text("Reset Password")
                     .font(.largeTitle)
-                    .padding(40)
+                    .padding(.top,1)
                 
                 Text("Enter your email address to receive a link to reset your password")
                                 .foregroundColor(Color.black)                  .font(.system(size: 14, design: .rounded))
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 30)
-                                .padding(.trailing, 30)
-                                .padding(.bottom,5)
+                                .padding(.init(top: 5, leading: 10, bottom: 5, trailing: 10))
                 TextField("Email", text: $email)
                     .padding()
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(10)
-                    .padding(.horizontal, 30)
+                    .padding(.horizontal, 10)
 
                 Button(action: resetPassword) {
                     Text("Reset ")
@@ -45,14 +43,14 @@ struct ForgotPasswordView: View {
                         .frame(maxWidth: .infinity)
                         .background(Color.purple)
                         .cornerRadius(10)
-                        .padding(.horizontal, 30)
+                        .padding(.horizontal, 10)
                 }
-                .padding(.vertical, 20)
+                .padding(.vertical, 10)
 
                 NavigationLink(destination: SignInView(), isActive: $navigateToSignIn) {
                     Text("Back to Login")
                         .foregroundColor(.blue)
-                        .padding(.top)
+                        .padding(.top,10)
                 }
 
                 Spacer()
