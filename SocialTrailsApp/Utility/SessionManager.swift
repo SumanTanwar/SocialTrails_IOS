@@ -56,22 +56,8 @@ class SessionManager : ObservableObject {
                currentUser.bio = bio
                currentUser.profilepicture = profilepicture
                self.currentUser = currentUser
-               
-               let updatedUser = Users(
-                   userId: currentUser.id,
-                   username: currentUser.username,
-                   email: currentUser.email,
-                   bio: currentUser.bio,
-                   profilepicture: profilepicture ?? currentUser.profilepicture,
-                   roles: currentUser.roleType
-               )
-               userService.updateUser(updatedUser) { success in
-                   if success {
-                       print("User info updated successfully.")
-                   } else {
-                       print("Error updating user info.")
-                   }
-               }
+
+             
            }
        }
     func loginAdmin(userid: String,email: String, completion: @escaping (Bool) -> Void) {
