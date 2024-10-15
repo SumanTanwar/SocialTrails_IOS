@@ -6,7 +6,9 @@
 //
 
 import Foundation
-struct Users {
+struct Users: Identifiable, Decodable {
+    var id: String { userId }
+    
     var userId : String
     var username: String
     var email: String

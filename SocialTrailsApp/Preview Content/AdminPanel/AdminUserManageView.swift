@@ -137,6 +137,7 @@ struct AdminUserManageView: View {
         .alert(isPresented: $showingAlert) {
             Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
+        Spacer()
     }
 
     private func fetchUserDetails() {

@@ -168,6 +168,31 @@ class UserService : ObservableObject{
         }
     }
     
+    func getRegularUserList(completion: @escaping (Result<[Users], Error>) -> Void) {
+        reference.child(_collection).observeSingleEvent(of: .value) { snapshot in
+            var usersList: [Users] = []
+
+            guard snapshot.exists() else {
+                completion(.success(usersList))
+                return
+            }
+
+            for child in snapshot.children {
+                if let childSnapshot = child as? DataSnapshot,
+                   let user = try? childSnapshot.data(as: Users.self) {
+                    if user.roles == UserRole.user.role {
+                        usersList.append(user)
+                    }
+                }
+            }
+
+            completion(.success(usersList))
+        } withCancel: { error in
+            completion(.failure(error))
+        }
+    }
+
+    
    func deleteProfile(_ userID: String, completion: @escaping (Result<Void, Error>) -> Void) {
         reference.child(_collection).child(userID).removeValue { error, _ in
             if let error = error {
