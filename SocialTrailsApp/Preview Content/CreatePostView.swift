@@ -20,12 +20,32 @@ struct CreatePostView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
+            VStack(alignment: .leading) {
                 HStack(spacing: 8) {
-                    Image("user")
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .scaledToFit()
+                    if let url = sessionManager.getCurrentUser()?.profilepicture, let imageUrl = URL(string: url) {
+                        AsyncImage(url: imageUrl) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 40, height: 40)
+                                .clipShape(Circle()) // Clip the image to a circle
+                        } placeholder: {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 40, height: 40)
+                                .foregroundColor(Color(.systemGray4))
+                                .clipShape(Circle()) // Clip the placeholder to a circle as well
+                        }
+                    } else {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(Color(.systemGray4))
+                            .clipShape(Circle()) // Clip the default placeholder to a circle
+                    }
+
                     
                     if let currentUser = sessionManager.getCurrentUser() {
                         Text(currentUser.username)
@@ -120,6 +140,7 @@ struct CreatePostView: View {
                 }
                 .background(Color.gray.opacity(0.1))
                 .padding(3)
+                Spacer()
             }
             .padding(16)
             

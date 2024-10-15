@@ -92,6 +92,7 @@ struct SignInView: View {
                 .padding(.bottom, 200)
             }
             .background(Color.white)
+            .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
             .alert(isPresented: $showAlert) {
                 Alert(
@@ -113,7 +114,7 @@ struct SignInView: View {
                     }
             }
         }
-        .navigationBarBackButtonHidden(true)
+        //.navigationBarBackButtonHidden(true)
     }
     
     private func loginUser() {
@@ -154,6 +155,17 @@ struct SignInView: View {
             
             // Check if the user is an admin (you can replace this email with your admin email)
             if email.lowercased() == "socialtrails2024@gmail.com" {
+                
+                SessionManager.shared.loginAdmin(userid: user.uid, email: email) { success in
+                    if success {
+                        self.navigateToAdminDashboard = true
+                    } else {
+                        SessionManager.shared.logoutUser()
+                        self.showAlert(message: "Failed to log in. Please try again later.")
+                        
+                    }
+                }
+                
                 // If the user is an admin, navigate directly to the admin dashboard
                 self.navigateToAdminDashboard = true
             } else {
@@ -164,6 +176,7 @@ struct SignInView: View {
                         if success {
                             self.navigateToDashboard = true // Navigate to the regular user dashboard
                         } else {
+                            SessionManager.shared.logoutUser()
                             self.showAlert(message: "Failed to log in. Please try again later.")
                         }
                     }

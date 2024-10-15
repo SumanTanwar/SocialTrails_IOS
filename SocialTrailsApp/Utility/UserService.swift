@@ -58,6 +58,7 @@ class UserService : ObservableObject{
                             let bio = userData["bio"] as? String ?? ""
                             let roles = userData["roles"] as? String ?? ""
                             let notification = userData["notification"] as? Bool ?? true
+                            let profilepicture = userData["profilepicture"] as? String ?? ""
                             
                             
                             let user = SessionUsers(id: id,
@@ -65,7 +66,8 @@ class UserService : ObservableObject{
                                                     username: username,
                                                     email: email, bio: bio,
                                                     notification: notification,
-                                                    roleType: roles)
+                                                    roleType: roles,
+                                                    profilepicture: profilepicture)
                             
                             completion(user)
                         } else {
@@ -195,16 +197,20 @@ class UserService : ObservableObject{
 
     
    func deleteProfile(_ userID: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        reference.child(_collection).child(userID).removeValue { error, _ in
-            if let error = error {
-                // On failure
-                completion(.failure(error))
-            } else {
-                // On success
-                completion(.success(()))
-            }
-        }
-    }
+
+       reference.child("profiledeleted").setValue(true) { error, _ in
+                      if let error = error {
+                          
+                          print("Error updating profile deleted status: \(error.localizedDescription)")
+                          completion(.failure(error))
+                      } else {
+                          print("Profile deleted status updated successfully.")
+                          completion(.success(()))
+                      }
+                  }
+    
+    } 
+
     
     func getModeratorList(completion: @escaping (Result<[Users], Error>) -> Void) {
         var moderatorsList = [Users]()
@@ -214,7 +220,8 @@ class UserService : ObservableObject{
                 if let data = snapshot.value as? [String: Any] {
                     for (key, value) in data {
                         if let userData = value as? [String: Any],
-                           let role = userData["roles"] as? String, role == "moderator" {
+                           let role = userData["roles"] as? String, role == UserRole.moderator.role,
+                           let isDeleted = userData["profiledeleted"] as? Bool, isDeleted == false{
                           
                             let user = Users(
                                 userId: key,
@@ -251,7 +258,7 @@ class UserService : ObservableObject{
         }
     } */
     
-    func setbackdeleteProfile() {
+    func userprofiledelete() {
           if let user = Auth.auth().currentUser {
               let userId = user.uid
               let ref = Database.database().reference().child(_collection).child(userId)

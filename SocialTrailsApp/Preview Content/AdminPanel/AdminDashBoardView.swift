@@ -7,7 +7,7 @@ struct AdminDashboardView: View {
     @State private var isLoggedOut = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 VStack(alignment: .leading) {
                     Text("Welcome, \(adminName)!")
@@ -39,10 +39,12 @@ struct AdminDashboardView: View {
                 }
                 
             }
-            .navigationBarTitle("Admin Dashboard", displayMode: .inline)
+            .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
             .fullScreenCover(isPresented: $isLoggedOut) {
-                SignInView()
+                SignInView() // Replace with your actual sign-in view
             }
+          
         }
     }
 

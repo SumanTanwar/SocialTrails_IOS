@@ -13,13 +13,18 @@ struct ContentView: View {
     @State private var showSplashScreen = false
     @State private var selectedTab = 0
     @StateObject private var sessionManager = SessionManager.shared
+    private let adminEmail = "socialtrails2024@gmail.com"
     
     var body: some View {
         NavigationView {
             VStack {
                 if sessionManager.isLoggedIn {
                     Divider().background(Color.blue)
-                    BottomNavigationView(selectedTab: selectedTab)
+                    if sessionManager.getCurrentUser()?.roleType ==  UserRole.user.role {
+                        BottomNavigationView(selectedTab: selectedTab) // Show Admin navigation
+                                        } else {
+                                            AdminBottomNavigationView(selectedTab: selectedTab) // Show user navigation
+                                        }
                     
                     
                 } else {
@@ -46,13 +51,34 @@ struct ContentView: View {
     
     private func checkAuthentication() {
         if let user = Auth.auth().currentUser {
-           
-            sessionManager.loginUser(userid: user.uid) { success in
-                if success {
-                    print("User logged in: \(success)")
-                } else {
-                    print("Failed to fetch user details")
-                  
+            guard let userEmail = user.email?.lowercased() else {
+                            print("No email found")
+                            sessionManager.logoutUser()
+                            return
+                        }
+                        print("Current user email: \(userEmail)")
+            if userEmail == adminEmail.lowercased() {
+                sessionManager.loginAdmin(userid: user.uid, email: userEmail) { success in
+                    if success {
+                        
+                        print("User logged in: \(success)")
+                    } else {
+                        print("Failed to fetch user details")
+                        
+                    }
+                }
+            }
+            else
+            {
+                
+                sessionManager.loginUser(userid: user.uid) { success in
+                    if success {
+                        
+                        print("User logged in: \(success)")
+                    } else {
+                        print("Failed to fetch user details")
+                        
+                    }
                 }
             }
         } else {

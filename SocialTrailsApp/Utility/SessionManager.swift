@@ -74,5 +74,20 @@ class SessionManager : ObservableObject {
                }
            }
        }
+    func loginAdmin(userid: String,email: String, completion: @escaping (Bool) -> Void) {
+        let adminUser = SessionUsers(
+                   id: userid,
+                   username: "Admin",
+                   email: email,
+                   bio: "",
+                   notification: false, // Set the default notification preference
+                   roleType: UserRole.admin.role,
+                   profilepicture: ""
+               )
+               
+               // Set the current user to the admin user
+               self.currentUser = adminUser
+               completion(true)
+    }
     
 }

@@ -1,44 +1,46 @@
 //
-//  BottomNaavigationView.swift
+//  AdminBottomNavigationView.swift
 //  SocialTrailsApp
 //
-//  Created by Admin on 9/30/24.
+//  Created by Admin on 10/15/24.
 //
 
 import SwiftUI
 
-struct BottomNavigationView: View {
+struct AdminBottomNavigationView: View {
     @State public var selectedTab: Int
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            DashboardView()
+            AdminDashboardView()
                 .tabItem {
                     Image(systemName: "house")
                 }
                 .tag(0)
-            DashboardView()
+            AdminUserList()
                 .tabItem {
-                    Image(systemName: "magnifyingglass")
+                    Image(systemName: "person.circle")
                     
                 }
                 .tag(1)
-            
-            CreatePostView()
+           
+
+            AdminModeratorListView()
                 .tabItem {
-                    Image(systemName: "plus.app")
+                    Image(systemName: "exclamationmark.triangle")
                     
                 }
                 .tag(2)
-            
-            ViewProfileView()
+          
+           
+            AdminUserList()
                 .tabItem {
-                    Image(systemName: "person.circle.fill")
+                    Image(systemName: "exclamationmark.triangle.fill")
                     
                 }
                 .tag(3)
             
-            UserSettingView()
+            AdminSettingsView()
                 .tabItem {
                     Image(systemName: "gearshape.fill")
                     
@@ -48,6 +50,8 @@ struct BottomNavigationView: View {
         .accentColor(.blue)
     }
 }
+
+
 
 
 
