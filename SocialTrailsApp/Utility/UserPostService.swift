@@ -1,3 +1,4 @@
+
 //
 //  UserPostService.swift
 //  SocialTrailsApp
@@ -8,7 +9,7 @@
 import Foundation
 import FirebaseDatabase
 
-class UserPostService {
+class UserPostService: ObservableObject {
 
     private var reference: DatabaseReference
     private let collectionName = "post"
@@ -106,3 +107,16 @@ class UserPostService {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

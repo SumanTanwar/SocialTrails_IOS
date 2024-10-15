@@ -1,3 +1,4 @@
+
 //
 //  UserService.swift
 //  SocialTrailsApp
@@ -196,6 +197,7 @@ class UserService : ObservableObject{
 
     
    func deleteProfile(_ userID: String, completion: @escaping (Result<Void, Error>) -> Void) {
+
        reference.child("profiledeleted").setValue(true) { error, _ in
                       if let error = error {
                           
@@ -208,6 +210,7 @@ class UserService : ObservableObject{
                   }
     
     } 
+
     
     func getModeratorList(completion: @escaping (Result<[Users], Error>) -> Void) {
         var moderatorsList = [Users]()
