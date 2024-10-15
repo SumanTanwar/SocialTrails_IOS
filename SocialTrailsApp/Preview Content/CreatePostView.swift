@@ -26,22 +26,25 @@ struct CreatePostView: View {
                         AsyncImage(url: imageUrl) { image in
                             image
                                 .resizable()
-                                .scaledToFit()
+                                .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                                .aspectRatio(contentMode: .fill)
                                 .frame(width: 40, height: 40)
-                                .clipShape(Circle()) // Clip the image to a circle
+                                .clipShape(Circle())
                         } placeholder: {
                             Image(systemName: "person.circle.fill")
                                 .resizable()
-                                .scaledToFit()
+                                .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                                .aspectRatio(contentMode: .fill)
                                 .frame(width: 40, height: 40)
-                                .foregroundColor(Color(.systemGray4))
-                                .clipShape(Circle()) // Clip the placeholder to a circle as well
+                                .clipShape(Circle())
                         }
                     } else {
                         Image(systemName: "person.circle.fill")
                             .resizable()
-                            .scaledToFit()
+                            .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                            .aspectRatio(contentMode: .fill)
                             .frame(width: 40, height: 40)
+                            .clipShape(Circle())
                             .foregroundColor(Color(.systemGray4))
                             .clipShape(Circle()) // Clip the default placeholder to a circle
                     }

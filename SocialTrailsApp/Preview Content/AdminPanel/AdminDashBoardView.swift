@@ -19,39 +19,11 @@ struct AdminDashboardView: View {
                         .padding(.bottom, 20)
                 }
                 .padding()
-
-                
-                Button(action: {
-                    logout()
-                }) {
-                    Text("Logout")
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.red)
-                        .cornerRadius(10)
-                }
-                .padding(.bottom, 20)
-                
-                NavigationLink(destination: AdminUserList()) {
-                    Text("User List")
-                        .foregroundStyle(Utils.blackListColor)
-                        .font(.system(size: Utils.fontSize16))
-                }
                 
             }
-            .navigationBarBackButtonHidden(true)
-            .navigationBarHidden(true)
-            .fullScreenCover(isPresented: $isLoggedOut) {
-                SignInView() // Replace with your actual sign-in view
-            }
-          
         }
     }
 
-    private func logout() {
-        SessionManager.shared.logoutUser()
-        isLoggedOut = true
-    }
 }
 
 struct AdminDashboardView_Previews: PreviewProvider {

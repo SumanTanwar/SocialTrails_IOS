@@ -24,16 +24,17 @@ struct ViewProfileView: View {
                             AsyncImage(url: imageUrl) { image in
                                 image
                                     .resizable()
-                                    .scaledToFit()
+                                    .aspectRatio(contentMode: .fill)
                                     .frame(width: 80, height: 80)
-                                    .clipShape(Circle()) // Clip the image to a circle
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(Color.gray, lineWidth: 1)) 
                             } placeholder: {
                                 Image(systemName: "person.circle.fill")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 80, height: 80)
                                     .foregroundColor(Color(.systemGray4))
-                                    .clipShape(Circle()) // Clip the placeholder to a circle as well
+                                    .clipShape(Circle())
                             }
                         } else {
                             Image(systemName: "person.circle.fill")
@@ -41,8 +42,9 @@ struct ViewProfileView: View {
                                 .scaledToFit()
                                 .frame(width: 80, height: 80)
                                 .foregroundColor(Color(.systemGray4))
-                                .clipShape(Circle()) // Clip the default placeholder to a circle
+                                .clipShape(Circle())
                         }
+
 
                         
                         if let currentUser = sessionManager.getCurrentUser() {

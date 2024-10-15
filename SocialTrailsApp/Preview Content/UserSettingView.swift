@@ -31,25 +31,29 @@ struct UserSettingView: View {
                         AsyncImage(url: imageUrl) { image in
                             image
                                 .resizable()
-                                .scaledToFit()
+                                .aspectRatio(contentMode: .fill) // Ensure it fills the circle
                                 .frame(width: 80, height: 80)
                                 .clipShape(Circle()) // Clip the image to a circle
+                                .overlay(Circle().stroke(Color.gray, lineWidth: 1)) // Optional: add a border
                         } placeholder: {
                             Image(systemName: "person.circle.fill")
                                 .resizable()
-                                .scaledToFit()
+                                .aspectRatio(contentMode: .fill) // Ensure the placeholder fills the circle
                                 .frame(width: 80, height: 80)
                                 .foregroundColor(Color(.systemGray4))
-                                .clipShape(Circle()) // Clip the placeholder to a circle as well
+                                .clipShape(Circle()) // Clip the placeholder to a circle
+                                .overlay(Circle().stroke(Color.gray, lineWidth: 1)) // Optional: add a border
                         }
                     } else {
                         Image(systemName: "person.circle.fill")
                             .resizable()
-                            .scaledToFit()
+                            .aspectRatio(contentMode: .fill) // Ensure the default image fills the circle
                             .frame(width: 80, height: 80)
                             .foregroundColor(Color(.systemGray4))
                             .clipShape(Circle()) // Clip the default placeholder to a circle
+                            .overlay(Circle().stroke(Color.gray, lineWidth: 1)) // Optional: add a border
                     }
+
 
                     
                     VStack(alignment: .leading) {
@@ -160,7 +164,7 @@ struct UserSettingView: View {
                 .padding(.leading, 10)
                 .navigationBarBackButtonHidden(true)
                 .navigationBarHidden(true)
-            }
+            }.padding()
         }
     }
 }

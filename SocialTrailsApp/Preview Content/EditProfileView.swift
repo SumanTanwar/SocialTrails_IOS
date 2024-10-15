@@ -21,7 +21,8 @@ struct EditProfileView: View {
                     if let profileImage = viewModel.profileImage {
                         profileImage
                             .resizable()
-                            .scaledToFill()
+                            .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                            .aspectRatio(contentMode: .fill)
                             .frame(width: 80, height: 80)
                             .clipShape(Circle())
                     } else {
@@ -29,24 +30,27 @@ struct EditProfileView: View {
                             AsyncImage(url: imageUrl) { image in
                                 image
                                     .resizable()
-                                    .scaledToFit()
+                                    .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                                    .aspectRatio(contentMode: .fill)
                                     .frame(width: 80, height: 80)
-                                    .clipShape(Circle()) // Clip the image to a circle
+                                    .clipShape(Circle())
                             } placeholder: {
                                 Image(systemName: "person.circle.fill")
                                     .resizable()
-                                    .scaledToFit()
+                                    .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                                    .aspectRatio(contentMode: .fill)
                                     .frame(width: 80, height: 80)
+                                    .clipShape(Circle())
                                     .foregroundColor(Color(.systemGray4))
-                                    .clipShape(Circle()) // Clip the placeholder to a circle as well
                             }
                         } else {
                             Image(systemName: "person.circle.fill")
                                 .resizable()
-                                .scaledToFit()
+                                .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                                .aspectRatio(contentMode: .fill)
                                 .frame(width: 80, height: 80)
+                                .clipShape(Circle())
                                 .foregroundColor(Color(.systemGray4))
-                                .clipShape(Circle()) // Clip the default placeholder to a circle
                         }
 
                     }
@@ -125,8 +129,8 @@ struct EditProfileView: View {
                  if let imageData = try await selectedImage.loadTransferable(type: Data.self),
                     let image = UIImage(data: imageData) {
                      
-                     let imageData = image.jpegData(compressionQuality: 0.8)!
-                     try await userService.uploadProfileImage(userId: sessionManager.getUserID(), imageData: imageData) { result in
+                     let compressedImageData = image.jpegData(compressionQuality: 0.8)!
+                     try await userService.uploadProfileImage(userId: sessionManager.getUserID(), imageData: compressedImageData) { result in
                          switch result {
                          case .success(let url):
                              profilePicture = url
