@@ -19,25 +19,18 @@ struct AdminChangePasswordView: View {
                 Image("socialtrails_logo")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 200, height: 200)
-                    .padding(5)
+                    .frame(width: 180,height: 180)
 
                 Text("Change Password")
-                    .font(.largeTitle)
-                    .padding(.top, 20)
-                    .padding(.bottom, 20)
+                    .font(.system(size: Utils.fontSize24))
+                    .foregroundStyle(Utils.blackListColor)
+                    .padding(.top,-1)
 
-                Text("Enter your current password and new password to change.")
-                    .foregroundColor(Color.purple)
-                    .font(.system(size: 15))
-                    .padding(.bottom, 5)
-
-                VStack(spacing: 15) {
+                VStack(spacing: 10) {
                     passwordField(placeholder: "Current Password", password: $currentPassword, isVisible: $isCurrentPasswordVisible)
                     passwordField(placeholder: "New Password", password: $newPassword, isVisible: $isNewPasswordVisible)
                     passwordField(placeholder: "Confirm New Password", password: $confirmPassword, isVisible: $isConfirmPasswordVisible)
-                }
-                .padding()
+                }.padding(10)
 
                 Button(action: {
                     changePassword()
@@ -48,17 +41,16 @@ struct AdminChangePasswordView: View {
                         .frame(maxWidth: .infinity)
                         .background(Color.purple)
                         .cornerRadius(10)
-                        .padding(.horizontal, 30)
+                        .padding(.horizontal, 10)
                 }
-                .padding(.vertical, 20)
+                .padding(.vertical, 10)
 
-                NavigationLink(destination: DashboardView(), label: {
+                NavigationLink(destination: AdminSettingsView(), label: {
                     Text("Back")
                         .foregroundColor(.blue)
                 })
-                .padding(.bottom, 200)
             }
-            .background(Color.white)
+            Spacer()
             .navigationBarHidden(true)
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))

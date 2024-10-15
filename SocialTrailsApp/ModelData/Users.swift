@@ -12,7 +12,7 @@ struct Users: Identifiable, Decodable {
     var userId : String
     var username: String
     var email: String
-    var bio: String
+    var bio: String?
     var createdon = Utils.getCurrentDatetime()
     var profilepicture: String?
     var roles: String
@@ -30,7 +30,7 @@ struct Users: Identifiable, Decodable {
                "userId": userId,
                "username": username,
                "email": email,
-               "bio": bio,
+               "bio": bio ?? "",
                "createdon": createdon,
                "roles": roles,
                "profiledeleted": profiledeleted,

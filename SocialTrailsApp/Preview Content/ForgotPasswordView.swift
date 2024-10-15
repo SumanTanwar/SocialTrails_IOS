@@ -27,7 +27,8 @@ struct ForgotPasswordView: View {
                     .padding(.top,1)
                 
                 Text("Enter your email address to receive a link to reset your password")
-                                .foregroundColor(Color.black)                  .font(.system(size: 14, design: .rounded))
+                                .foregroundColor(Color.black)
+                                .font(.system(size: 14, design: .rounded))
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.init(top: 5, leading: 10, bottom: 5, trailing: 10))
                 TextField("Email", text: $email)

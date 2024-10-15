@@ -33,7 +33,7 @@ struct AdminBottomNavigationView: View {
                 .tag(2)
           
            
-            AdminUserList()
+            AdminDashboardView()
                 .tabItem {
                     Image(systemName: "exclamationmark.triangle.fill")
                     

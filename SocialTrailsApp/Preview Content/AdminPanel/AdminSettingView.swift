@@ -4,6 +4,7 @@ import FirebaseAuth
 struct AdminSettingsView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var isLoggedOut = false
+    @State private var navigateToSignIn = false
     private var auth = Auth.auth()
 
     var body: some View {
@@ -21,13 +22,7 @@ struct AdminSettingsView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.top, 10)
-                //.padding(.bottom, 10)
-                
-//                Divider()
-//                    .frame(height: 2)
-//                    .background(Color.gray)
-
-                // Admin Settings Title
+             
                 VStack(alignment: .leading) {
                     Text("Admin Settings")
                         .font(.system(size: 16))
@@ -64,15 +59,18 @@ struct AdminSettingsView: View {
                         .background(Color.gray)
                         .padding(.horizontal, -16) // Adjust horizontal padding
 
-                    // Log Out Button
                     Button(action: {
-                        logout()
-                    }) {
-                        Text("Log Out")
-                            .font(.system(size: 16))
-                            .foregroundColor(.black)
-                            .padding(.vertical, 8)
-                    }
+                           SessionManager.shared.logoutUser()
+                           navigateToSignIn = true
+                       }) {
+                           Text("Log Out")
+                               .font(.system(size: 16))
+                               .foregroundColor(.black)
+                               .padding(.vertical, 8)
+                       }
+                       .fullScreenCover(isPresented: $navigateToSignIn) {
+                           SignInView() // Present the Sign In view
+                       }
 
                     Divider()
                         .frame(height: 2)
@@ -84,23 +82,8 @@ struct AdminSettingsView: View {
 
                 Spacer()
             }
-            .navigationBarTitle("Admin", displayMode: .inline)
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
-            .background(
-                NavigationLink(destination: SignInView(), isActive: $isLoggedOut) {
-                    EmptyView()
-                }
-            )
-        }
-    }
-
-    private func logout() {
-        do {
-            try auth.signOut()
-            isLoggedOut = true
-        } catch {
-            print("Error signing out: \(error.localizedDescription)")
         }
     }
 }
