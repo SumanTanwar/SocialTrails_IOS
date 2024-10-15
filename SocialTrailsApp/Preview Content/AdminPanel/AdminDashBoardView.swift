@@ -31,6 +31,13 @@ struct AdminDashboardView: View {
                         .cornerRadius(10)
                 }
                 .padding(.bottom, 20)
+                
+                NavigationLink(destination: AdminUserList()) {
+                    Text("User List")
+                        .foregroundStyle(Utils.blackListColor)
+                        .font(.system(size: Utils.fontSize16))
+                }
+                
             }
             .navigationBarTitle("Admin Dashboard", displayMode: .inline)
             .fullScreenCover(isPresented: $isLoggedOut) {
