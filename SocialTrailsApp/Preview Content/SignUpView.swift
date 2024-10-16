@@ -123,19 +123,31 @@ struct SignUpView: View {
                             .foregroundColor(.blue)
                     }
                 }
-                Text("By registering, I acknowledge that I have read and accept the General Terms and conditions of Use and the privacy policy.")
-                               .font(.footnote)
-                               .padding(.top, 35)
-                               .multilineTextAlignment(.leading)
-                               .padding(.horizontal, 10)
-                               .lineLimit(nil)
-                               .fixedSize(horizontal: false, vertical: true)
+                Text("By registering, I acknowledge that I have read and accept all")
+                                .font(.system(size: 13))
+                                .foregroundColor(Color.black)
+                                .padding(.leading, 9)
+                                .padding(.top,30)
+
+                            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                                Text("Terms and conditions of Use and the ")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(Color.black)
+
+                                NavigationLink(destination: PrivacyPolicyView()) {
+                                    Text("privacy policy")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(Color.purple)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
 
                 Spacer()
                 .padding(.bottom, 90)
             }
             .background(Color.white)
-            .navigationBarHidden(true) // Hide the navigation bar
+            .navigationBarHidden(true)
+            .navigationBarBackButtonHidden(true)
             .alert(isPresented: $showAlert) {
                 Alert(
                     title: Text("Registration Error"),
