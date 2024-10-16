@@ -56,6 +56,8 @@ struct ForgotPasswordView: View {
 
                 Spacer()
             }
+            .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
             .alert(isPresented: $showAlert) {
                 Alert(
                     title: Text("Notification"),

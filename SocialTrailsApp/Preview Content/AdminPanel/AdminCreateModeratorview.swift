@@ -45,7 +45,7 @@ struct AdminCreateModeratorView: View {
                 }
                 .padding(.top, 10)
                 
-                if !generatedPassword.isEmpty {
+                 /*   if !generatedPassword.isEmpty {
                     VStack(spacing: 10) {
                         Text("Generated Password: \(generatedPassword)")
                         
@@ -60,7 +60,8 @@ struct AdminCreateModeratorView: View {
                                 .cornerRadius(10)
                         }
                     }
-                }
+                }  */
+                
                 
                 if !errorMessage.isEmpty {
                     Text(errorMessage)

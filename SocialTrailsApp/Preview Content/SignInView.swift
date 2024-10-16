@@ -114,7 +114,8 @@ struct SignInView: View {
                     }
             }
         }
-        //.navigationBarBackButtonHidden(true)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
     }
     
     private func loginUser() {
