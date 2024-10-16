@@ -25,7 +25,7 @@ class UserService : ObservableObject{
     
     init() {
         self.reference = Database.database().reference()
-        self.storageReference = Storage.storage().reference() // Added storage reference for image uploads
+        self.storageReference = Storage.storage().reference()
     }
     
     func registerUser(_user:  Users, completion: @escaping (Bool) -> Void) {
