@@ -76,4 +76,10 @@ class SessionManager : ObservableObject {
                completion(true)
     }
     
+    func registerModerator(_ user: Users, completion: @escaping (Bool) -> Void) {
+        userService.registerUser(_user: user) { success in
+               completion(success)
+           }
+       }
+
 }

@@ -16,6 +16,10 @@ struct AdminModeratorListView: View {
     var body: some View {
         NavigationView {
             VStack {
+                Text("Moderators List")  
+                                   .font(.largeTitle)
+                                   .padding()
+                
                 if isLoading {
                     ProgressView("Loading moderators...")
                 } else if moderatorsList.isEmpty {
@@ -40,14 +44,16 @@ struct AdminModeratorListView: View {
                     }
                 }
             }
+            .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
             .navigationBarTitle("Moderators", displayMode: .inline)
             .onAppear {
                 loadModeratorList()
             }
+            Spacer()
         }
     }
 
-    // Load the list of moderators from Firebase
     private func loadModeratorList() {
         isLoading = true
         userService.getModeratorList { result in
@@ -62,7 +68,6 @@ struct AdminModeratorListView: View {
         }
     }
 
-    // Delete a moderator by ID
     private func deleteModerator(_ userId: String) {
         userService.deleteProfile(userId) { result in
             switch result {

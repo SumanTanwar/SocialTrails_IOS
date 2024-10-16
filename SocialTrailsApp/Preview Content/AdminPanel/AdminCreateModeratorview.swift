@@ -1,90 +1,90 @@
-//
-//  AdminCreateModeratorview.swift
-//  SocialTrailsApp
-//
-//  Created by Barsha Roka on 2024-10-08.
-//
-
 import SwiftUI
 import FirebaseAuth
 
 struct AdminCreateModeratorView: View {
+    @StateObject private var sessionManager = SessionManager.shared
+    
     @State private var name = ""
     @State private var email = ""
     @State private var generatedPassword = ""
     @State private var errorMessage = ""
-    @State private var isSuccess = false
+    @State private var navigateToModeratorList = false
 
-    private let auth = Auth.auth()
-    
     var body: some View {
-        VStack(spacing: 20) {
-            Image("socialtrails_logo")
-                .resizable()
-                .frame(width: 150, height: 150)
-                .padding()
-            
-            Text("Create Moderator")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding()
-            
-            TextField("Moderator username", text: $name)
-                .padding()
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(10)
-                .autocapitalization(.none)
-            
-            TextField("Moderator email", text: $email)
-                .padding()
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(10)
-                .autocapitalization(.none)
-                .keyboardType(.emailAddress)
-
-            Button(action: createModerator) {
+        NavigationView {
+            VStack(spacing: 20) {
+                Image("socialtrails_logo")
+                    .resizable()
+                    .frame(width: 150, height: 150)
+                    .padding()
+                
                 Text("Create Moderator")
-                    .frame(maxWidth: .infinity, minHeight: 50)
-                    .background(Color.purple)
-                    .foregroundColor(.white)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding()
+                
+                TextField("Moderator username", text: $name)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
                     .cornerRadius(10)
-            }
-            .padding(.top, 10)
-            
-            if !generatedPassword.isEmpty {
-                VStack(spacing: 10) {
-                    Text("Generated Password: \(generatedPassword)")
-                    
-                    Button(action: {
-                        UIPasteboard.general.string = generatedPassword
-                        showError("Password copied to clipboard")
-                    }) {
-                        Text("Copy Password")
-                            .frame(maxWidth: .infinity, minHeight: 50)
-                            .background(Color.gray)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                    .autocapitalization(.none)
+                
+                TextField("Moderator email", text: $email)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(10)
+                    .autocapitalization(.none)
+                    .keyboardType(.emailAddress)
+
+                Button(action: createModerator) {
+                    Text("Create Moderator")
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                        .background(Color.purple)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding(.top, 10)
+                
+                if !generatedPassword.isEmpty {
+                    VStack(spacing: 10) {
+                        Text("Generated Password: \(generatedPassword)")
+                        
+                        Button(action: {
+                            UIPasteboard.general.string = generatedPassword
+                            showError("Password copied to clipboard")
+                        }) {
+                            Text("Copy Password")
+                                .frame(maxWidth: .infinity, minHeight: 50)
+                                .background(Color.gray)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        }
                     }
                 }
+                
+                if !errorMessage.isEmpty {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                }
+                
+                Spacer()
             }
-            
-            if !errorMessage.isEmpty {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-            }
-            
-            Spacer()
+            .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
+            .padding(16)
+            .background(
+                NavigationLink(destination: AdminModeratorListView(), isActive: $navigateToModeratorList) {
+                    EmptyView()
+                }
+            )
         }
-        .padding(16)
-        .navigationTitle("Create Moderator")
     }
-    
     private func createModerator() {
         guard validateInputs() else { return }
 
         generatedPassword = generateRandomPassword(length: 8)
         
-        auth.createUser(withEmail: email, password: generatedPassword) { authResult, error in
+        Auth.auth().createUser(withEmail: email, password: generatedPassword) { authResult, error in
             if let error = error {
                 showError(error.localizedDescription)
                 return
@@ -92,14 +92,29 @@ struct AdminCreateModeratorView: View {
             
             if let user = authResult?.user {
                 do {
-                    
+                    // Send email verification
                     try user.sendEmailVerification()
-
-                    sendGeneratedPasswordEmail(to: email)
-                    try auth.signOut()
-                    isSuccess = true
-                    clearInputs()
                     
+                    // Create a new moderator
+                    let newModerator = Users(
+                        userId: user.uid,
+                        username: name,
+                        email: email,
+                        roles: UserRole.moderator.role,
+                        notification: true // Default value
+                    )
+                    
+                    // Register the new moderator using the session manager
+                    sessionManager.registerModerator(newModerator) { success in
+                        if success {
+                            print("Moderator added successfully!")
+                            try? Auth.auth().signOut()  // Sign out after creation
+                            clearInputs()
+                            navigateToModeratorList = true  // Trigger navigation
+                        } else {
+                            showError("Failed to add moderator to database.")
+                        }
+                    }
                 } catch {
                     showError("Failed to send verification email: \(error.localizedDescription)")
                 }
@@ -123,11 +138,6 @@ struct AdminCreateModeratorView: View {
     private func generateRandomPassword(length: Int) -> String {
         let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#%^&*()"
         return String((0..<length).compactMap { _ in characters.randomElement() })
-    }
-    
-    private func sendGeneratedPasswordEmail(to email: String) {
-        // Implement your email sending logic here
-        print("Sending email to \(email)\nPassword: \(generatedPassword)")
     }
     
     private func clearInputs() {

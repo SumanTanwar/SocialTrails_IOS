@@ -74,8 +74,15 @@ struct AdminUserList: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: AdminCreateModeratorView()) {
-                        Text("Moderator")
-                            .foregroundColor(.blue)
+                        HStack {
+                                       Image(systemName: "person.badge.plus")
+                                           .resizable()
+                                           .frame(width: 20, height: 20)
+                                           .foregroundColor(.black)
+                                       
+                                       Text("Moderator")
+                                           .foregroundColor(.black)
+                                   }
                     }
                 }
             }
@@ -103,7 +110,6 @@ struct AdminUserList: View {
     }
 }
 
-// Preview
 struct AdminUserList_Previews: PreviewProvider {
     static var previews: some View {
         AdminUserList()
