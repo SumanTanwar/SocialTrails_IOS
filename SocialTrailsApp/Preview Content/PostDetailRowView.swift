@@ -64,15 +64,6 @@ struct PostDetailRowView: View {
                                 .aspectRatio(contentMode: .fit)
                     }
                     .buttonStyle(PlainButtonStyle())
-                } else {
-                    Button(action: {
-                        
-                    }) {
-                        Image(systemName: "exclamationmark.triangle")
-                            .resizable()
-                            .frame(width: 18, height: 18)
-                            .foregroundColor(.orange)
-                    }
                 }
             }
             .padding(.top, 10)
@@ -128,8 +119,20 @@ struct PostDetailRowView: View {
 
                 Text("\(post.commentcount ?? 0)")
                     .font(.subheadline)
-
                 Spacer()
+                if post.userId != sessionManager.getCurrentUser()?.id {
+                                    Button(action: {
+                                        
+                                    }) {
+                                        Image(systemName: "exclamationmark.triangle")
+                                            .resizable()
+                                            .frame(width: 18, height: 18)
+                                            .foregroundColor(.orange)
+                                    }
+                                }
+
+                            
+                
             }
             .padding(.vertical, 1)
 
