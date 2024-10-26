@@ -8,33 +8,36 @@
 import Foundation
 import UIKit
 
-class UserPost: Decodable {
+class UserPost: Decodable,Identifiable {
     var postId: String
     var userId: String
     var captiontext: String
     var createdon: String
     var updatedon: String?
     var location: String?
-    var postdeleted: Bool
     var flagged: Bool?
-    var moderationStatus: Bool?
+    var moderationstatus: Bool?
     var imageUris: [UIImage]? // Keep as UIImage
     var uploadedImageUris: [String]?
     var latitude: Double?
     var longitude: Double?
-
+    var likecount: Int?
+    var isliked: Bool?
+    var commentcount: Int?
+    var username: String?
+    var userprofilepicture: String?
+    
     enum CodingKeys: String, CodingKey {
-        case postId, userId, captiontext, createdon, updatedon, location, postdeleted, flagged, moderationStatus, uploadedImageUris, latitude, longitude, imageUris
+        case postId, userId, captiontext, createdon, updatedon, location, postdeleted, flagged, moderationstatus, uploadedImageUris, latitude, longitude, imageUris,username,userprofilepicture
     }
 
     // Initializer for creating a new post
     init(userId: String, captionText: String, imageUris: [UIImage], location: String?, latitude: Double?, longitude: Double?) {
-        self.postId = UUID().uuidString // Generate a unique ID for new posts
+        self.postId = UUID().uuidString 
         self.userId = userId
         self.captiontext = captionText
         self.createdon = Utils.getCurrentDatetime()
         self.imageUris = imageUris
-        self.postdeleted = false
         self.location = location
         self.latitude = latitude
         self.longitude = longitude
@@ -42,28 +45,30 @@ class UserPost: Decodable {
 
     // Required initializer for Decodable
     required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        postId = try container.decode(String.self, forKey: .postId)
-        userId = try container.decode(String.self, forKey: .userId)
-        captiontext = try container.decode(String.self, forKey: .captiontext)
-        createdon = try container.decode(String.self, forKey: .createdon)
-        updatedon = try? container.decode(String.self, forKey: .updatedon)
-        location = try? container.decode(String.self, forKey: .location)
-        postdeleted = try container.decode(Bool.self, forKey: .postdeleted)
-        flagged = try? container.decode(Bool.self, forKey: .flagged)
-        moderationStatus = try? container.decode(Bool.self, forKey: .moderationStatus)
-        uploadedImageUris = try? container.decode([String].self, forKey: .uploadedImageUris)
-        latitude = try? container.decode(Double.self, forKey: .latitude)
-        longitude = try? container.decode(Double.self, forKey: .longitude)
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            postId = try container.decode(String.self, forKey: .postId)
+            userId = try container.decode(String.self, forKey: .userId)
+            captiontext = try container.decode(String.self, forKey: .captiontext)
+            createdon = try container.decode(String.self, forKey: .createdon)
+            updatedon = try? container.decode(String.self, forKey: .updatedon)
+            location = try? container.decode(String.self, forKey: .location)
+            flagged = try? container.decode(Bool.self, forKey: .flagged)
+            moderationstatus = try? container.decode(Bool.self, forKey: .moderationstatus)
+            uploadedImageUris = try? container.decode([String].self, forKey: .uploadedImageUris)
+            latitude = try? container.decode(Double.self, forKey: .latitude)
+            longitude = try? container.decode(Double.self, forKey: .longitude)
+            username = try? container.decode(String.self, forKey: .username)
+        userprofilepicture = try? container.decode(String.self, forKey: .userprofilepicture)
+            let imageUrlStrings = try? container.decode([String].self, forKey: .imageUris)
+            imageUris = imageUrlStrings?.compactMap { urlString in
+                return loadImage(from: urlString)
+            }
 
-        // Decode image URIs (assuming these are stored as strings in your JSON)
-        let imageUrlStrings = try? container.decode([String].self, forKey: .imageUris)
-        imageUris = imageUrlStrings?.compactMap { urlString in
-            // Here you should implement the logic to convert the URL string to UIImage.
-            // This is just a placeholder function.
-            return loadImage(from: urlString) // Implement this function
+            likecount = 0
+            isliked = false
+            commentcount = 0
         }
-    }
+
 
     // Placeholder function to load UIImage from a URL string
     private func loadImage(from urlString: String) -> UIImage? {
@@ -83,7 +88,7 @@ class UserPost: Decodable {
             "location": location ?? "",
             "latitude": latitude ?? 0.0,
             "longitude": longitude ?? 0.0,
-            "postdeleted": postdeleted
+        
         ]
     }
 }

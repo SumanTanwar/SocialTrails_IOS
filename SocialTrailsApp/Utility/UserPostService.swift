@@ -14,6 +14,8 @@ class UserPostService: ObservableObject {
     private var reference: DatabaseReference
     private let collectionName = "post"
     private let postImagesService = PostImagesService()
+    private let postCommentService = PostCommentService()
+    private let userService = UserService()
 
     init() {
         reference = Database.database().reference()
@@ -59,17 +61,16 @@ class UserPostService: ObservableObject {
                 completion(.failure(NSError(domain: "DataSnapshotError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not cast snapshot to DataSnapshot."])))
                 return
             }
-
+            print("snapshot count \(snapshot.childrenCount)")
             var postList: [UserPost] = []
             var tempList: [UserPost] = []
-
+      
             for child in snapshot.children {
                 if let childSnapshot = child as? DataSnapshot,
                    let post = try? childSnapshot.data(as: UserPost.self) {
-                    if post.userId == userId,
-                       post.postdeleted == false
+                    if post.userId == userId
                         {
-                        var mutablePost = post
+                        let mutablePost = post
                         mutablePost.postId = childSnapshot.key
                         tempList.append(mutablePost)
                     }
@@ -88,7 +89,7 @@ class UserPostService: ObservableObject {
                 self.postImagesService.getAllPhotosByPostId(uid: post.postId) { result in
                     switch result {
                     case .success(let imageUrls):
-                        var mutablePost = post
+                        let mutablePost = post
                         mutablePost.uploadedImageUris = imageUrls
                         postList.append(mutablePost)
                     case .failure(let error):
@@ -104,9 +105,93 @@ class UserPostService: ObservableObject {
             }
         }
     }
+    func retrieveUserDetails(userId: String, completion: @escaping (Users?, Error?) -> Void) {
+        userService.getUserByID(uid: userId) { result in
+            switch result {
+            case .success(let user):
+                completion(user, nil)
+            case .failure(let error):
+                completion(nil, error)
+            }
+        }
+    }
 
 
+       
+        func countCommentsForPost(postId: String, completion: @escaping (Int?, Error?) -> Void) {
+            postCommentService.retrieveComments(postId: postId) { comments, error in
+                if let comments = comments {
+                    completion(comments.count, nil)
+                } else {
+                    completion(nil, error)
+                }
+            }
+        }
+    func getAllUserPostDetail(userId: String, completion: @escaping ([UserPost]?, Error?) -> Void) {
+            reference.child(collectionName).observe(.value) { snapshot in
+                guard let snapshot = snapshot as? DataSnapshot else {
+                    completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not retrieve data"]))
+                    return
+                }
+
+                var postList: [UserPost] = []
+                var tempList: [UserPost] = []
+
+                for child in snapshot.children {
+                    if let childSnapshot = child as? DataSnapshot,
+                       let post = try? childSnapshot.data(as: UserPost.self),
+                       post.userId == userId {
+                        let mutablePost = post
+                        mutablePost.postId = childSnapshot.key
+                        tempList.append(mutablePost)
+                    }
+                }
+
+                if tempList.isEmpty {
+                    completion([], nil)
+                    return
+                }
+
+                let pendingRequests = DispatchGroup()
+
+                for post in tempList {
+                    pendingRequests.enter()
+
+                    self.postImagesService.getAllPhotosByPostId(uid: post.postId) { result in
+                        switch result {
+                        case .success(let imageUrls):
+                            print("post : \(post.postId) and images \(imageUrls.count)")
+                            post.uploadedImageUris = imageUrls
+
+                            self.retrieveUserDetails(userId: post.userId) { userDetails, _ in
+                                if let userDetails = userDetails {
+                                    post.username = userDetails.username
+                                    post.userprofilepicture = userDetails.profilepicture
+                                }
+
+                                self.countCommentsForPost(postId: post.postId) { commentCount, _ in
+                                    post.commentcount = commentCount ?? 0
+                                    postList.append(post)
+                                    pendingRequests.leave()
+                                }
+                            }
+                        case .failure:
+                            postList.append(post)
+                            pendingRequests.leave()
+                        }
+                    }
+                }
+
+                // Notify when all async tasks are done
+                pendingRequests.notify(queue: .main) {
+                    postList.sort { $0.createdon > $1.createdon }
+                    completion(postList, nil)
+                }
+            }
+        }
 }
+
+
 
 
 
