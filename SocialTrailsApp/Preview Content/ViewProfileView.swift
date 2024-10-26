@@ -116,27 +116,36 @@ struct ViewProfileView: View {
                     ]
                     
                     LazyVGrid(columns: columns, spacing: 0) {
-                        ForEach(userPosts, id: \.postId) { post in
-                            if let imageUrls = post.uploadedImageUris, let firstImageUrl = imageUrls.first {
-                                AsyncImage(url: URL(string: firstImageUrl)) { image in
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 130, height: 130)
-                                        .clipped()
-                                        .cornerRadius(0)
-                                        .overlay(RoundedRectangle(cornerRadius: 0)
-                                                    .stroke(Color.gray, lineWidth: 1))
-                                } placeholder: {
-                                    ProgressView()
-                                        .frame(width: 130, height: 130)
-                                        .background(Color.gray.opacity(0.2))
-                                        .overlay(RoundedRectangle(cornerRadius: 0)
-                                                    .stroke(Color.gray, lineWidth: 1))
+                        ForEach($userPosts, id: \.postId) { $post in
+                            // Safely unwrap uploadedImageUris
+                            if let imageUrls = post.uploadedImageUris, !imageUrls.isEmpty {
+                                // Safely access the first image URL
+                                if let firstImageUrl = imageUrls.first {
+                                    NavigationLink(destination: UserPostsDetailView(selectedPostId: post.postId)) {
+                                        AsyncImage(url: URL(string: firstImageUrl)) { image in
+                                            image
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 130, height: 130)
+                                                .clipped()
+                                                .cornerRadius(0)
+                                                .overlay(RoundedRectangle(cornerRadius: 0)
+                                                            .stroke(Color.gray, lineWidth: 1))
+                                        } placeholder: {
+                                            ProgressView()
+                                                .frame(width: 130, height: 130)
+                                                .background(Color.gray.opacity(0.2))
+                                                .overlay(RoundedRectangle(cornerRadius: 0)
+                                                            .stroke(Color.gray, lineWidth: 1))
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
+
+
+
                     .padding(.horizontal, 10)
                 }
                 
@@ -160,6 +169,7 @@ struct ViewProfileView: View {
         UserPostService().getAllUserPosts(userId: userId) { result in
             switch result {
             case .success(let posts):
+                print("user post \(posts)")
                 self.userPosts = posts
                 self.postsCount = posts.count
             case .failure(let error):

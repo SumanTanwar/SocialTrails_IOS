@@ -39,5 +39,29 @@ struct Utils {
     //MARK: Color
     static let blackListColor: Color = .black
    
-    
+    static func getRelativeTime(from dateString: String) -> String {
+        let format = DateFormatter()
+        format.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        format.locale = Locale.current
+        
+        guard let date = format.date(from: dateString) else {
+            return ""
+        }
+        
+        let currentTime = Date()
+        let diff = currentTime.timeIntervalSince(date)
+        
+        if diff < 60 {
+            return "posted recently"
+        } else if diff < 86400 { // 24 hours in seconds
+            let formatter = DateComponentsFormatter()
+            formatter.allowedUnits = [.minute, .hour]
+            formatter.unitsStyle = .full
+            return formatter.string(from: diff) ?? ""
+        } else {
+            let outputFormat = DateFormatter()
+            outputFormat.dateFormat = "MMM d"
+            return "on " + outputFormat.string(from: date)
+        }
+    }
 }

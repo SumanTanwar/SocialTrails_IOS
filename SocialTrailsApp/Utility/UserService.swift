@@ -364,4 +364,45 @@ class UserService : ObservableObject{
               }
           }
       }
+    func getUserByID(uid: String?, completion: @escaping (Result<Users, Error>) -> Void) {
+        guard let uid = uid, !uid.isEmpty else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "User ID is null or empty"])))
+            return
+        }
+        
+        reference.child(_collection).child(uid).observeSingleEvent(of: .value, with: { snapshot in
+            if let userDict = snapshot.value as? [String: Any] {
+                // Extracting data from userDict
+                let username = userDict["username"] as? String ?? ""
+                let email = userDict["email"] as? String ?? ""
+                let bio = userDict["bio"] as? String
+                let roles = userDict["roles"] as? String ?? ""
+                let notification = userDict["notification"] as? Bool ?? true
+                
+                // Create a new Users instance directly
+                let user = Users(
+                    userId: uid,
+                    username: username,
+                    email: email,
+                    bio: bio,
+                    createdon: Utils.getCurrentDatetime(), // Ensure this returns a String
+                    profilepicture: userDict["profilepicture"] as? String,
+                    roles: roles,
+                    notification: notification
+                )
+                
+                // Check for deletion flags
+                if !user.admindeleted && !user.profiledeleted {
+                    completion(.success(user)) // Successfully found the user and passed deletion checks
+                } else {
+                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "User not found or deleted"])))
+                }
+            } else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "User not found"])))
+            }
+        }) { error in
+            completion(.failure(error))
+        }
+    }
+
   }
