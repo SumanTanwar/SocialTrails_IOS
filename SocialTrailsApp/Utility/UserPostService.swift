@@ -16,7 +16,8 @@ class UserPostService: ObservableObject {
     private let postImagesService = PostImagesService()
     private let postCommentService = PostCommentService()
     private let userService = UserService()
-
+    private let followService = FollowService()
+    
     init() {
         reference = Database.database().reference()
     }
@@ -189,6 +190,42 @@ class UserPostService: ObservableObject {
                 }
             }
         }
+    
+    func retrievePostsForFollowedUsers(currentUserId: String, completion: @escaping ([UserPost]?, Error?) -> Void) {
+        followService.getFollowAndFollowerIdsByUserId(userId: currentUserId) { followedUserIds, error in
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+
+            guard let followedUserIds = followedUserIds, !followedUserIds.isEmpty else {
+                print("No followed users")
+                completion([], nil)
+                return
+            }
+
+            print("Follower List: \(followedUserIds)")
+
+            var postList: [UserPost] = []
+            let pendingRequests = DispatchGroup()
+
+            for userId in followedUserIds {
+                pendingRequests.enter()
+                self.getAllUserPostDetail(userId: userId) { posts, error in
+                    if let posts = posts {
+                        postList.append(contentsOf: posts)
+                    } else if let error = error {
+                        print("Error fetching posts for user \(userId): \(error.localizedDescription)")
+                    }
+                    pendingRequests.leave()
+                }
+            }
+
+            pendingRequests.notify(queue: .main) {
+                completion(postList, nil) 
+            }
+        }
+    }
 }
 
 
