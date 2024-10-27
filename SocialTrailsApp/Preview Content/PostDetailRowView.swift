@@ -6,10 +6,18 @@
 //
 import SwiftUI
 
+import SwiftUI
+
 struct PostDetailRowView: View {
     let post: UserPost
     @ObservedObject private var sessionManager = SessionManager.shared
-
+    @StateObject private var userPostService = UserPostService()
+    @State private var showAlert = false
+    @State private var alertMessage: String?
+    @State private var showConfirmationDialog = false
+    @Binding var posts: [UserPost]
+    @State private var isEditing = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
@@ -37,7 +45,7 @@ struct PostDetailRowView: View {
                         .foregroundColor(Color(.systemGray4))
                         .clipShape(Circle())
                 }
-              
+
                 VStack(alignment: .leading) {
                     Text(post.username ?? "Unknown")
                         .font(.headline)
@@ -48,20 +56,20 @@ struct PostDetailRowView: View {
 
                 Spacer()
 
-                if post.userId ==  sessionManager.getCurrentUser()?.id  {
+                if post.userId == sessionManager.getCurrentUser()?.id {
                     Menu {
-                        Button("Edit") {
-                           
-                        }
+                        NavigationLink(destination: UserPostEditView(postId: post.postId)) {
+                                                  Text("Edit")
+                                              }
                         Button("Delete") {
-                            
+                            showConfirmationDialog = true
                         }
                     } label: {
                         Image(systemName: "ellipsis")
-                                .resizable()
-                                .frame(width: 18, height: 4)
-                                .foregroundColor(.primary)
-                                .aspectRatio(contentMode: .fit)
+                            .resizable()
+                            .frame(width: 18, height: 4)
+                            .foregroundColor(.primary)
+                            .aspectRatio(contentMode: .fit)
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
@@ -94,23 +102,22 @@ struct PostDetailRowView: View {
             .frame(height: 180)
 
             Text(post.captiontext)
-               // .padding(.vertical, 5)
                 .font(.body)
 
-            HStack() {
+            HStack {
                 Button(action: {
-                   
+                    // Like action here
                 }) {
                     Image(systemName: "heart")
                         .resizable()
                         .frame(width: 18, height: 18)
                 }
-                
+
                 Text("\(post.likecount ?? 0)")
                     .font(.subheadline)
 
                 Button(action: {
-                   
+                    // Comment action here
                 }) {
                     Image(systemName: "message")
                         .resizable()
@@ -119,28 +126,54 @@ struct PostDetailRowView: View {
 
                 Text("\(post.commentcount ?? 0)")
                     .font(.subheadline)
-                Spacer()
-                if post.userId != sessionManager.getCurrentUser()?.id {
-                                    Button(action: {
-                                        
-                                    }) {
-                                        Image(systemName: "exclamationmark.triangle")
-                                            .resizable()
-                                            .frame(width: 18, height: 18)
-                                            .foregroundColor(.orange)
-                                    }
-                                }
-
-                            
                 
+                Spacer()
+
+                if post.userId != sessionManager.getCurrentUser()?.id {
+                    Button(action: {
+                        // Report action here
+                    }) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .resizable()
+                            .frame(width: 18, height: 18)
+                            .foregroundColor(.orange)
+                    }
+                }
             }
             .padding(.vertical, 1)
 
             Text(Utils.getRelativeTime(from: post.createdon))
                 .font(.footnote)
                 .foregroundColor(.gray)
-                //.padding(.top, 5)
         }
         .padding(5)
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Notification"), message: Text(alertMessage ?? "An error occurred."), dismissButton: .default(Text("OK")))
+        }
+        .confirmationDialog("Are you sure you want to delete this post?", isPresented: $showConfirmationDialog) {
+            Button("Delete", role: .destructive) {
+                deletePost()
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .sheet(isPresented: $isEditing) {
+                    UserPostEditView(postId: post.postId)
+                }
+    }
+
+    private func deletePost() {
+        userPostService.deleteUserPost(postId: post.postId) { result in
+            switch result {
+            case .success:
+                if let index = posts.firstIndex(where: { $0.postId == post.postId }) {
+                                   posts.remove(at: index)
+                               }
+                alertMessage = "Post deleted successfully."
+                showAlert = true
+            case .failure(let error):
+                alertMessage = "Failed to delete post: \(error.localizedDescription)"
+                showAlert = true
+            }
+        }
     }
 }

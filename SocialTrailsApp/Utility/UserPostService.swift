@@ -129,67 +129,73 @@ class UserPostService: ObservableObject {
             }
         }
     func getAllUserPostDetail(userId: String, completion: @escaping ([UserPost]?, Error?) -> Void) {
-            reference.child(collectionName).observe(.value) { snapshot in
-                guard let snapshot = snapshot as? DataSnapshot else {
-                    completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not retrieve data"]))
-                    return
-                }
+        reference.child(collectionName).observeSingleEvent(of: .value) { snapshot in
+            guard let snapshot = snapshot as? DataSnapshot else {
+                completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not retrieve data"]))
+                return
+            }
 
-                var postList: [UserPost] = []
-                var tempList: [UserPost] = []
+            var postList: [UserPost] = []
+            var tempList: [UserPost] = []
 
-                for child in snapshot.children {
-                    if let childSnapshot = child as? DataSnapshot,
-                       let post = try? childSnapshot.data(as: UserPost.self),
-                       post.userId == userId {
-                        let mutablePost = post
-                        mutablePost.postId = childSnapshot.key
-                        tempList.append(mutablePost)
-                    }
-                }
-
-                if tempList.isEmpty {
-                    completion([], nil)
-                    return
-                }
-
-                let pendingRequests = DispatchGroup()
-
-                for post in tempList {
-                    pendingRequests.enter()
-
-                    self.postImagesService.getAllPhotosByPostId(uid: post.postId) { result in
-                        switch result {
-                        case .success(let imageUrls):
-                            print("post : \(post.postId) and images \(imageUrls.count)")
-                            post.uploadedImageUris = imageUrls
-
-                            self.retrieveUserDetails(userId: post.userId) { userDetails, _ in
-                                if let userDetails = userDetails {
-                                    post.username = userDetails.username
-                                    post.userprofilepicture = userDetails.profilepicture
-                                }
-
-                                self.countCommentsForPost(postId: post.postId) { commentCount, _ in
-                                    post.commentcount = commentCount ?? 0
-                                    postList.append(post)
-                                    pendingRequests.leave()
-                                }
-                            }
-                        case .failure:
-                            postList.append(post)
-                            pendingRequests.leave()
-                        }
-                    }
-                }
-
-                // Notify when all async tasks are done
-                pendingRequests.notify(queue: .main) {
-                    postList.sort { $0.createdon > $1.createdon }
-                    completion(postList, nil)
+            for child in snapshot.children {
+                if let childSnapshot = child as? DataSnapshot,
+                   let post = try? childSnapshot.data(as: UserPost.self),
+                   post.userId == userId {
+                    var mutablePost = post
+                    mutablePost.postId = childSnapshot.key
+                    tempList.append(mutablePost)
                 }
             }
+
+            // Check if tempList is empty
+            if tempList.isEmpty {
+                completion([], nil)
+                return
+            }
+
+            let pendingRequests = DispatchGroup()
+
+            for post in tempList {
+                pendingRequests.enter()
+
+                self.postImagesService.getAllPhotosByPostId(uid: post.postId) { result in
+                    switch result {
+                    case .success(let imageUrls):
+                        print("post : \(post.postId) and images \(imageUrls.count)")
+                        post.uploadedImageUris = imageUrls
+                        
+                        // Safeguard on user details retrieval
+                        self.retrieveUserDetails(userId: post.userId) { userDetails, error in
+                            if let userDetails = userDetails {
+                                post.username = userDetails.username
+                                post.userprofilepicture = userDetails.profilepicture
+                            } else if let error = error {
+                                print("Error retrieving user details: \(error.localizedDescription)")
+                            }
+
+                            self.countCommentsForPost(postId: post.postId) { commentCount, _ in
+                                post.commentcount = commentCount ?? 0
+                                postList.append(post)
+                                pendingRequests.leave()
+                            }
+                        }
+                    case .failure(let error):
+                        print("Error fetching images for post \(post.postId): \(error.localizedDescription)")
+                        postList.append(post)
+                        pendingRequests.leave()
+                    }
+                }
+            }
+
+            // Notify when all async tasks are done
+            pendingRequests.notify(queue: .main) {
+                postList.sort { $0.createdon > $1.createdon }
+                completion(postList, nil)
+            }
         }
+    }
+
     
     func retrievePostsForFollowedUsers(currentUserId: String, completion: @escaping ([UserPost]?, Error?) -> Void) {
         followService.getFollowAndFollowerIdsByUserId(userId: currentUserId) { followedUserIds, error in
@@ -198,6 +204,7 @@ class UserPostService: ObservableObject {
                 return
             }
 
+            // Safeguard against nil or empty followedUserIds
             guard let followedUserIds = followedUserIds, !followedUserIds.isEmpty else {
                 print("No followed users")
                 completion([], nil)
@@ -222,10 +229,113 @@ class UserPostService: ObservableObject {
             }
 
             pendingRequests.notify(queue: .main) {
-                completion(postList, nil) 
+                completion(postList.isEmpty ? nil : postList, nil)
             }
         }
     }
+
+    func deleteAllLikesForPost(postId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+            reference.child("postlike").queryOrdered(byChild: "postId").queryEqual(toValue: postId)
+                .observeSingleEvent(of: .value) { snapshot in
+                    var deleteTasks: [DatabaseReference] = []
+
+                    for child in snapshot.children {
+                        if let likeSnapshot = child as? DataSnapshot {
+                            deleteTasks.append(likeSnapshot.ref)
+                        }
+                    }
+
+                    let dispatchGroup = DispatchGroup()
+                    var deleteErrors: [Error] = []
+
+                    for ref in deleteTasks {
+                        dispatchGroup.enter()
+                        ref.removeValue { error, _ in
+                            if let error = error {
+                                deleteErrors.append(error)
+                            }
+                            dispatchGroup.leave()
+                        }
+                    }
+
+                    dispatchGroup.notify(queue: .main) {
+                        if deleteErrors.isEmpty {
+                            completion(.success(()))
+                        } else {
+                            completion(.failure(deleteErrors.first!))
+                        }
+                    }
+                } withCancel: { error in
+                    completion(.failure(error))
+                }
+        }
+    func deleteUserPost(postId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        // First delete all associated comments
+        postCommentService.deleteAllCommentsForPost(postId: postId) { result in
+            switch result {
+            case .success:
+                // Then delete all associated likes
+                self.deleteAllLikesForPost(postId: postId) { result in
+                    switch result {
+                    case .success:
+                        // Now delete all associated images
+                        self.postImagesService.deleteAllPostImages(postId: postId) { result in
+                            switch result {
+                            case .success:
+                                // Finally, delete the post itself
+                                self.reference.child(self.collectionName).child(postId).removeValue { error, _ in
+                                    if let error = error {
+                                        completion(.failure(error))
+                                    } else {
+                                        completion(.success(()))
+                                    }
+                                }
+                            case .failure(let error):
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    func getPostByPostId(postId: String, completion: @escaping (Result<UserPost, Error>) -> Void) {
+            reference.child(collectionName).child(postId).observeSingleEvent(of: .value) { snapshot in
+                guard let post = try? snapshot.data(as: UserPost.self) else {
+                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Post not found"])))
+                    return
+                }
+                post.postId = postId
+                
+                self.postImagesService.getAllPhotosByPostId(uid: postId) { result in
+                    switch result {
+                    case .success(let imageUris):
+                        post.uploadedImageUris = imageUris
+                        completion(.success(post))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            } withCancel: { error in
+                completion(.failure(error))
+            }
+        }
+        
+        func updateUserPost(post: UserPost, completion: @escaping (Result<Void, Error>) -> Void) {
+            post.updatedon = Utils.getCurrentDatetime()
+            reference.child(collectionName).child(post.postId).updateChildValues(post.toMapUpdate()) { error, _ in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
+
 }
 
 

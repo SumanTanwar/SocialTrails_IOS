@@ -143,9 +143,6 @@ struct ViewProfileView: View {
                             }
                         }
                     }
-
-
-
                     .padding(.horizontal, 10)
                 }
                 

@@ -118,4 +118,156 @@ class PostImagesService {
             completion(.failure(error))
         }
     }
+    func deleteAllPostImages(postId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+           reference.child(collectionName)
+               .queryOrdered(byChild: "postId")
+               .queryEqual(toValue: postId)
+               .observeSingleEvent(of: .value) { snapshot in
+                   if snapshot.exists() {
+                       let dispatchGroup = DispatchGroup()
+                       var deleteErrors: [Error] = []
+
+                       for childSnapshot in snapshot.children {
+                           if let childData = childSnapshot as? DataSnapshot,
+                              let photoPath = childData.childSnapshot(forPath: "imagePath").value as? String {
+                               
+                               dispatchGroup.enter()
+                               self.deleteImageFromStorage(photoPath) { error in
+                                   if let error = error {
+                                       deleteErrors.append(error)
+                                   }
+                                   dispatchGroup.leave()
+                               }
+
+                               dispatchGroup.enter()
+                               childData.ref.removeValue { error, _ in
+                                   if let error = error {
+                                       deleteErrors.append(error)
+                                   }
+                                   dispatchGroup.leave()
+                               }
+                           }
+                       }
+
+                       dispatchGroup.notify(queue: .main) {
+                           if deleteErrors.isEmpty {
+                               completion(.success(()))
+                           } else {
+                               completion(.failure(deleteErrors.first!))
+                           }
+                       }
+                   } else {
+                       completion(.failure(NSError(domain: "PhotoErrorDomain", code: 404, userInfo: [NSLocalizedDescriptionKey: "No photos found for this postId."])))
+                   }
+               } withCancel: { error in
+                   completion(.failure(error))
+               }
+       }
+
+       // Delete a specific image associated with a post
+       func deleteImage(postId: String, photoPath: String, completion: @escaping (Result<Void, Error>) -> Void) {
+           reference.child(collectionName).queryOrdered(byChild: "postId").queryEqual(toValue: postId).observeSingleEvent(of: .value) { snapshot in
+               if snapshot.exists() {
+                   for childSnapshot in snapshot.children {
+                       if let snapshot = childSnapshot as? DataSnapshot,
+                          let storedPostId = snapshot.childSnapshot(forPath: "postId").value as? String,
+                          let storedPhotoPath = snapshot.childSnapshot(forPath: "imagePath").value as? String {
+
+                           if storedPostId == postId && storedPhotoPath == photoPath {
+                               let deleteGroup = DispatchGroup()
+
+                               deleteGroup.enter()
+                               snapshot.ref.removeValue { error, _ in
+                                   if let error = error {
+                                       completion(.failure(error))
+                                   }
+                                   deleteGroup.leave()
+                               }
+
+                               deleteGroup.enter()
+                               self.deleteImageFromStorage(storedPhotoPath) { error in
+                                   if let error = error {
+                                       completion(.failure(error))
+                                   }
+                                   deleteGroup.leave()
+                               }
+
+                               deleteGroup.notify(queue: .main) {
+                                   self.updatePhotoOrder(postId: postId) { result in
+                                       switch result {
+                                       case .success:
+                                           completion(.success(()))
+                                       case .failure(let error):
+                                           completion(.failure(error))
+                                       }
+                                   }
+                               }
+                               return
+                           }
+                       }
+                   }
+                   completion(.failure(NSError(domain: "PhotoErrorDomain", code: 404, userInfo: [NSLocalizedDescriptionKey: "Photo path not found in the database."])))
+               } else {
+                   completion(.failure(NSError(domain: "PhotoErrorDomain", code: 404, userInfo: [NSLocalizedDescriptionKey: "Task failed. No photos found."])))
+               }
+           } withCancel: { error in
+               completion(.failure(error))
+           }
+       }
+
+       // Delete image from Firebase Storage
+       private func deleteImageFromStorage(_ photoPath: String, completion: @escaping (Error?) -> Void) {
+           let storageRef = Storage.storage().reference(forURL: photoPath)
+         //  let storageRef = storageReference.child(photoPath)
+
+           storageRef.delete { error in
+               if let error = error {
+                   print("Failed to delete image from Firebase Storage: \(error.localizedDescription)")
+                   completion(error)
+               } else {
+                   print("Image deleted from Firebase Storage.")
+                   completion(nil)
+               }
+           }
+       }
+
+       // Update the order of photos
+       func updatePhotoOrder(postId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+           reference.child(collectionName)
+               .queryOrdered(byChild: "postId")
+               .queryEqual(toValue: postId)
+               .observeSingleEvent(of: .value) { snapshot in
+                   if !snapshot.exists() {
+                       completion(.failure(NSError(domain: "PhotoErrorDomain", code: 404, userInfo: [NSLocalizedDescriptionKey: "No photos found for this postId."])))
+                       return
+                   }
+
+                   var order = 1
+                   let dispatchGroup = DispatchGroup()
+                   var updateErrors: [Error] = []
+
+                   for childSnapshot in snapshot.children {
+                       if let snapshot = childSnapshot as? DataSnapshot {
+                           dispatchGroup.enter()
+                           snapshot.ref.child("order").setValue(order) { error, _ in
+                               if let error = error {
+                                   updateErrors.append(error)
+                               }
+                               dispatchGroup.leave()
+                           }
+                           order += 1
+                       }
+                   }
+
+                   dispatchGroup.notify(queue: .main) {
+                       if updateErrors.isEmpty {
+                           completion(.success(()))
+                       } else {
+                           completion(.failure(updateErrors.first!))
+                       }
+                   }
+               } withCancel: { error in
+                   completion(.failure(error))
+               }
+       }
 }

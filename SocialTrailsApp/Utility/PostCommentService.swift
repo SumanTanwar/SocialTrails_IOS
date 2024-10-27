@@ -43,4 +43,41 @@ class PostCommentService {
                    completion(nil, error)
                }
        }
+    func deleteAllCommentsForPost(postId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+            reference.child(_collection)
+                .queryOrdered(byChild: "postId")
+                .queryEqual(toValue: postId)
+                .observeSingleEvent(of: .value) { snapshot in
+                    var deleteTasks: [DatabaseReference] = []
+
+                    for childSnapshot in snapshot.children {
+                        if let commentSnapshot = childSnapshot as? DataSnapshot {
+                            deleteTasks.append(commentSnapshot.ref)
+                        }
+                    }
+
+                    let dispatchGroup = DispatchGroup()
+                    var deleteErrors: [Error] = []
+
+                    for ref in deleteTasks {
+                        dispatchGroup.enter()
+                        ref.removeValue { error, _ in
+                            if let error = error {
+                                deleteErrors.append(error)
+                            }
+                            dispatchGroup.leave()
+                        }
+                    }
+
+                    dispatchGroup.notify(queue: .main) {
+                        if deleteErrors.isEmpty {
+                            completion(.success(()))
+                        } else {
+                            completion(.failure(deleteErrors.first!))
+                        }
+                    }
+                } withCancel: { error in
+                    completion(.failure(error))
+                }
+        }
 }
