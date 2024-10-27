@@ -26,7 +26,7 @@ struct UserPostsDetailView: View {
                         ScrollView {
                             LazyVStack(spacing: 0) {
                                 ForEach(userPosts) { post in
-                                    PostDetailRowView(post: post)
+                                    PostDetailRowView(post: post,posts: $userPosts)
                                         .padding(.horizontal)
                                         .id(post.postId)
                                 }

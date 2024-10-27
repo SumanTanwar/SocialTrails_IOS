@@ -17,7 +17,7 @@ class UserPost: Decodable,Identifiable {
     var location: String?
     var flagged: Bool?
     var moderationstatus: Bool?
-    var imageUris: [UIImage]? // Keep as UIImage
+    var imageUris: [UIImage]?
     var uploadedImageUris: [String]?
     var latitude: Double?
     var longitude: Double?
@@ -42,7 +42,15 @@ class UserPost: Decodable,Identifiable {
         self.latitude = latitude
         self.longitude = longitude
     }
-
+    init(captionText: String, location: String?, latitude: Double?, longitude: Double?) {
+        self.createdon=""
+        self.postId = ""
+        self.userId = ""
+        self.captiontext = captionText
+        self.location = location
+        self.latitude = latitude
+        self.longitude = longitude
+    }
     // Required initializer for Decodable
     required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -85,6 +93,16 @@ class UserPost: Decodable,Identifiable {
             "userId": userId,
             "captiontext": captiontext,
             "createdon": createdon,
+            "location": location ?? "",
+            "latitude": latitude ?? 0.0,
+            "longitude": longitude ?? 0.0,
+        
+        ]
+    }
+    func toMapUpdate() -> [String: Any] {
+        return [
+            "captiontext": captiontext,
+            "updatedon" : updatedon ?? "",
             "location": location ?? "",
             "latitude": latitude ?? 0.0,
             "longitude": longitude ?? 0.0,
