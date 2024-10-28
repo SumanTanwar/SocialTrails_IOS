@@ -19,7 +19,7 @@ struct AdminUserManageView: View {
     @State private var showingAlert: Bool = false
     @State private var alertMessage: String = ""
     @State private var userPosts: [UserPost] = []
-    
+    @State private var profilepicture: String?
     @ObservedObject private var sessionManager = SessionManager.shared
     @StateObject private var userService = UserService()
     @StateObject private var userPostService = UserPostService()
@@ -28,23 +28,37 @@ struct AdminUserManageView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 VStack {
-                    Image("user")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 80, height: 80)
-                        .cornerRadius(40)
-                    
-                    if let currentUser = sessionManager.getCurrentUser() {
-                        Text(currentUser.username)
-                            .font(.system(size: 16))
-                            .foregroundColor(.black)
-                            .padding(.leading, 10)
+                    if let url = profilepicture, let imageUrl = URL(string: url) {
+                        AsyncImage(url: imageUrl) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 80, height: 80)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                        } placeholder: {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                                .foregroundColor(Color(.systemGray4))
+                                .clipShape(Circle())
+                        }
                     } else {
-                        Text("Unknown User")
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 80, height: 80)
+                            .foregroundColor(Color(.systemGray4))
+                            .clipShape(Circle())
+                    }
+
+                   
+                        Text(username)
                             .font(.system(size: 16))
                             .foregroundColor(.black)
                             .padding(.leading, 10)
-                    }
+                    
                 }
                 
                 VStack(alignment: .leading) {
@@ -162,23 +176,29 @@ struct AdminUserManageView: View {
                 ]
                 
                 LazyVGrid(columns: columns, spacing: 0) {
-                    ForEach(userPosts, id: \.postId) { post in
-                        if let imageUrls = post.uploadedImageUris, let firstImageUrl = imageUrls.first {
-                            AsyncImage(url: URL(string: firstImageUrl)) { image in
-                                image
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 130, height: 130)
-                                    .clipped()
-                                    .cornerRadius(0)
-                                    .overlay(RoundedRectangle(cornerRadius: 0)
-                                                .stroke(Color.gray, lineWidth: 1))
-                            } placeholder: {
-                                ProgressView()
-                                    .frame(width: 130, height: 130)
-                                    .background(Color.gray.opacity(0.2))
-                                    .overlay(RoundedRectangle(cornerRadius: 0)
-                                                .stroke(Color.gray, lineWidth: 1))
+                    ForEach($userPosts, id: \.postId) { $post in
+                        
+                        if let imageUrls = post.uploadedImageUris, !imageUrls.isEmpty {
+                           
+                            if let firstImageUrl = imageUrls.first {
+                                NavigationLink(destination: AdminPostDetailView(postDetailId: post.postId)) {
+                                    AsyncImage(url: URL(string: firstImageUrl)) { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 130, height: 130)
+                                            .clipped()
+                                            .cornerRadius(0)
+                                            .overlay(RoundedRectangle(cornerRadius: 0)
+                                                        .stroke(Color.gray, lineWidth: 1))
+                                    } placeholder: {
+                                        ProgressView()
+                                            .frame(width: 130, height: 130)
+                                            .background(Color.gray.opacity(0.2))
+                                            .overlay(RoundedRectangle(cornerRadius: 0)
+                                                        .stroke(Color.gray, lineWidth: 1))
+                                    }
+                                }
                             }
                         }
                     }
@@ -213,6 +233,7 @@ struct AdminUserManageView: View {
             self.userprofiledeleted = userData["profiledeleted"] as? Bool ?? false
             self.showReason = userData["suspended"] as? Bool ?? false
             self.reason = userData["suspendedreason"] as? String ?? ""
+            self.profilepicture = userData["profilepicture"] as? String ?? ""
             self.deleteText = "Deleted profile by admin on \(userData["admindeletedon"] as? String ?? "")"
         }
     }

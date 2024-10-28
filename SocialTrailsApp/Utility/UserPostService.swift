@@ -357,7 +357,50 @@ class UserPostService: ObservableObject {
             }
         }
     }
-
+    func getUserPostDetailById(postId: String, completion: @escaping (Result<UserPost, Error>) -> Void) {
+            reference.child(collectionName).child(postId).observeSingleEvent(of: .value) { snapshot in
+                guard let post = try? snapshot.data(as: UserPost.self) else {
+                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Post not found or user does not have access to it"])))
+                    return
+                }
+                
+                let mutablePost = post
+                mutablePost.postId = postId
+                
+               
+                self.postImagesService.getAllPhotosByPostId(uid: postId) { result in
+                    switch result {
+                    case .success(let imageUris):
+                        mutablePost.uploadedImageUris = imageUris
+                        
+                        // Retrieve user details
+                        self.retrieveUserDetails(userId: mutablePost.userId) { userDetails, error in
+                            if let userDetails = userDetails {
+                                mutablePost.username = userDetails.username
+                                mutablePost.userprofilepicture = userDetails.profilepicture
+                                
+                                // Count comments for the post
+                                self.countCommentsForPost(postId: mutablePost.postId) { commentCount, error in
+                                    if let commentCount = commentCount {
+                                        mutablePost.commentcount = commentCount
+                                        completion(.success(mutablePost))
+                                    } else {
+                                        completion(.failure(error ?? NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to count comments"])))
+                                    }
+                                }
+                            } else {
+                                completion(.failure(error ?? NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve user details"])))
+                            }
+                        }
+                        
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            } withCancel: { error in
+                completion(.failure(error))
+            }
+        }
 }
 
 

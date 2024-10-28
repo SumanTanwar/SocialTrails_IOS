@@ -13,7 +13,7 @@ struct PostLikesList: View {
     @State private var likes: [PostLike] = []
    
     @ObservedObject private var sessionManager = SessionManager.shared
-
+    var onLikesUpdated: ((Int) -> Void)?
     var body: some View {
         NavigationView {
             ScrollView {
@@ -69,7 +69,7 @@ struct PostLikesList: View {
                 }
                 .padding()
             }
-            .navigationTitle("Likes")
+           // .navigationTitle("Likes")
             .onAppear {
                 loadLikes()
             }
@@ -82,6 +82,7 @@ struct PostLikesList: View {
             switch result {
             case .success(let likesList):
                 likes = likesList
+                onLikesUpdated?(likesList.count)
             case .failure:
                 likes = []
             }
