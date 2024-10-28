@@ -21,6 +21,8 @@
 		6C35BAC42CB960C100E85D7C /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C35BAC32CB960C100E85D7C /* EditProfileView.swift */; };
 		6C35BAC62CB979BA00E85D7C /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6C35BAC52CB979BA00E85D7C /* FirebaseFirestore */; };
 		6C4D42172CB60C780071342B /* UserSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4D42162CB60C780071342B /* UserSettingView.swift */; };
+		6C5C803F2CD021BB00C29D09 /* SearchUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C803E2CD021BB00C29D09 /* SearchUserView.swift */; };
+		6C5C80412CD0294000C29D09 /* FollowUnfollowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5C80402CD0294000C29D09 /* FollowUnfollowView.swift */; };
 		6C5FD7672CBF8884008D8AE3 /* PolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5FD7662CBF8884008D8AE3 /* PolicyView.swift */; };
 		6C70D4632CBEA72C00CDB905 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6C70D4622CBEA72C00CDB905 /* SDWebImage */; };
 		6C70D4652CBEA72C00CDB905 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6C70D4642CBEA72C00CDB905 /* SDWebImageMapKit */; };
@@ -81,6 +83,8 @@
 		6C35BA7B2CB9505B00E85D7C /* ViewProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewProfileView.swift; sourceTree = "<group>"; };
 		6C35BAC32CB960C100E85D7C /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		6C4D42162CB60C780071342B /* UserSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingView.swift; sourceTree = "<group>"; };
+		6C5C803E2CD021BB00C29D09 /* SearchUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUserView.swift; sourceTree = "<group>"; };
+		6C5C80402CD0294000C29D09 /* FollowUnfollowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowUnfollowView.swift; sourceTree = "<group>"; };
 		6C5FD7662CBF8884008D8AE3 /* PolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyView.swift; sourceTree = "<group>"; };
 		6CEFD1A52CB63B070030BB7A /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		84948BAB2CAA2EDA006BE6A1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -202,6 +206,8 @@
 				84C4F5702CCF26A90026C179 /* CommentDialog.swift */,
 				84C4F5EA2CCF45D40026C179 /* MapOnlyView.swift */,
 				84C4F66C2CCF51DE0026C179 /* ReportDialog.swift */,
+				6C5C803E2CD021BB00C29D09 /* SearchUserView.swift */,
+				6C5C80402CD0294000C29D09 /* FollowUnfollowView.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -368,6 +374,7 @@
 				84D666132CCB2D5100BF5D2D /* PostDetailRowView.swift in Sources */,
 				84B87B552CCE9C8D006BA7E2 /* UserPostEditView.swift in Sources */,
 				6C4D42172CB60C780071342B /* UserSettingView.swift in Sources */,
+				6C5C80412CD0294000C29D09 /* FollowUnfollowView.swift in Sources */,
 				84D666112CCB283D00BF5D2D /* UserPostsDetailView.swift in Sources */,
 				84C4F5EB2CCF45D40026C179 /* MapOnlyView.swift in Sources */,
 				84948BC12CAA70ED006BE6A1 /* DashboardView.swift in Sources */,
@@ -387,6 +394,7 @@
 				84948BBF2CAA705F006BE6A1 /* SignInView.swift in Sources */,
 				84C4F66D2CCF51DE0026C179 /* ReportDialog.swift in Sources */,
 				022DA9C62CA46DAC008C426C /* SocialTrailsApp.xcdatamodeld in Sources */,
+				6C5C803F2CD021BB00C29D09 /* SearchUserView.swift in Sources */,
 				84A1C98F2CAB02D000A53D40 /* BottomNavigationView.swift in Sources */,
 				6CEFD1A62CB63B070030BB7A /* ChangePasswordView.swift in Sources */,
 			);

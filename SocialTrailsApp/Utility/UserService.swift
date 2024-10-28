@@ -404,5 +404,34 @@ class UserService : ObservableObject{
             completion(.failure(error))
         }
     }
+    
+    
+    func getActiveUserList(completion: @escaping (Result<[Users], Error>) -> Void) {
+        reference.child(_collection).observeSingleEvent(of: .value) { snapshot in
+                var activeUsersList: [Users] = []
+
+                guard snapshot.exists() else {
+                    completion(.success(activeUsersList))
+                    return
+                }
+
+                for child in snapshot.children {
+                    if let childSnapshot = child as? DataSnapshot,
+                       let user = try? childSnapshot.data(as: Users.self) {
+                        // Check if the user is active, not marked as deleted, and not suspended
+                        if user.roles == UserRole.user.role &&
+                           !user.admindeleted &&
+                           !user.profiledeleted &&
+                           user.isactive {
+                            activeUsersList.append(user)
+                        }
+                    }
+                }
+
+                completion(.success(activeUsersList))
+            } withCancel: { error in
+                completion(.failure(error))
+            }
+        }
 
   }

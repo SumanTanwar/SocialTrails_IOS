@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseDatabase
 
-class FollowService {
+class FollowService: ObservableObject {
     private var reference: DatabaseReference
     private let _collection = "userfollow"
     private let userService = UserService()
@@ -52,4 +52,51 @@ class FollowService {
                 completion(nil, error) 
             }
     }
-}
+    
+    func sendFollowRequest(currentUserId: String, userIdToFollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let followRef = reference.child(_collection)
+
+        followRef.queryOrdered(byChild: "userId").queryEqual(toValue: currentUserId).observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                for child in snapshot.children {
+                    if let ds = child as? DataSnapshot,
+                       var userFollow = ds.value as? [String: Any] {
+                        
+                        // Update following IDs
+                        if var followingIds = userFollow["followingIds"] as? [String: Bool] {
+                            followingIds[userIdToFollow] = true // Add user to follow
+                            userFollow["followingIds"] = followingIds
+                            ds.ref.setValue(userFollow) { error, _ in
+                                if let error = error {
+                                    completion(.failure(error))
+                                } else {
+                                    completion(.success(()))
+                                }
+                            }
+                        }
+                        return // Exit loop after updating
+                    }
+                }
+            } else {
+                // Create a new follow entry
+                let followId = followRef.childByAutoId().key ?? UUID().uuidString  
+                             let newUserFollow: [String: Any] = [
+                                 "userId": currentUserId,
+                                 "followingIds": [userIdToFollow: true],
+                                 "followerIds": []
+                             ]
+                followRef.child(followId).setValue(newUserFollow) { error, _ in
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(()))
+                    }
+                }
+            }
+        } withCancel: { error in
+            completion(.failure(error))
+        }
+    }
+
+    }
+
