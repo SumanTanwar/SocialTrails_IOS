@@ -23,7 +23,7 @@ class UserPost: ObservableObject,Decodable,Identifiable {
     var longitude: Double?
     @Published var isliked: Bool?
     @Published var likecount: Int?
-    var commentcount: Int?
+    @Published var commentcount: Int?
     var username: String?
     var userprofilepicture: String?
     

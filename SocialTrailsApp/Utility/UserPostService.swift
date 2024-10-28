@@ -121,14 +121,17 @@ class UserPostService: ObservableObject {
 
        
         func countCommentsForPost(postId: String, completion: @escaping (Int?, Error?) -> Void) {
-            postCommentService.retrieveComments(postId: postId) { comments, error in
-                if let comments = comments {
-                    completion(comments.count, nil)
-                } else {
+            postCommentService.retrieveComments(postId: postId) { result in
+                switch result {
+                case .success(let fetchedComments):
+                    
+                    completion(fetchedComments.count, nil)
+                case .failure(let error):
                     completion(nil, error)
                 }
             }
-        }
+            
+    }
     func getAllUserPostDetail(userId: String, completion: @escaping ([UserPost]?, Error?) -> Void) {
         reference.child(collectionName).observeSingleEvent(of: .value) { snapshot in
             guard let snapshot = snapshot as? DataSnapshot else {
