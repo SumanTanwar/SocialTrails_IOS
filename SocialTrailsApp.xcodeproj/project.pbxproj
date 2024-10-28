@@ -40,6 +40,7 @@
 		84B87B552CCE9C8D006BA7E2 /* UserPostEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B87B542CCE9C8D006BA7E2 /* UserPostEditView.swift */; };
 		84C4F4C72CCEF6390026C179 /* PostLikesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4F4C62CCEF6390026C179 /* PostLikesList.swift */; };
 		84C4F5712CCF26A90026C179 /* CommentDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4F5702CCF26A90026C179 /* CommentDialog.swift */; };
+		84C4F5EB2CCF45D40026C179 /* MapOnlyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4F5EA2CCF45D40026C179 /* MapOnlyView.swift */; };
 		84C5CC382CAA24CB002641EA /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C5CC372CAA24CB002641EA /* SplashScreenView.swift */; };
 		84D666112CCB283D00BF5D2D /* UserPostsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D666102CCB283D00BF5D2D /* UserPostsDetailView.swift */; };
 		84D666132CCB2D5100BF5D2D /* PostDetailRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D666122CCB2D5100BF5D2D /* PostDetailRowView.swift */; };
@@ -92,6 +93,7 @@
 		84B87B542CCE9C8D006BA7E2 /* UserPostEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPostEditView.swift; sourceTree = "<group>"; };
 		84C4F4C62CCEF6390026C179 /* PostLikesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostLikesList.swift; sourceTree = "<group>"; };
 		84C4F5702CCF26A90026C179 /* CommentDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentDialog.swift; sourceTree = "<group>"; };
+		84C4F5EA2CCF45D40026C179 /* MapOnlyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapOnlyView.swift; sourceTree = "<group>"; };
 		84C5CC372CAA24CB002641EA /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		84D666102CCB283D00BF5D2D /* UserPostsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPostsDetailView.swift; sourceTree = "<group>"; };
 		84D666122CCB2D5100BF5D2D /* PostDetailRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailRowView.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 				84B87B542CCE9C8D006BA7E2 /* UserPostEditView.swift */,
 				84C4F4C62CCEF6390026C179 /* PostLikesList.swift */,
 				84C4F5702CCF26A90026C179 /* CommentDialog.swift */,
+				84C4F5EA2CCF45D40026C179 /* MapOnlyView.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -363,6 +366,7 @@
 				84B87B552CCE9C8D006BA7E2 /* UserPostEditView.swift in Sources */,
 				6C4D42172CB60C780071342B /* UserSettingView.swift in Sources */,
 				84D666112CCB283D00BF5D2D /* UserPostsDetailView.swift in Sources */,
+				84C4F5EB2CCF45D40026C179 /* MapOnlyView.swift in Sources */,
 				84948BC12CAA70ED006BE6A1 /* DashboardView.swift in Sources */,
 				022DA9C32CA46DAC008C426C /* Persistence.swift in Sources */,
 				6C35BAC42CB960C100E85D7C /* EditProfileView.swift in Sources */,
