@@ -12,12 +12,13 @@ struct PostDetailRowView: View {
     @ObservedObject var post: UserPost 
     @ObservedObject private var sessionManager = SessionManager.shared
     @StateObject private var userPostService = UserPostService()
+     
     @State private var showAlert = false
     @State private var alertMessage: String?
     @State private var showConfirmationDialog = false
     @Binding var posts: [UserPost]
     @State private var showLikesDialog = false
-    
+    @State private var showCommentDialog = false
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
@@ -122,12 +123,12 @@ struct PostDetailRowView: View {
                                   }
 
                 Button(action: {
-                    // Comment action here
-                }) {
-                    Image(systemName: "message")
-                        .resizable()
-                        .frame(width: 18, height: 18)
-                }
+                                  showCommentDialog = true
+                              }) {
+                                  Image(systemName: "message")
+                                      .resizable()
+                                      .frame(width: 18, height: 18)
+                              }
 
                 Text("\(post.commentcount ?? 0)")
                     .font(.subheadline)
@@ -164,10 +165,27 @@ struct PostDetailRowView: View {
         .sheet(isPresented: $showLikesDialog) {
             PostLikesList(postId: post.postId)
         }
+        .sheet(isPresented: $showCommentDialog) {
+                   CommentDialog(postId: post.postId, onCommentAdded: {
+                       fetchComments() 
+                   })
+               }
         .onAppear(){
             checkLikeStatus()
         }
         
+    }
+    private func fetchComments() {
+        let postCommentService = PostCommentService()
+        postCommentService.retrieveComments(postId: post.postId) { result in
+            switch result {
+            case .success(let fetchedComments):
+                
+                post.commentcount = fetchedComments.count
+            case .failure(let error):
+                print("Failed to fetch comments: \(error.localizedDescription)")
+            }
+        }
     }
     private func checkLikeStatus() {
           guard let userId = sessionManager.getCurrentUser()?.id else { return }
@@ -175,9 +193,9 @@ struct PostDetailRowView: View {
           let postLikeService = PostLikeService()
         postLikeService.getPostLikeByUserAndPostId(postId: post.postId,userId: userId) { result in
               switch result {
-              case .success(let postLike):
+              case .success(_):
                   post.isliked = true
-              case .failure(let error):
+              case .failure(_):
                   post.isliked = false
                  
               }
@@ -213,4 +231,5 @@ struct PostDetailRowView: View {
             }
         }
     }
+   
 }
