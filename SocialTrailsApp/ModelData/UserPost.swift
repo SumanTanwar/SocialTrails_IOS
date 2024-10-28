@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class UserPost: Decodable,Identifiable {
+class UserPost: ObservableObject,Decodable,Identifiable {
     var postId: String
     var userId: String
     var captiontext: String
@@ -21,14 +21,14 @@ class UserPost: Decodable,Identifiable {
     var uploadedImageUris: [String]?
     var latitude: Double?
     var longitude: Double?
-    var likecount: Int?
-    var isliked: Bool?
+    @Published var isliked: Bool?
+    @Published var likecount: Int?
     var commentcount: Int?
     var username: String?
     var userprofilepicture: String?
     
     enum CodingKeys: String, CodingKey {
-        case postId, userId, captiontext, createdon, updatedon, location, postdeleted, flagged, moderationstatus, uploadedImageUris, latitude, longitude, imageUris,username,userprofilepicture
+        case postId, userId, captiontext, createdon, updatedon, location, postdeleted, flagged, moderationstatus, uploadedImageUris, latitude, longitude, imageUris,username,userprofilepicture,likecount
     }
 
     // Initializer for creating a new post
@@ -70,9 +70,10 @@ class UserPost: Decodable,Identifiable {
             let imageUrlStrings = try? container.decode([String].self, forKey: .imageUris)
             imageUris = imageUrlStrings?.compactMap { urlString in
                 return loadImage(from: urlString)
+                
             }
-
-            likecount = 0
+        likecount = try? container.decode(Int.self, forKey: .likecount)
+            
             isliked = false
             commentcount = 0
         }
