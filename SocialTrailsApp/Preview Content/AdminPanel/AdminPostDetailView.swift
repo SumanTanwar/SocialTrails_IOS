@@ -1,4 +1,6 @@
 import SwiftUI
+import GoogleMaps
+import GooglePlaces
 
 struct AdminPostDetailView: View {
     var postDetailId: String
@@ -8,7 +10,7 @@ struct AdminPostDetailView: View {
     @State private var showingDeleteAlert = false
     @State private var navigateToUserManage = false
     @State private var userId: String?
-
+    @State private var showMapView = false
     var body: some View {
         VStack {
             if let post = userPost {
@@ -46,6 +48,9 @@ struct AdminPostDetailView: View {
                                 Text(post.location ?? "")
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
+                                    .onTapGesture {
+                                                            showMapView = true
+                                                        }
                             }
                         }
                         .padding(.bottom, 12)
@@ -115,7 +120,7 @@ struct AdminPostDetailView: View {
                                 
                             Divider()
                             PostLikesList(postId: post.postId, onLikesUpdated: { updatedCount in
-                                post.likecount = updatedCount
+                                userPost?.likecount = updatedCount
                             })
                         }
                        
@@ -128,7 +133,7 @@ struct AdminPostDetailView: View {
                             Divider()
                             AdminPostCommentView(postId: post.postId, onCommentUpdated: { updatedCount in
                                 print("")
-                                post.commentcount = updatedCount
+                                userPost?.commentcount = updatedCount
                             })
                         }
                     }
@@ -162,6 +167,11 @@ struct AdminPostDetailView: View {
                 EmptyView()
             }
         )
+        .sheet(isPresented: $showMapView) {
+            if let latitude = userPost?.latitude, let longitude = userPost?.longitude {
+             MapOnlyView(selectedLocation: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+            }
+        }
     }
 
     private func fetchUserPostDetail() {

@@ -5,7 +5,8 @@
 //  Created by Admin on 10/24/24.
 //
 import SwiftUI
-
+import GoogleMaps
+import GooglePlaces
 
 
 struct PostDetailRowView: View {
@@ -19,6 +20,7 @@ struct PostDetailRowView: View {
     @Binding var posts: [UserPost]
     @State private var showLikesDialog = false
     @State private var showCommentDialog = false
+    @State private var showMapView = false
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
@@ -53,6 +55,9 @@ struct PostDetailRowView: View {
                     Text(post.location ?? "")
                         .font(.subheadline)
                         .foregroundColor(.gray)
+                        .onTapGesture {
+                                                showMapView = true
+                                            }
                 }
 
                 Spacer()
@@ -172,6 +177,11 @@ struct PostDetailRowView: View {
                }
         .onAppear(){
             checkLikeStatus()
+        }
+        .sheet(isPresented: $showMapView) {
+            if let latitude = post.latitude, let longitude = post.longitude {
+             MapOnlyView(selectedLocation: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+            }
         }
         
     }
