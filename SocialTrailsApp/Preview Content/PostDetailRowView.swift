@@ -6,17 +6,17 @@
 //
 import SwiftUI
 
-import SwiftUI
+
 
 struct PostDetailRowView: View {
-    let post: UserPost
+    @ObservedObject var post: UserPost 
     @ObservedObject private var sessionManager = SessionManager.shared
     @StateObject private var userPostService = UserPostService()
     @State private var showAlert = false
     @State private var alertMessage: String?
     @State private var showConfirmationDialog = false
     @Binding var posts: [UserPost]
-    @State private var isEditing = false
+    @State private var showLikesDialog = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -106,15 +106,20 @@ struct PostDetailRowView: View {
 
             HStack {
                 Button(action: {
-                    // Like action here
-                }) {
-                    Image(systemName: "heart")
-                        .resizable()
-                        .frame(width: 18, height: 18)
-                }
+                                  toggleLike()
+                              }) {
+                                  Image(systemName: post.isliked ?? false ? "heart.fill" : "heart")
+                                      .resizable()
+                                      .frame(width: 18, height: 18)
+                              }
 
-                Text("\(post.likecount ?? 0)")
-                    .font(.subheadline)
+                              Text("\(post.likecount ?? 0)")
+                                  .font(.subheadline)
+                                  .onTapGesture {
+                                      if let likeCount = post.likecount, likeCount > 0 {
+                                                                  showLikesDialog.toggle()
+                                                              }
+                                  }
 
                 Button(action: {
                     // Comment action here
@@ -156,11 +161,43 @@ struct PostDetailRowView: View {
             }
             Button("Cancel", role: .cancel) {}
         }
-        .sheet(isPresented: $isEditing) {
-                    UserPostEditView(postId: post.postId)
-                }
+        .sheet(isPresented: $showLikesDialog) {
+            PostLikesList(postId: post.postId)
+        }
+        .onAppear(){
+            checkLikeStatus()
+        }
+        
     }
-
+    private func checkLikeStatus() {
+          guard let userId = sessionManager.getCurrentUser()?.id else { return }
+          
+          let postLikeService = PostLikeService()
+        postLikeService.getPostLikeByUserAndPostId(postId: post.postId,userId: userId) { result in
+              switch result {
+              case .success(let postLike):
+                  post.isliked = true
+              case .failure(let error):
+                  post.isliked = false
+                 
+              }
+          }
+      }
+    private func toggleLike() {
+          let postLikeService = PostLikeService()
+          let userId = sessionManager.getCurrentUser()?.id ?? ""
+          postLikeService.likeAndUnlikePost(postId: post.postId, userId: userId) { result in
+              switch result {
+              case .success(let likeResult):
+               
+                  post.isliked = likeResult.isliked
+                  post.likecount = likeResult.count
+              case .failure(let error):
+                  alertMessage = "Failed to like/unlike post: \(error.localizedDescription)"
+                  showAlert = true
+              }
+          }
+      }
     private func deletePost() {
         userPostService.deleteUserPost(postId: post.postId) { result in
             switch result {

@@ -73,6 +73,7 @@ class UserPostService: ObservableObject {
                         {
                         let mutablePost = post
                         mutablePost.postId = childSnapshot.key
+                       
                         tempList.append(mutablePost)
                     }
                 }
@@ -157,6 +158,7 @@ class UserPostService: ObservableObject {
             let pendingRequests = DispatchGroup()
 
             for post in tempList {
+                print("post \(post.postId) liek count : \(post.likecount)" )
                 pendingRequests.enter()
 
                 self.postImagesService.getAllPhotosByPostId(uid: post.postId) { result in
@@ -165,7 +167,6 @@ class UserPostService: ObservableObject {
                         print("post : \(post.postId) and images \(imageUrls.count)")
                         post.uploadedImageUris = imageUrls
                         
-                        // Safeguard on user details retrieval
                         self.retrieveUserDetails(userId: post.userId) { userDetails, error in
                             if let userDetails = userDetails {
                                 post.username = userDetails.username
@@ -335,6 +336,24 @@ class UserPostService: ObservableObject {
                 }
             }
         }
+    func updateLikeCount(postId: String, change: Int, callback: @escaping (Result<Int, Error>) -> Void) {
+        reference.child(collectionName).child(postId).child("likecount").runTransactionBlock({ (mutableData) -> TransactionResult in
+            var currentCount = mutableData.value as? Int ?? 0
+            currentCount += change
+            mutableData.value = currentCount
+            return TransactionResult.success(withValue: mutableData)
+        }) { (error, committed, snapshot) in
+            if let error = error {
+                callback(.failure(error))
+            } else {
+                if let snapshot = snapshot, let count = snapshot.value as? Int {
+                    callback(.success(count))
+                } else {
+                    callback(.failure(NSError(domain: "PostLikeService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to get like count."])))
+                }
+            }
+        }
+    }
 
 }
 
