@@ -17,7 +17,7 @@ struct BottomNavigationView: View {
                     Image(systemName: "house")
                 }
                 .tag(0)
-            DashboardView()
+            SearchUserView()
                 .tabItem {
                     Image(systemName: "magnifyingglass")
                     
