@@ -21,6 +21,8 @@ struct PostDetailRowView: View {
     @State private var showLikesDialog = false
     @State private var showCommentDialog = false
     @State private var showMapView = false
+    @State private var showReportPopup = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
@@ -142,7 +144,7 @@ struct PostDetailRowView: View {
 
                 if post.userId != sessionManager.getCurrentUser()?.id {
                     Button(action: {
-                        // Report action here
+                        showReportPopup.toggle()
                     }) {
                         Image(systemName: "exclamationmark.triangle")
                             .resizable()
@@ -175,14 +177,22 @@ struct PostDetailRowView: View {
                        fetchComments() 
                    })
                }
-        .onAppear(){
-            checkLikeStatus()
-        }
         .sheet(isPresented: $showMapView) {
             if let latitude = post.latitude, let longitude = post.longitude {
              MapOnlyView(selectedLocation: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
             }
         }
+        .onAppear(){
+            checkLikeStatus()
+        }
+        
+        .overlay(
+                    Group {
+                        if showReportPopup {
+                            ReportPopup(isPresented: $showReportPopup, postId: post.postId)
+                        }
+                    }
+                )
         
     }
     private func fetchComments() {

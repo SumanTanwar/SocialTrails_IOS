@@ -41,6 +41,7 @@
 		84C4F4C72CCEF6390026C179 /* PostLikesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4F4C62CCEF6390026C179 /* PostLikesList.swift */; };
 		84C4F5712CCF26A90026C179 /* CommentDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4F5702CCF26A90026C179 /* CommentDialog.swift */; };
 		84C4F5EB2CCF45D40026C179 /* MapOnlyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4F5EA2CCF45D40026C179 /* MapOnlyView.swift */; };
+		84C4F66D2CCF51DE0026C179 /* ReportDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C4F66C2CCF51DE0026C179 /* ReportDialog.swift */; };
 		84C5CC382CAA24CB002641EA /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C5CC372CAA24CB002641EA /* SplashScreenView.swift */; };
 		84D666112CCB283D00BF5D2D /* UserPostsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D666102CCB283D00BF5D2D /* UserPostsDetailView.swift */; };
 		84D666132CCB2D5100BF5D2D /* PostDetailRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D666122CCB2D5100BF5D2D /* PostDetailRowView.swift */; };
@@ -94,6 +95,7 @@
 		84C4F4C62CCEF6390026C179 /* PostLikesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostLikesList.swift; sourceTree = "<group>"; };
 		84C4F5702CCF26A90026C179 /* CommentDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentDialog.swift; sourceTree = "<group>"; };
 		84C4F5EA2CCF45D40026C179 /* MapOnlyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapOnlyView.swift; sourceTree = "<group>"; };
+		84C4F66C2CCF51DE0026C179 /* ReportDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDialog.swift; sourceTree = "<group>"; };
 		84C5CC372CAA24CB002641EA /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		84D666102CCB283D00BF5D2D /* UserPostsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPostsDetailView.swift; sourceTree = "<group>"; };
 		84D666122CCB2D5100BF5D2D /* PostDetailRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailRowView.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				84C4F4C62CCEF6390026C179 /* PostLikesList.swift */,
 				84C4F5702CCF26A90026C179 /* CommentDialog.swift */,
 				84C4F5EA2CCF45D40026C179 /* MapOnlyView.swift */,
+				84C4F66C2CCF51DE0026C179 /* ReportDialog.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -382,6 +385,7 @@
 				02FFBD3E2CAB032D006BCEFD /* ForgotPasswordView.swift in Sources */,
 				84948BB32CAA3063006BE6A1 /* SignUpView.swift in Sources */,
 				84948BBF2CAA705F006BE6A1 /* SignInView.swift in Sources */,
+				84C4F66D2CCF51DE0026C179 /* ReportDialog.swift in Sources */,
 				022DA9C62CA46DAC008C426C /* SocialTrailsApp.xcdatamodeld in Sources */,
 				84A1C98F2CAB02D000A53D40 /* BottomNavigationView.swift in Sources */,
 				6CEFD1A62CB63B070030BB7A /* ChangePasswordView.swift in Sources */,
