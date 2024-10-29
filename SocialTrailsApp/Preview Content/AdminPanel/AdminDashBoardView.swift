@@ -2,20 +2,20 @@ import SwiftUI
 
 struct AdminDashboardView: View {
     
-    @State private var adminName: String = "Admin"
-    @State private var adminEmail: String = "socialtrails2024@gmail.com"
     @State private var isLoggedOut = false
     
     @State private var numberOfUsers: String = "0"
     @State private var numberOfPosts: String = "0"
     @State private var numberOfReports: String = "0"
-    @State private var userRole: String = "ADMIN" // Default role
+    @State private var userRole: String = ""
     
     
     @StateObject private var userService = UserService()
     @StateObject private var followService = FollowService()
     @StateObject private var reportService = ReportService()
     @StateObject private var userPostService = UserPostService()
+    @ObservedObject private var sessionManager = SessionManager.shared
+
 
     
     
@@ -63,8 +63,14 @@ struct AdminDashboardView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 150, height: 150)
-                    .padding(.top, 60)
+                    .padding(.top, 10)
                 
+                Text("SocialTrails")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(.purple)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 1)
             }
             .onAppear {
                 fetchUserRole()
@@ -78,9 +84,17 @@ struct AdminDashboardView: View {
     }
     
     private func fetchUserRole() {
-        // Simulate fetching user role
-        userRole = "ADMIN" // Set based on actual logic
+
+        let role = sessionManager.getCurrentUser()?.roleType
+        if role == UserRole.moderator.role {
+            userRole = "MODERATOR"
+         
+        
+        } else {
+            userRole = "ADMIN"
+        }
     }
+
 
     private func getRegularUserList() {
             userService.getRegularUserList { result in

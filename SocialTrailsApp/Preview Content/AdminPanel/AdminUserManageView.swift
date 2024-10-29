@@ -73,23 +73,27 @@ struct AdminUserManageView: View {
                                 .foregroundColor(.black)
                         }.padding(.leading, 15)
                         
-                        VStack {
-                            Text("\(followersCount) ")
-                                .font(.system(size: 14))
-                                .foregroundColor(.black)
-                            Text("Followers")
-                                .font(.system(size: 14))
-                                .foregroundColor(.black)
-                        }.padding(.leading, 20)
+                        NavigationLink(destination: FollowersListView()) {
+                            VStack {
+                                Text("\(followersCount) ")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.black)
+                                Text("Followers")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.black)
+                            }.padding(.leading, 20)
+                        }
                         
-                        VStack {
-                            Text("\(followingsCount) ")
-                                .font(.system(size: 14))
-                                .foregroundColor(.black)
-                            Text("Followings")
-                                .font(.system(size: 14))
-                                .foregroundColor(.black)
-                        }.padding(.leading, 20)
+                        NavigationLink(destination: FollowingsListView()) {
+                            VStack {
+                                Text("\(followingsCount) ")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.black)
+                                Text("Followings")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.black)
+                            }.padding(.leading, 20)
+                        }
                     }
                 }
             }
