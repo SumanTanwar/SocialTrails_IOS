@@ -58,50 +58,53 @@ class FollowService: ObservableObject {
             }
     }
     
-       func sendFollowRequest(currentUserId: String, userIdToFollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
-           let followRef = reference.child(_collection)
+    func sendFollowRequest(currentUserId: String, userIdToFollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let followRef = reference.child("userFollows")
 
-           followRef.queryOrdered(byChild: "userId").queryEqual(toValue: currentUserId).observeSingleEvent(of: .value) { snapshot in
-               if snapshot.exists() {
-                   for child in snapshot.children {
-                       if let ds = child as? DataSnapshot,
-                          var userFollow = ds.value as? [String: Any] {
-                           
-                           // Update following IDs
-                           if var followingIds = userFollow["followingIds"] as? [String: Bool] {
-                               followingIds[userIdToFollow] = true
-                               userFollow["followingIds"] = followingIds
-                               ds.ref.setValue(userFollow) { error, _ in
-                                   if let error = error {
-                                       completion(.failure(error))
-                                   } else {
-                                       completion(.success(()))
-                                   }
-                               }
-                           }
-                           return // Exit loop after updating
-                       }
-                   }
-               } else {
-                   // Create a new follow entry
-                   let followId = followRef.childByAutoId().key ?? UUID().uuidString
-                   let newUserFollow: [String: Any] = [
-                       "userId": currentUserId,
-                       "followingIds": [userIdToFollow: true],
-                       "followerIds": []
-                   ]
-                   followRef.child(followId).setValue(newUserFollow) { error, _ in
-                       if let error = error {
-                           completion(.failure(error))
-                       } else {
-                           completion(.success(()))
-                       }
-                   }
-               }
-           } withCancel: { error in
-               completion(.failure(error))
-           }
-       }
+        // Query to find if the current user already has a follow entry
+        followRef.queryOrdered(byChild: "userId").queryEqual(toValue: currentUserId).observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                for child in snapshot.children {
+                    if let ds = child as? DataSnapshot,
+                       var userFollow = ds.value as? [String: Any] {
+                        
+                        // Update following IDs
+                        if var followingIds = userFollow["followingIds"] as? [String: Bool] {
+                            followingIds[userIdToFollow] = true
+                            userFollow["followingIds"] = followingIds
+                            ds.ref.updateChildValues(userFollow) { error, _ in
+                                if let error = error {
+                                    completion(.failure(error))
+                                } else {
+                                    completion(.success(()))
+                                }
+                            }
+                        }
+                        return // Exit loop after updating
+                    }
+                }
+            } else {
+                // Create a new follow entry
+                let followId = followRef.childByAutoId().key ?? UUID().uuidString
+                let newUserFollow: [String: Any] = [
+                    "followId": followId,
+                    "userId": currentUserId,
+                    "followingIds": [userIdToFollow: true],
+                    "followerIds": [],
+                    "createdOn": ISO8601DateFormatter().string(from: Date())
+                ]
+                followRef.child(followId).setValue(newUserFollow) { error, _ in
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(()))
+                    }
+                }
+            }
+        } withCancel: { error in
+            completion(.failure(error))
+        }
+    }
 
        func checkPendingRequestsForCancel(currentUserId: String, userIdToCheck: String, completion: @escaping (Result<Bool, Error>) -> Void) {
            reference.child(_collection)
@@ -468,7 +471,83 @@ class FollowService: ObservableObject {
                }
        }
     
-    
+    func getFollowersDetails(userId: String, completion: @escaping (Result<[Users], Error>) -> Void) {
+            reference.child(_collection)
+                .queryOrdered(byChild: "userId")
+                .queryEqual(toValue: userId)
+                .observeSingleEvent(of: .value) { snapshot in
+                    var followerIds: [String] = []
+                    for child in snapshot.children {
+                        if let childSnapshot = child as? DataSnapshot,
+                           let userFollow = childSnapshot.value as? [String: Any],
+                           let ids = userFollow["followerIds"] as? [String] {
+                            followerIds.append(contentsOf: ids)
+                        }
+                    }
+                    self.fetchUserDetails(followerIds: followerIds, completion: completion)
+                } withCancel: { error in
+                    completion(.failure(error))
+                }
+        }
+
+        func getFollowingDetails(userId: String, completion: @escaping (Result<[Users], Error>) -> Void) {
+            reference.child(_collection)
+                .queryOrdered(byChild: "userId")
+                .queryEqual(toValue: userId)
+                .observeSingleEvent(of: .value) { snapshot in
+                    var followingIds: [String] = []
+                    for child in snapshot.children {
+                        if let childSnapshot = child as? DataSnapshot,
+                           let userFollow = childSnapshot.value as? [String: Any],
+                           let followingIdsDict = userFollow["followingIds"] as? [String: Bool] {
+                            for (id, isFollowing) in followingIdsDict {
+                                if isFollowing {
+                                    followingIds.append(id)
+                                }
+                            }
+                        }
+                    }
+                    self.fetchUserDetails(followerIds: followingIds, completion: completion)
+                } withCancel: { error in
+                    completion(.failure(error))
+                }
+        }
+    private func fetchUserDetails(followerIds: [String], completion: @escaping (Result<[Users], Error>) -> Void) {
+        var users: [Users] = []
+        let dispatchGroup = DispatchGroup()
+
+        for id in followerIds {
+            dispatchGroup.enter()
+            reference.child("users").child(id).getData { error, snapshot in
+                if let error = error {
+                    completion(.failure(error))
+                    dispatchGroup.leave()
+                    return
+                }
+
+                // Safely unwrap snapshot
+                guard let snapshot = snapshot, let userData = snapshot.value as? [String: Any],
+                      let username = userData["username"] as? String,
+                      let profilePicture = userData["profilePicture"] as? String,
+                      let email = userData["email"] as? String,         // Unwrap email
+                      let roles = userData["roles"] as? [String] else { // Unwrap roles
+                    // Handle case where user data is not available
+                    dispatchGroup.leave()
+                    return
+                }
+
+                // Create the Users object with all required properties
+                let user = Users(userId: id, username: username, email: email, roles: "roles")
+                users.append(user)
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            completion(.success(users))
+        }
+    }
+
 
     
    }

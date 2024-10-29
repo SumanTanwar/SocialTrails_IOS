@@ -81,5 +81,8 @@ class SessionManager : ObservableObject {
                completion(success)
            }
        }
+    func getRoleType() -> String {
+           return UserDefaults.standard.string(forKey: "roleType") ?? ""
+       }
 
 }

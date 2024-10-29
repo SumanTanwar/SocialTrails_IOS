@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct FollowersListView: View {
-    @State private var followersList: [Users] = []
+struct FollowingsListView: View {
+    @State private var followingsList: [Users] = []
     @State private var isLoading = true
     private var followService = FollowService()
     let currentUserID = SessionManager.shared.getUserID()
@@ -9,20 +9,20 @@ struct FollowersListView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("Followers")
+                Text("Followings")
                     .font(.headline)
                     .padding(.horizontal)
 
                 Spacer(minLength: 5)
 
                 if isLoading {
-                    ProgressView("Loading followers...")
+                    ProgressView("Loading followings...")
                         .padding()
-                } else if followersList.isEmpty {
-                    Text("No followers found.")
+                } else if followingsList.isEmpty {
+                    Text("No followings found.")
                         .padding()
-                }else {
-                    List(followersList) { user in
+                } else {
+                    List(followingsList) { user in
                         NavigationLink(destination: FollowUnfollowView(userId: user.userId)) {
                             HStack {
                                 if let profilePictureURL = user.profilepicture,
@@ -55,36 +55,33 @@ struct FollowersListView: View {
                         }
                     }
                 }
-
-
             }
             .onAppear {
-                loadFollowers()
+                loadFollowings()
             }
         }
     }
     
-    private func loadFollowers() {
-        followService.getFollowersDetails(userId: currentUserID) { result in
+    private func loadFollowings() {
+        followService.getFollowingDetails(userId: currentUserID) { result in
             switch result {
-            case .success(let followers):
+            case .success(let followings):
                 DispatchQueue.main.async {
-                    self.followersList = followers
+                    self.followingsList = followings
                     self.isLoading = false
                 }
             case .failure(let error):
-                print("Error loading followers: \(error.localizedDescription)")
+                print("Error loading followings: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
             }
         }
     }
-
 }
 
-struct FollowersListView_Previews: PreviewProvider {
+struct FollowingsListView_Previews: PreviewProvider {
     static var previews: some View {
-        FollowersListView()
+        FollowingsListView()
     }
 }
