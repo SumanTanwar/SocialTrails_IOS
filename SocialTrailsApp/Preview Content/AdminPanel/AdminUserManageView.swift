@@ -22,6 +22,7 @@ struct AdminUserManageView: View {
     @State private var profilepicture: String?
     @ObservedObject private var sessionManager = SessionManager.shared
     @StateObject private var userService = UserService()
+    @StateObject private var followService = FollowService()
     @StateObject private var userPostService = UserPostService()
 
     var body: some View {
@@ -235,6 +236,8 @@ struct AdminUserManageView: View {
             self.reason = userData["suspendedreason"] as? String ?? ""
             self.profilepicture = userData["profilepicture"] as? String ?? ""
             self.deleteText = "Deleted profile by admin on \(userData["admindeletedon"] as? String ?? "")"
+            
+            followService.getFollowCounts(for: userId, callback: self)
         }
     }
 
@@ -326,30 +329,19 @@ struct AdminUserManageView: View {
     }
 }
 
+extension AdminUserManageView: DataOperationCallback {
+    func onSuccess(followersCount: Int, followingsCount: Int) {
+        self.followersCount = followersCount
+        self.followingsCount = followingsCount
+    }
+
+    func onFailure(_ error: String) {
+        print(error)
+    }
+}
+
 struct AdminUserManageView_Previews: PreviewProvider {
     static var previews: some View {
         AdminUserManageView(userId: "m2IMctFyVmS4jVZzPdl0EgIXSBL2")
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

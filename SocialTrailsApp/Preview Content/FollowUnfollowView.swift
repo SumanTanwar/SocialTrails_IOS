@@ -117,7 +117,7 @@ struct FollowUnfollowView: View {
                                    Text("Cancel Request")
                                        .frame(maxWidth: .infinity)
                                        .padding(.vertical, 8)
-                                       .background(Color.orange)
+                                       .background(Color.blue)
                                        .foregroundColor(.white)
                                        .cornerRadius(5)
                                }
@@ -126,7 +126,7 @@ struct FollowUnfollowView: View {
                                    Text(isFollowing ? "Unfollow" : "Follow")
                                        .frame(maxWidth: .infinity)
                                        .padding(.vertical, 8)
-                                       .background(isFollowing ? Color.blue : Color.green)
+                                       .background(isFollowing ? Color.blue : Color.blue)
                                        .foregroundColor(.white)
                                        .cornerRadius(5)
                                }
@@ -148,7 +148,7 @@ struct FollowUnfollowView: View {
                                     Text("Confirm")
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 8)
-                                        .background(Color.green)
+                                        .background(Color.blue)
                                         .foregroundColor(.white)
                                         .cornerRadius(5)
                                 }
@@ -160,7 +160,7 @@ struct FollowUnfollowView: View {
                                     Text("Reject")
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 8)
-                                        .background(Color.red)
+                                        .background(Color.blue)
                                         .foregroundColor(.white)
                                         .cornerRadius(5)
                                 }
@@ -233,8 +233,8 @@ struct FollowUnfollowView: View {
             self.username = userData["username"] as? String ?? "Unknown User"
             self.bio = userData["bio"] as? String ?? ""
             self.profilePicture = userData["profilepicture"] as? String ?? ""
-            self.followersCount = userData["followersCount"] as? Int ?? 0
-            self.followingsCount = userData["followingsCount"] as? Int ?? 0
+            
+            followService.getFollowCounts(for: userId, callback: self)
         }
     }
 
@@ -464,6 +464,16 @@ struct FollowUnfollowView: View {
     }
 }
 
+extension FollowUnfollowView: DataOperationCallback {
+    func onSuccess(followersCount: Int, followingsCount: Int) {
+        self.followersCount = followersCount
+        self.followingsCount = followingsCount
+    }
+
+    func onFailure(_ error: String) {
+        print(error)
+    }
+}
 
 struct FollowUnfollowView_Previews: PreviewProvider {
     static var previews: some View {

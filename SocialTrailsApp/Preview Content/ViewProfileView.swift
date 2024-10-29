@@ -5,6 +5,7 @@ import FirebaseStorage
 struct ViewProfileView: View {
     
     @StateObject private var userService = UserService()
+    @StateObject private var followService = FollowService()
     @State private var username: String = "User"
     @State private var email: String = ""
     @State private var bio: String = ""
@@ -14,6 +15,8 @@ struct ViewProfileView: View {
     @State private var profilepicture: String?
     @ObservedObject private var sessionManager = SessionManager.shared
     @State private var userPosts: [UserPost] = []
+    
+    
     
     var body: some View {
         NavigationStack {
@@ -162,7 +165,8 @@ struct ViewProfileView: View {
         self.bio = sessionManager.getCurrentUser()?.bio as? String ?? ""
         self.profilepicture = sessionManager.getCurrentUser()?.profilepicture as? String
         
-        print("profile pictuer \(sessionManager.getCurrentUser())")
+        print("profile picture \(sessionManager.getCurrentUser())")
+        
         UserPostService().getAllUserPosts(userId: userId) { result in
             switch result {
             case .success(let posts):
@@ -173,9 +177,22 @@ struct ViewProfileView: View {
                 print("Error fetching user posts: \(error.localizedDescription)")
             }
         }
+        followService.getFollowCounts(for: userId, callback: self)
+
+           }
+       }
+extension ViewProfileView: DataOperationCallback {
+    func onSuccess(followersCount: Int, followingsCount: Int) {
+        self.followersCount = followersCount
+        self.followingsCount = followingsCount
+    }
+
+    func onFailure(_ error: String) {
+        print(error)
     }
 }
 
+    
 struct ViewProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ViewProfileView()
