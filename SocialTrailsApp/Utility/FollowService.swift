@@ -9,6 +9,11 @@ import Foundation
 import Firebase
 import FirebaseDatabase
 
+protocol DataOperationCallback {
+    func onSuccess(followersCount: Int, followingsCount: Int)
+    func onFailure(_ error: String)
+}
+
 class FollowService: ObservableObject {
     private var reference: DatabaseReference
     private let _collection = "userfollow"
@@ -391,4 +396,79 @@ class FollowService: ObservableObject {
                    completion(.failure(error)) // Handle error
                }
        }
+    func getFollowCounts(for userId: String, callback: DataOperationCallback) {
+           var followersCount = 0
+           var followingsCount = 0
+           
+           let group = DispatchGroup()
+
+           // Fetch follower count
+           group.enter()
+           getFollowersCount(for: userId) { count, error in
+               if let error = error {
+                   callback.onFailure("Error fetching followers: \(error)")
+                   group.leave()
+                   return
+               }
+               followersCount = count
+               group.leave()
+           }
+
+           // Fetch following count
+           group.enter()
+           getFollowingsCount(for: userId) { count, error in
+               if let error = error {
+                   callback.onFailure("Error fetching following: \(error)")
+                   group.leave()
+                   return
+               }
+               followingsCount = count
+               group.leave()
+           }
+
+           group.notify(queue: .main) {
+               callback.onSuccess(followersCount: followersCount, followingsCount: followingsCount)
+           }
+       }
+       
+       // Modify the existing follower and following count methods
+       func getFollowersCount(for userId: String, completion: @escaping (Int, String?) -> Void) {
+           reference.child(_collection)
+               .queryOrdered(byChild: "userId")
+               .queryEqual(toValue: userId)
+               .observeSingleEvent(of: .value) { snapshot in
+                   var count = 0
+                   for child in snapshot.children {
+                       if let childSnapshot = child as? DataSnapshot,
+                          let userFollow = try? childSnapshot.data(as: UserFollow.self) {
+                           count += userFollow.followerIds.count
+                       }
+                   }
+                   completion(count, nil)
+               } withCancel: { error in
+                   completion(0, "Error fetching followers count: \(error.localizedDescription)")
+               }
+       }
+
+       func getFollowingsCount(for userId: String, completion: @escaping (Int, String?) -> Void) {
+           reference.child(_collection)
+               .queryOrdered(byChild: "userId")
+               .queryEqual(toValue: userId)
+               .observeSingleEvent(of: .value) { snapshot in
+                   var count = 0
+                   for child in snapshot.children {
+                       if let childSnapshot = child as? DataSnapshot,
+                          let userFollow = try? childSnapshot.data(as: UserFollow.self) {
+                           count += userFollow.followingIds.count
+                       }
+                   }
+                   completion(count, nil)
+               } withCancel: { error in
+                   completion(0, "Error fetching followings count: \(error.localizedDescription)")
+               }
+       }
+    
+    
+
+    
    }

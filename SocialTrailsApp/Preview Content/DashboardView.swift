@@ -64,6 +64,9 @@ struct DashboardView: View {
                             .padding()
                             .frame(maxWidth: .infinity)
                             .padding(.top, 300)
+                        
+                        Spacer()
+
                     } else {
                         ScrollView {
                             LazyVStack(spacing: 0) {
@@ -82,10 +85,12 @@ struct DashboardView: View {
         }
         .onAppear {
             fetchUserPosts()
+           
         }
         .navigationTitle("User Posts")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true) 
+        .navigationBarBackButtonHidden(true)
+       
     }
 
     private func fetchUserPosts() {
