@@ -401,6 +401,18 @@ class UserPostService: ObservableObject {
                 completion(.failure(error))
             }
         }
+    func getPostCount(completion: @escaping (Result<Int, Error>) -> Void) {
+            reference.child(collectionName).observeSingleEvent(of: .value) { snapshot in
+                if snapshot.exists() {
+                    let count = Int(snapshot.childrenCount)
+                    completion(.success(count))
+                } else {
+                    completion(.success(0)) // No posts found
+                }
+            } withCancel: { error in
+                completion(.failure(error))
+            }
+        }
 }
 
 

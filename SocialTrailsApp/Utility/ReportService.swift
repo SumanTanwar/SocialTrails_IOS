@@ -8,12 +8,15 @@
 import Foundation
 import FirebaseDatabase
 
-class ReportService {
+class ReportService: ObservableObject {
     private var reference: DatabaseReference
     private let collectionName = "report"
+    
+    @Published var reportCount: Int = 0
 
     init() {
         self.reference = Database.database().reference()
+       
     }
 
     func addReport(data: Report, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -31,4 +34,13 @@ class ReportService {
             }
         }
     }
-}
+    func fetchReportCount(completion: @escaping (Result<Int, Error>) -> Void) {
+           reference.child(collectionName).observeSingleEvent(of: .value) { snapshot in
+               let count = Int(snapshot.childrenCount)
+               self.reportCount = count // Update the published property
+               completion(.success(count))
+           } withCancel: { error in
+               completion(.failure(error))
+           }
+       }
+   }
