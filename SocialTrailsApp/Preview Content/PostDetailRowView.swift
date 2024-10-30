@@ -13,6 +13,8 @@ struct PostDetailRowView: View {
     @ObservedObject var post: UserPost 
     @ObservedObject private var sessionManager = SessionManager.shared
     @StateObject private var userPostService = UserPostService()
+    @StateObject private var reportService = ReportService()
+
      
     @State private var showAlert = false
     @State private var alertMessage: String?
@@ -193,8 +195,24 @@ struct PostDetailRowView: View {
                         }
                     }
                 )
-        
+    
     }
+    // Report post function
+           private func reportPost(reason: String, reportType: String) {
+               let reporterId = sessionManager.getCurrentUser()?.id ?? "unknown"
+               let reportData = Report(reporterId: reporterId, reportedId: post.userId, reportType: reportType, reason: reason)
+
+               reportService.addReport(data: reportData) { result in
+                   switch result {
+                   case .success:
+                       alertMessage = "Post reported successfully."
+                       showAlert = true
+                   case .failure(let error):
+                       alertMessage = "Failed to report post: \(error.localizedDescription)"
+                       showAlert = true
+                   }
+               }
+           }
     private func fetchComments() {
         let postCommentService = PostCommentService()
         postCommentService.retrieveComments(postId: post.postId) { result in
