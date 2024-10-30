@@ -6,9 +6,12 @@ struct AdminCreateModeratorView: View {
     
     @State private var name = ""
     @State private var email = ""
-    @State private var generatedPassword = ""
     @State private var errorMessage = ""
-    @State private var navigateToModeratorList = false
+    @State private var navigateToAdminDashboard = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    
+    private let fixedPassword = "tempass123"
 
     var body: some View {
         NavigationView {
@@ -45,24 +48,6 @@ struct AdminCreateModeratorView: View {
                 }
                 .padding(.top, 10)
                 
-                 /*   if !generatedPassword.isEmpty {
-                    VStack(spacing: 10) {
-                        Text("Generated Password: \(generatedPassword)")
-                        
-                        Button(action: {
-                            UIPasteboard.general.string = generatedPassword
-                            showError("Password copied to clipboard")
-                        }) {
-                            Text("Copy Password")
-                                .frame(maxWidth: .infinity, minHeight: 50)
-                                .background(Color.gray)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        }
-                    }
-                }  */
-                
-                
                 if !errorMessage.isEmpty {
                     Text(errorMessage)
                         .foregroundColor(.red)
@@ -74,55 +59,58 @@ struct AdminCreateModeratorView: View {
             .navigationBarHidden(true)
             .padding(16)
             .background(
-                NavigationLink(destination: AdminModeratorListView(), isActive: $navigateToModeratorList) {
+                NavigationLink(destination: AdminDashboardView(), isActive: $navigateToAdminDashboard) {
                     EmptyView()
                 }
             )
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Success"), message: Text(alertMessage), dismissButton: .default(Text("OK")) {
+                    navigateToAdminDashboard = true
+                })
+            }
         }
     }
+    
     private func createModerator() {
         guard validateInputs() else { return }
-
-        generatedPassword = generateRandomPassword(length: 8)
         
-        Auth.auth().createUser(withEmail: email, password: generatedPassword) { authResult, error in
+        // Use the fixed password instead of generating one
+        Auth.auth().createUser(withEmail: email, password: fixedPassword) { authResult, error in
             if let error = error {
                 showError(error.localizedDescription)
                 return
             }
             
             if let user = authResult?.user {
-                do {
-                    // Send email verification
-                    try user.sendEmailVerification()
+                // Send password reset email
+                Auth.auth().sendPasswordReset(withEmail: email) { error in
+                    if let error = error {
+                        showError("Failed to send password reset email: \(error.localizedDescription)")
+                        return
+                    }
                     
-                    // Create a new moderator
                     let newModerator = Users(
                         userId: user.uid,
                         username: name,
                         email: email,
-                        roles: UserRole.moderator.role,
-                        notification: true // Default value
+                        roles: UserRole.moderator.role
                     )
                     
-                    // Register the new moderator using the session manager
                     sessionManager.registerModerator(newModerator) { success in
                         if success {
                             print("Moderator added successfully!")
-                            try? Auth.auth().signOut()  // Sign out after creation
+                            
+                            alertMessage = "Moderator created successfully. A password reset email has been sent."
+                            showAlert = true;                             try? Auth.auth().signOut()
                             clearInputs()
-                            navigateToModeratorList = true  // Trigger navigation
                         } else {
                             showError("Failed to add moderator to database.")
                         }
                     }
-                } catch {
-                    showError("Failed to send verification email: \(error.localizedDescription)")
                 }
             }
         }
     }
-
 
     private func validateInputs() -> Bool {
         if name.isEmpty {
@@ -136,15 +124,9 @@ struct AdminCreateModeratorView: View {
         return true
     }
     
-    private func generateRandomPassword(length: Int) -> String {
-        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#%^&*()"
-        return String((0..<length).compactMap { _ in characters.randomElement() })
-    }
-    
     private func clearInputs() {
         name = ""
         email = ""
-        generatedPassword = ""
     }
     
     private func showError(_ message: String) {
@@ -152,8 +134,11 @@ struct AdminCreateModeratorView: View {
     }
 }
 
+
+
 struct AdminCreateModeratorView_Previews: PreviewProvider {
     static var previews: some View {
         AdminCreateModeratorView()
     }
 }
+
