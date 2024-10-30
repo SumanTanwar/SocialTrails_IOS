@@ -13,8 +13,8 @@ import GoogleMaps
 @main
 struct SocialTrailsAppApp: App {
     init(){
-        GMSServices.provideAPIKey("AIzaSyBdmLSrq0OuQob_ZvkV6zh9sVS2FmnYo4o")
-        GMSPlacesClient.provideAPIKey("AIzaSyBdmLSrq0OuQob_ZvkV6zh9sVS2FmnYo4o")
+        GMSServices.provideAPIKey("AIzaSyA0fTMwiCSxxNp18DLvIfmCEwF1F2FW1PU")
+        GMSPlacesClient.provideAPIKey("AIzaSyA0fTMwiCSxxNp18DLvIfmCEwF1F2FW1PU")
         FirebaseApp.configure()
        
     }

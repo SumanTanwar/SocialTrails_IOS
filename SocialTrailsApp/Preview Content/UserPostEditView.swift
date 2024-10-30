@@ -192,6 +192,7 @@ struct UserPostEditView: View {
 
     private func updatePost() {
         let userPost = UserPost(
+            
             captionText: postCaption,
             location: selectedLocationData?.address,
             latitude: selectedLocationData?.latitude,
@@ -199,7 +200,7 @@ struct UserPostEditView: View {
         )
         
         let userPostService = UserPostService()
-        userPostService.updateUserPost(post: userPost) { result in
+        userPostService.updateUserPost(postId : postId, post: userPost) { result in
             switch result {
             case .success:
                 navigateToDetailView = true
