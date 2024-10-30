@@ -11,6 +11,9 @@ struct AdminPostDetailView: View {
     @State private var navigateToUserManage = false
     @State private var userId: String?
     @State private var showMapView = false
+    @State private var isModerator: Bool = false
+    @ObservedObject private var sessionManager = SessionManager.shared
+    
     var body: some View {
         VStack {
             if let post = userPost {
@@ -120,7 +123,7 @@ struct AdminPostDetailView: View {
                                 
                             Divider()
                             PostLikesList(postId: post.postId, onLikesUpdated: { updatedCount in
-                                userPost?.likecount = updatedCount
+                                self.userPost?.likecount = updatedCount
                             })
                         }
                        
@@ -132,10 +135,11 @@ struct AdminPostDetailView: View {
                                
                             Divider()
                             AdminPostCommentView(postId: post.postId, onCommentUpdated: { updatedCount in
-                                print("")
-                                userPost?.commentcount = updatedCount
+                                print("updaate count of commentt \(updatedCount)")
+                                updateCommentCount(to: updatedCount)
                             })
                         }
+                        
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -145,6 +149,7 @@ struct AdminPostDetailView: View {
         .navigationTitle("Post Details")
         .onAppear {
             fetchUserPostDetail()
+            checkUserRole()
            
         }
         .alert(isPresented: $showingDeleteAlert) {
@@ -158,9 +163,11 @@ struct AdminPostDetailView: View {
             )
         }
         .toolbar {
-            Button(action: { showingDeleteAlert.toggle() }) {
-                Text("Delete Post")
-            }
+            if !isModerator {
+                            Button(action: { showingDeleteAlert.toggle() }) {
+                                Text("Delete Post")
+                            }
+                        }
         }
         .background(
             NavigationLink(destination: AdminUserManageView(userId: userId ?? ""), isActive: $navigateToUserManage) {
@@ -173,7 +180,10 @@ struct AdminPostDetailView: View {
             }
         }
     }
-
+    private func checkUserRole() {
+           let role = sessionManager.getCurrentUser()?.roleType
+           isModerator = (role == UserRole.moderator.role)
+       }
     private func fetchUserPostDetail() {
         UserPostService().getUserPostDetailById(postId: postDetailId) { result in
             switch result {
@@ -200,4 +210,11 @@ struct AdminPostDetailView: View {
             }
         }
     }
+    private func updateCommentCount(to newCount: Int) {
+            if let post = userPost {
+                post.commentcount = newCount
+                // This line might help in refreshing the UI
+                userPost = post
+            }
+        }
 }

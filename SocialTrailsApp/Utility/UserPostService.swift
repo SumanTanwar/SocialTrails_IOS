@@ -329,9 +329,10 @@ class UserPostService: ObservableObject {
             }
         }
         
-        func updateUserPost(post: UserPost, completion: @escaping (Result<Void, Error>) -> Void) {
+    func updateUserPost(postId:String, post: UserPost, completion: @escaping (Result<Void, Error>) -> Void) {
+            print("locartion \(post.location) \(post.longitude) \(post.latitude)")
             post.updatedon = Utils.getCurrentDatetime()
-            reference.child(collectionName).child(post.postId).updateChildValues(post.toMapUpdate()) { error, _ in
+            reference.child(collectionName).child(postId).updateChildValues(post.toMapUpdate()) { error, _ in
                 if let error = error {
                     completion(.failure(error))
                 } else {
