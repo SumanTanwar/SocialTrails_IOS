@@ -1,9 +1,12 @@
 import SwiftUI
+import FirebaseAuth
 
 struct AdminUserList: View {
     @State private var usersList: [Users] = []
     @State private var isLoading = true
+    @State private var isAdmin: Bool = false // Track if user is an admin
     private var userService = UserService()
+    private var auth = Auth.auth()
 
     var body: some View {
         NavigationView {
@@ -73,21 +76,24 @@ struct AdminUserList: View {
                         .font(.headline)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: AdminCreateModeratorView()) {
-                        HStack {
-                                       Image(systemName: "person.badge.plus")
-                                           .resizable()
-                                           .frame(width: 20, height: 20)
-                                           .foregroundColor(.black)
-                                       
-                                       Text("Moderator")
-                                           .foregroundColor(.black)
-                                   }
+                    if isAdmin { // Show the moderator option only for admins
+                        NavigationLink(destination: AdminCreateModeratorView()) {
+                            HStack {
+                                Image(systemName: "person.badge.plus")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(.black)
+                                
+                                Text("Moderator")
+                                    .foregroundColor(.black)
+                            }
+                        }
                     }
                 }
             }
             .onAppear {
                 loadUserList()
+                checkIfAdmin() // Check if user is admin on view appear
             }
         }
     }
@@ -106,6 +112,13 @@ struct AdminUserList: View {
                     self.isLoading = false
                 }
             }
+        }
+    }
+    
+    private func checkIfAdmin() {
+        if let user = auth.currentUser {
+            // Check if the user's email indicates they are an admin
+            isAdmin = user.email?.hasSuffix("socialtrails2024.com") ?? false
         }
     }
 }
