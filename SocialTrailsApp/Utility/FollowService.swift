@@ -435,48 +435,77 @@ class FollowService: ObservableObject {
        }
        
        // Modify the existing follower and following count methods
-       func getFollowersCount(for userId: String, completion: @escaping (Int, String?) -> Void) {
-           reference.child(_collection)
-               .queryOrdered(byChild: "userId")
-               .queryEqual(toValue: userId)
-               .observeSingleEvent(of: .value) { snapshot in
-                   var count = 0
-                   for child in snapshot.children {
-                       if let childSnapshot = child as? DataSnapshot,
-                          let userFollow = try? childSnapshot.data(as: UserFollow.self) {
-                           count += userFollow.followerIds.count
-                       }
-                   }
-                   completion(count, nil)
-               } withCancel: { error in
-                   completion(0, "Error fetching followers count: \(error.localizedDescription)")
-               }
-       }
+    func getFollowersCount(for userId: String, completion: @escaping (Int, String?) -> Void) {
+        print("userid : \(userId)")
+        reference.child(_collection)
+            .queryOrdered(byChild: "userId")
+            .queryEqual(toValue: userId)
+            .observeSingleEvent(of: .value) { snapshot in
+                var count = 0
+                
+                // Check if snapshot has children
+                if snapshot.hasChildren() {
+                    for child in snapshot.children {
+                        if let childSnapshot = child as? DataSnapshot,
+                           let userFollow = childSnapshot.value as? [String: Any] {
+                            
+                            // Extract follower IDs
+                            if let followerIds = userFollow["followerIds"] as? [String] {
+                                count += followerIds.count // Increment count by the number of followers
+                                print("Follower IDs: \(followerIds)")
+                            }
+                        }
+                    }
+                }
 
-       func getFollowingsCount(for userId: String, completion: @escaping (Int, String?) -> Void) {
-           reference.child(_collection)
-               .queryOrdered(byChild: "userId")
-               .queryEqual(toValue: userId)
-               .observeSingleEvent(of: .value) { snapshot in
-                   var count = 0
-                   for child in snapshot.children {
-                       if let childSnapshot = child as? DataSnapshot,
-                          let userFollow = try? childSnapshot.data(as: UserFollow.self) {
-                           count += userFollow.followingIds.count
-                       }
-                   }
-                   completion(count, nil)
-               } withCancel: { error in
-                   completion(0, "Error fetching followings count: \(error.localizedDescription)")
-               }
-       }
-    
+                print("count : \(count)")
+                completion(count, nil)
+            } withCancel: { error in
+                completion(0, "Error fetching followers count: \(error.localizedDescription)")
+            }
+    }
+
+
+    func getFollowingsCount(for userId: String, completion: @escaping (Int, String?) -> Void) {
+        reference.child(_collection)
+            .queryOrdered(byChild: "userId")
+            .queryEqual(toValue: userId)
+            .observeSingleEvent(of: .value) { snapshot in
+                var count = 0
+                
+                // Check if snapshot has children
+                if snapshot.hasChildren() {
+                    for child in snapshot.children {
+                        if let childSnapshot = child as? DataSnapshot,
+                           let userFollow = childSnapshot.value as? [String: Any],
+                           let followingIds = userFollow["followingIds"] as? [String: Bool] {
+                            for (key, value) in followingIds {
+                                if value {
+                                    count += 1 // Use += instead of ++
+                                    print("Following id: \(key)")
+                                }
+                            }
+                        }
+                    }
+                }
+
+                print("Count of followings: \(count)")
+                completion(count, nil)
+            } withCancel: { error in
+                completion(0, "Error fetching followings count: \(error.localizedDescription)")
+            }
+    }
+
+
     func getFollowersDetails(userId: String, completion: @escaping (Result<[Users], Error>) -> Void) {
-            reference.child(_collection)
-                .queryOrdered(byChild: "userId")
-                .queryEqual(toValue: userId)
-                .observeSingleEvent(of: .value) { snapshot in
-                    var followerIds: [String] = []
+        reference.child(_collection)
+            .queryOrdered(byChild: "userId")
+            .queryEqual(toValue: userId)
+            .observeSingleEvent(of: .value) { snapshot in
+                var followerIds: [String] = []
+                
+                // Check if snapshot has children
+                if snapshot.hasChildren() {
                     for child in snapshot.children {
                         if let childSnapshot = child as? DataSnapshot,
                            let userFollow = childSnapshot.value as? [String: Any],
@@ -484,18 +513,31 @@ class FollowService: ObservableObject {
                             followerIds.append(contentsOf: ids)
                         }
                     }
-                    self.fetchUserDetails(followerIds: followerIds, completion: completion)
-                } withCancel: { error in
-                    completion(.failure(error))
                 }
-        }
 
-        func getFollowingDetails(userId: String, completion: @escaping (Result<[Users], Error>) -> Void) {
-            reference.child(_collection)
-                .queryOrdered(byChild: "userId")
-                .queryEqual(toValue: userId)
-                .observeSingleEvent(of: .value) { snapshot in
-                    var followingIds: [String] = []
+                if followerIds.isEmpty {
+                    print("isempty")
+                    // If no follower IDs, return an empty array
+                    completion(.success([]))
+                } else {
+                    print("no empty")
+                    self.fetchUserDetails(followerIds: followerIds, completion: completion)
+                }
+            } withCancel: { error in
+                completion(.failure(error))
+            }
+    }
+
+
+    func getFollowingDetails(userId: String, completion: @escaping (Result<[Users], Error>) -> Void) {
+        reference.child(_collection)
+            .queryOrdered(byChild: "userId")
+            .queryEqual(toValue: userId)
+            .observeSingleEvent(of: .value) { snapshot in
+                var followingIds: [String] = []
+                
+                // Check if snapshot has children
+                if snapshot.hasChildren() {
                     for child in snapshot.children {
                         if let childSnapshot = child as? DataSnapshot,
                            let userFollow = childSnapshot.value as? [String: Any],
@@ -507,39 +549,34 @@ class FollowService: ObservableObject {
                             }
                         }
                     }
-                    self.fetchUserDetails(followerIds: followingIds, completion: completion)
-                } withCancel: { error in
-                    completion(.failure(error))
                 }
-        }
+
+                if followingIds.isEmpty {
+                    // If no following IDs, return an empty array
+                    completion(.success([]))
+                } else {
+                    self.fetchUserDetails(followerIds: followingIds, completion: completion)
+                }
+            } withCancel: { error in
+                completion(.failure(error))
+            }
+    }
+
     private func fetchUserDetails(followerIds: [String], completion: @escaping (Result<[Users], Error>) -> Void) {
         var users: [Users] = []
         let dispatchGroup = DispatchGroup()
 
         for id in followerIds {
             dispatchGroup.enter()
-            reference.child("users").child(id).getData { error, snapshot in
-                if let error = error {
-                    completion(.failure(error))
-                    dispatchGroup.leave()
-                    return
+            
+            self.retrieveUserDetails(userId: id) { userDetails, error in
+                if let userDetails = userDetails {
+                    print("User detail added for userId: \(id)")
+                    users.append(userDetails)
+                } else if let error = error {
+                    print("Error retrieving user details for userId: \(id): \(error.localizedDescription)")
                 }
-
-                // Safely unwrap snapshot
-                guard let snapshot = snapshot, let userData = snapshot.value as? [String: Any],
-                      let username = userData["username"] as? String,
-                      let profilePicture = userData["profilePicture"] as? String,
-                      let email = userData["email"] as? String,         // Unwrap email
-                      let roles = userData["roles"] as? [String] else { // Unwrap roles
-                    // Handle case where user data is not available
-                    dispatchGroup.leave()
-                    return
-                }
-
-                // Create the Users object with all required properties
-                let user = Users(userId: id, username: username, email: email, roles: "roles")
-                users.append(user)
-                dispatchGroup.leave()
+                dispatchGroup.leave() // Move this line inside the completion handler
             }
         }
 
@@ -547,7 +584,15 @@ class FollowService: ObservableObject {
             completion(.success(users))
         }
     }
-
-
+    func retrieveUserDetails(userId: String, completion: @escaping (Users?, Error?) -> Void) {
+        userService.getUserByID(uid: userId) { result in
+            switch result {
+            case .success(let user):
+                completion(user, nil)
+            case .failure(let error):
+                completion(nil, error)
+            }
+        }
+    }
     
    }
