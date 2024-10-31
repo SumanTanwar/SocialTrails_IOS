@@ -114,6 +114,12 @@ struct FollowUnfollowView: View {
                 .font(.system(size: 12))
                 .foregroundColor(.black)
                 .padding(.leading, 10)
+            Button(action: {
+                showReportDialog.toggle()
+            }) {
+                Image(systemName: "exclamationmark.triangle")
+                    .foregroundColor(.red)
+            }
 
             HStack {
                            if isPendingRequest {
@@ -135,13 +141,7 @@ struct FollowUnfollowView: View {
                                        .cornerRadius(5)
                                }
                            }
-                Button(action: {
-                    showReportDialog.toggle()
-                }) {
-                    Image(systemName: "exclamationmark.triangle")
-                        .foregroundColor(.red)
-                }
-                .padding(.trailing, 8)
+              
             }
             
             if showConfirmationButtons {
@@ -215,9 +215,7 @@ struct FollowUnfollowView: View {
         .padding(.init(top: -1, leading: 5, bottom: 0, trailing: 5))
 
         Spacer()
-        .sheet(isPresented: $showReportDialog) {
-            reportDialog
-        }
+           
         .onAppear {
             fetchUserDetails()
             fetchUserPosts()
@@ -226,6 +224,12 @@ struct FollowUnfollowView: View {
         .alert(isPresented: $showingAlert) {
             Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
+                    Group {
+                        if showReportDialog {
+                           
+                            ReportPopup(isPresented: $showReportDialog, reportedId: userId,reportType:ReportType.user.rawValue)
+                        }
+                    }
     }
 
     private func fetchUserDetails() {
@@ -438,34 +442,8 @@ struct FollowUnfollowView: View {
 
 
 
-    private var reportDialog: some View {
-        VStack {
-            Text("Report User")
-                .font(.headline)
 
-            TextField("Reason for reporting", text: $reportReason)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
-            Button("Submit") {
-                submitReport()
-                showReportDialog.toggle()
-            }
-            .padding()
-
-            Button("Cancel") {
-                showReportDialog.toggle()
-            }
-            .padding()
-        }
-        .padding()
-        .frame(width: 300)
-    }
-
-    private func submitReport() {
-    
-        print("Report submitted with reason: \(reportReason)")
-    }
+   
 }
 
 extension FollowUnfollowView: DataOperationCallback {
