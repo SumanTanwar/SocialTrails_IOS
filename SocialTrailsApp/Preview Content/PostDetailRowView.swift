@@ -191,28 +191,14 @@ struct PostDetailRowView: View {
         .overlay(
                     Group {
                         if showReportPopup {
-                            ReportPopup(isPresented: $showReportPopup, postId: post.postId)
+                           
+                            ReportPopup(isPresented: $showReportPopup, reportedId: post.postId,reportType:ReportType.post.rawValue)
                         }
                     }
                 )
     
     }
-    // Report post function
-           private func reportPost(reason: String, reportType: String) {
-               let reporterId = sessionManager.getCurrentUser()?.id ?? "unknown"
-               let reportData = Report(reporterId: reporterId, reportedId: post.userId, reportType: reportType, reason: reason)
-
-               reportService.addReport(data: reportData) { result in
-                   switch result {
-                   case .success:
-                       alertMessage = "Post reported successfully."
-                       showAlert = true
-                   case .failure(let error):
-                       alertMessage = "Failed to report post: \(error.localizedDescription)"
-                       showAlert = true
-                   }
-               }
-           }
+   
     private func fetchComments() {
         let postCommentService = PostCommentService()
         postCommentService.retrieveComments(postId: post.postId) { result in

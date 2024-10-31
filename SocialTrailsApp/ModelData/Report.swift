@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 class Report {
     var reportId: String?
     var reporterId: String
@@ -16,6 +17,7 @@ class Report {
     var status: ReportStatus
     var createdon: String
 
+    // Default initializer
     init() {
         self.reporterId = ""
         self.reportedId = ""
@@ -25,6 +27,7 @@ class Report {
         self.createdon = Utils.getCurrentDatetime()
     }
 
+    // Initializer for creating a report with specific values
     init(reporterId: String, reportedId: String, reportType: String, reason: String) {
         self.reporterId = reporterId
         self.reportedId = reportedId
@@ -33,7 +36,22 @@ class Report {
         self.status = .pending
         self.createdon = Utils.getCurrentDatetime()
     }
+    
+    // Initializer to create a Report from a dictionary
+    convenience init(dictionary: [String: Any]) {
+        self.init() // Call the default initializer
+        self.reportId = dictionary["reportId"] as? String
+        self.reporterId = dictionary["reporterId"] as? String ?? ""
+        self.reportedId = dictionary["reportedId"] as? String ?? ""
+        self.reportingId = dictionary["reportingId"] as? String
+        self.reporttype = dictionary["reporttype"] as? String ?? ""
+        self.reason = dictionary["reason"] as? String ?? ""
+        let statusString = dictionary["status"] as? String ?? "pending"
+        self.status = ReportStatus(rawValue: statusString) ?? .pending
+        self.createdon = dictionary["createdon"] as? String ?? Utils.getCurrentDatetime()
+    }
 
+    // Convert Report object to dictionary
     func toDictionary() -> [String: Any?] {
         return [
             "reportId": reportId,

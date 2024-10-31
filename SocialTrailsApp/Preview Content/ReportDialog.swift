@@ -4,11 +4,11 @@ import SwiftUI
 
 struct ReportPopup: View {
     @Binding var isPresented: Bool
-    var postId: String
     @State private var reportReason: String = ""
     @State private var alertMessage: String?
     @State private var showAlert = false
-
+    var reportedId: String
+    var reportType: String
     var body: some View {
         ZStack {
             Color.black.opacity(0.4)
@@ -40,7 +40,7 @@ struct ReportPopup: View {
 
                 HStack {
                     Button("Report") {
-                        reportPost()
+                        addReport()
                     }
                     .buttonStyle(.bordered)
                     .disabled(reportReason.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -65,7 +65,7 @@ struct ReportPopup: View {
         }
     }
 
-    private func reportPost() {
+    private func addReport() {
         if reportReason.trimmingCharacters(in: .whitespaces).isEmpty {
             alertMessage = "Please enter a reason for reporting."
             showAlert = true
@@ -73,8 +73,8 @@ struct ReportPopup: View {
         }
 
         let report = Report(reporterId: SessionManager.shared.getCurrentUser()?.id ?? "",
-                            reportedId: postId,
-                            reportType: ReportType.post.reportType,
+                            reportedId: reportedId,
+                                                       reportType: reportType,
                             reason: reportReason)
 
         let reportService = ReportService()
