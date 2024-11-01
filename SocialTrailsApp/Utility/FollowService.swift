@@ -59,7 +59,7 @@ class FollowService: ObservableObject {
     }
     
     func sendFollowRequest(currentUserId: String, userIdToFollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let followRef = reference.child("userFollows")
+        let followRef = reference.child(_collection)
 
         // Query to find if the current user already has a follow entry
         followRef.queryOrdered(byChild: "userId").queryEqual(toValue: currentUserId).observeSingleEvent(of: .value) { snapshot in
@@ -70,7 +70,7 @@ class FollowService: ObservableObject {
                         
                         // Update following IDs
                         if var followingIds = userFollow["followingIds"] as? [String: Bool] {
-                            followingIds[userIdToFollow] = true
+                            followingIds[userIdToFollow] = false
                             userFollow["followingIds"] = followingIds
                             ds.ref.updateChildValues(userFollow) { error, _ in
                                 if let error = error {
@@ -89,9 +89,9 @@ class FollowService: ObservableObject {
                 let newUserFollow: [String: Any] = [
                     "followId": followId,
                     "userId": currentUserId,
-                    "followingIds": [userIdToFollow: true],
+                    "followingIds": [userIdToFollow: false],
                     "followerIds": [],
-                    "createdOn": ISO8601DateFormatter().string(from: Date())
+                    "createdOn": Utils.getCurrentDatetime()
                 ]
                 followRef.child(followId).setValue(newUserFollow) { error, _ in
                     if let error = error {
@@ -131,6 +131,34 @@ class FollowService: ObservableObject {
                    completion(.failure(error))
                }
        }
+    func checkPendingForFollowingUser(currentUserId: String, userIdToCheck: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+        let reference = Database.database().reference()
+        
+        reference.child(_collection)
+            .queryOrdered(byChild: "userId")
+            .queryEqual(toValue: userIdToCheck)
+            .observeSingleEvent(of: .value) { snapshot in
+                
+                var hasPendingRequest = false
+                
+                for child in snapshot.children {
+                    if let childSnapshot = child as? DataSnapshot,
+                       let userFollow = childSnapshot.value as? [String: Any],
+                       let followingIds = userFollow["followingIds"] as? [String: Bool],
+                       let isFollowing = followingIds[currentUserId] {
+                        
+                        if !isFollowing {
+                            hasPendingRequest = true
+                            break
+                        }
+                    }
+                }
+                
+                completion(.success(hasPendingRequest))
+            } withCancel: { error in
+                completion(.failure(error)) // Handle error
+            }
+    }
 
        func cancelFollowRequest(currentUserId: String, userIdToUnfollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
            reference.child(_collection)
@@ -183,7 +211,9 @@ class FollowService: ObservableObject {
                                    if let error = error {
                                        completion(.failure(error))
                                    } else {
-                                       completion(.success(()))
+                                       self.addFollowers(currentUserId: userIdToFollow, userIdToFollow: currentUserId) { result in
+                                           completion(result) // Pass the result of addFollowers
+                                       }
                                    }
                                }
                            }
@@ -227,103 +257,193 @@ class FollowService: ObservableObject {
                }
        }
 
-       func confirmFollowBack(currentUserId: String, userIdToFollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
-           reference.child(_collection)
-               .queryOrdered(byChild: "userId")
-               .queryEqual(toValue: currentUserId)
-               .observeSingleEvent(of: .value) { snapshot in
-                   if snapshot.exists() {
-                       for child in snapshot.children {
-                           if let ds = child as? DataSnapshot,
-                              var userFollow = ds.value as? [String: Any] {
+    func confirmFollowBack(currentUserId: String, userIdToFollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        reference.child(_collection)
+            .queryOrdered(byChild: "userId")
+            .queryEqual(toValue: currentUserId)
+            .observeSingleEvent(of: .value) { snapshot in
+                
+                if snapshot.exists() {
+                    print("Current user data found")
+                    for child in snapshot.children {
+                        if let ds = child as? DataSnapshot,
+                           var userFollow = ds.value as? [String: Any] {
 
-                               // Update following IDs
-                               if var followingIds = userFollow["followingIds"] as? [String: Bool] {
-                                   followingIds[userIdToFollow] = true
-                                   userFollow["followingIds"] = followingIds
+                            // Print out current userFollow data
+                            print("User Follow Data: \(userFollow)")
 
-                                   ds.ref.setValue(userFollow) { error, _ in
-                                       if let error = error {
-                                           completion(.failure(error))
-                                       } else {
-                                           completion(.success(())) // Follow back confirmed
-                                       }
-                                   }
-                               }
-                               return // Exit after processing
-                           }
-                       }
-                   } else {
-                       // Create a new UserFollow entry if none exists
-                       let followId = self.reference.child(self._collection).childByAutoId().key ?? UUID().uuidString
-                       let newUserFollow: [String: Any] = [
-                           "userId": currentUserId,
-                           "followingIds": [userIdToFollow: true],
-                           "followerIds": []
-                       ]
-                       self.reference.child(self._collection).child(followId).setValue(newUserFollow) { error, _ in
-                           if let error = error {
-                               completion(.failure(error))
-                           } else {
-                               completion(.success(())) // Follow back confirmed with new entry
-                           }
-                       }
-                   }
-               } withCancel: { error in
-                   completion(.failure(error))
-               }
-       }
+                            // Update following IDs
+                            if var followingIds = userFollow["followingIds"] as? [String: Bool] {
+                                followingIds[userIdToFollow] = true
+                                userFollow["followingIds"] = followingIds
 
-       func followBack(currentUserId: String, userIdToFollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
-           reference.child(_collection)
-               .queryOrdered(byChild: "userId")
-               .queryEqual(toValue: userIdToFollow)
-               .observeSingleEvent(of: .value) { snapshot in
-                   if snapshot.exists() {
-                       for child in snapshot.children {
-                           if let ds = child as? DataSnapshot,
-                              var userFollow = ds.value as? [String: Any] {
+                                ds.ref.setValue(userFollow) { error, _ in
+                                    if let error = error {
+                                        print("Error updating followingIds: \(error)")
+                                        completion(.failure(error))
+                                    } else {
+                                        print("Successfully updated followingIds")
+                                        self.addFollowers(currentUserId: currentUserId, userIdToFollow: userIdToFollow) { result in
+                                            completion(result) // Pass the result of addFollowers
+                                        }
+                                    }
+                                }
+                            } else {
+                                print("No followingIds found, initializing")
+                                // Initialize if followingIds doesn't exist
+                                userFollow["followingIds"] = [userIdToFollow: true]
+                                ds.ref.setValue(userFollow) { error, _ in
+                                    if let error = error {
+                                        completion(.failure(error))
+                                    } else {
+                                        print("Successfully initialized followingIds")
+                                        self.addFollowers(currentUserId: currentUserId, userIdToFollow: userIdToFollow) { result in
+                                            completion(result)
+                                        }
+                                    }
+                                }
+                            }
+                            return // Exit after processing
+                        }
+                    }
+                } else {
+                    print("No data found for current user, adding to database")
+                    // Create a new UserFollow entry if none exists
+                    let followId = self.reference.child(self._collection).childByAutoId().key ?? UUID().uuidString
+                    let newUserFollow: [String: Any] = [
+                        "followId": followId,
+                        "userId": currentUserId,
+                        "followingIds": [userIdToFollow: true],
+                        "followerIds": []
+                    ]
+                    self.reference.child(self._collection).child(followId).setValue(newUserFollow) { error, _ in
+                        if let error = error {
+                            completion(.failure(error))
+                        } else {
+                            print("New UserFollow entry created successfully")
+                            self.addFollowers(currentUserId: currentUserId, userIdToFollow: userIdToFollow) { result in
+                                completion(result) // Pass the result of addFollowers
+                            }
+                        }
+                    }
+                }
+            } withCancel: { error in
+                print("Error retrieving user data: \(error)")
+                completion(.failure(error))
+            }
+    }
 
-                               // Update follower list
-                               if var followerIds = userFollow["followerIds"] as? [String] {
-                                   followerIds.append(currentUserId)
-                                   userFollow["followerIds"] = followerIds
+    func followBack(currentUserId: String, userIdToFollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let followRef = reference.child(_collection)
 
-                                   ds.ref.setValue(userFollow) { error, _ in
-                                       if let error = error {
-                                           completion(.failure(error))
-                                       } else {
-                                           // Confirm the follow back after adding the follower
-                                           self.confirmFollowBack(currentUserId: currentUserId, userIdToFollow: userIdToFollow, completion: completion)
-                                       }
-                                   }
-                               }
-                               return // Exit after processing
-                           }
-                       }
-                   } else {
-                       // User does not exist, create a new UserFollow instance
-                       let newUserFollow: [String: Any] = [
-                           "userId": userIdToFollow,
-                           "followingIds": [:],
-                           "followerIds": [currentUserId]
-                       ]
+        // Query to find if the current user already has a follow entry
+        followRef.queryOrdered(byChild: "userId").queryEqual(toValue: currentUserId).observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                for child in snapshot.children {
+                    if let ds = child as? DataSnapshot,
+                       var userFollow = ds.value as? [String: Any] {
+                        
+                        // Update following IDs
+                        if var followingIds = userFollow["followingIds"] as? [String: Bool] {
+                            followingIds[userIdToFollow] = true
+                            userFollow["followingIds"] = followingIds
+                            ds.ref.updateChildValues(userFollow) { error, _ in
+                                if let error = error {
+                                    completion(.failure(error))
+                                } else {
+                                    // Call addFollowers here on success
+                                    self.addFollowers(currentUserId: currentUserId, userIdToFollow: userIdToFollow) { result in
+                                        completion(result) // Pass the result of addFollowers
+                                    }
+                                }
+                            }
+                        }
+                        return // Exit loop after updating
+                    }
+                }
+            } else {
+                // Create a new follow entry
+                let followId = followRef.childByAutoId().key ?? UUID().uuidString
+                let newUserFollow: [String: Any] = [
+                    "followId": followId,
+                    "userId": currentUserId,
+                    "followingIds": [userIdToFollow: true],
+                    "followerIds": [],
+                    "createdOn": ISO8601DateFormatter().string(from: Date())
+                ]
+                followRef.child(followId).setValue(newUserFollow) { error, _ in
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        // Call addFollowers here since a new follow entry was created
+                        self.addFollowers(currentUserId: currentUserId, userIdToFollow: userIdToFollow) { result in
+                            completion(result) // Pass the result of addFollowers
+                        }
+                    }
+                }
+            }
+        } withCancel: { error in
+            completion(.failure(error))
+        }
+    }
 
-                       // Set the followId as a new unique key
-                       let newFollowId = self.reference.child(self._collection).childByAutoId().key ?? UUID().uuidString
-                       self.reference.child(self._collection).child(newFollowId).setValue(newUserFollow) { error, _ in
-                           if let error = error {
-                               completion(.failure(error))
-                           } else {
-                               completion(.success(())) // Follow relationship created
-                           }
-                       }
-                   }
-               } withCancel: { error in
-                   completion(.failure(error))
-               }
-       }
+    func addFollowers(currentUserId: String, userIdToFollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        print("hello follow back service button call")
+        reference.child(_collection)
+            .queryOrdered(byChild: "userId")
+            .queryEqual(toValue: userIdToFollow)
+            .observeSingleEvent(of: .value) { snapshot in
+                if snapshot.exists() {
+                    for child in snapshot.children {
+                        if let ds = child as? DataSnapshot,
+                           var userFollow = ds.value as? [String: Any] {
+                            
+                            // Ensure followerIds is initialized
+                            var followerIds = userFollow["followerIds"] as? [String] ?? []
+                            
+                            // Check if the current user is already a follower
+                            if !followerIds.contains(currentUserId) {
+                                followerIds.append(currentUserId)
+                                userFollow["followerIds"] = followerIds
 
+                                ds.ref.setValue(userFollow) { error, _ in
+                                    if let error = error {
+                                        completion(.failure(error))
+                                    } else {
+                                        completion(.success(())) // Successfully updated followers
+                                    }
+                                }
+                            } else {
+                                completion(.success(())) // Already a follower, no need to update
+                            }
+                            return // Exit after processing
+                        }
+                    }
+                } else {
+                    let followId = self.reference.child(self._collection).childByAutoId().key ?? UUID().uuidString
+                    let newUserFollow: [String: Any] = [
+                        "followId": followId,
+                        "userId": userIdToFollow,
+                        "followingIds": [],
+                        "followerIds":  [currentUserId],
+                        "createdOn": Utils.getCurrentDatetime()
+                    ]
+                    // User does not exist, create a new UserFollow instance
+                  
+                    self.reference.child(self._collection).child(followId).setValue(newUserFollow) { error, _ in
+                        if let error = error {
+                            completion(.failure(error))
+                        } else {
+                            completion(.success(())) // Follow relationship created
+                        }
+                    }
+                }
+            } withCancel: { error in
+                completion(.failure(error))
+            }
+    }
+
+    
        func checkIfFollowed(currentUserId: String, userIdToCheck: String, completion: @escaping (Result<Bool, Error>) -> Void) {
            reference.child(_collection)
                .queryOrdered(byChild: "userId")

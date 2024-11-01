@@ -2,7 +2,7 @@ import SwiftUI
 
 struct FollowUnfollowView: View {
   
-    @State public var userId: String
+    let userId: String
     @State private var username: String = "User"
     @State private var bio: String = "Bio"
     @State private var postsCount: Int = 0
@@ -22,11 +22,12 @@ struct FollowUnfollowView: View {
     @State private var isFollowedBack: Bool = false
     
     @State private var isFollowing: Bool = false
-    @State private var showFollowSection: Bool = true
-    @State private var showUnfollowSection: Bool = false
-   @State private var showConfirmSection: Bool = false
-   @State private var showFollowBackSection: Bool = false
-    @State private var showCancelRequestSection: Bool = false
+    @State private var isFollowUnFollow: Bool = false
+ //   @State private var showFollowSection: Bool = true
+//    @State private var showUnfollowSection: Bool = false
+//   @State private var showConfirmSection: Bool = false
+//   @State private var showFollowBackSection: Bool = false
+  //  @State private var showCancelRequestSection: Bool = false
 
     
     @ObservedObject private var sessionManager = SessionManager.shared
@@ -64,12 +65,12 @@ struct FollowUnfollowView: View {
                             .foregroundColor(Color(.systemGray4))
                             .clipShape(Circle())
                     }
-
-                   
-                        Text(username)
-                            .font(.system(size: 16))
-                            .foregroundColor(.black)
-                            .padding(.leading, 10)
+                    
+                    
+                    Text(username)
+                        .font(.system(size: 16))
+                        .foregroundColor(.black)
+                        .padding(.leading, 10)
                     
                 }
                 
@@ -84,7 +85,7 @@ struct FollowUnfollowView: View {
                                 .foregroundColor(.black)
                         }.padding(.leading, 20)
                         
-                        NavigationLink(destination: FollowersListView()) {
+                        NavigationLink(destination: FollowersListView(userId: userId)) {
                             VStack {
                                 Text("\(followersCount) ")
                                     .font(.system(size: 14))
@@ -109,7 +110,7 @@ struct FollowUnfollowView: View {
                 }
             }
             .padding(.top, 10)
-
+            
             Text(bio)
                 .font(.system(size: 12))
                 .foregroundColor(.black)
@@ -120,48 +121,24 @@ struct FollowUnfollowView: View {
                 Image(systemName: "exclamationmark.triangle")
                     .foregroundColor(.red)
             }
-
-            HStack {
-                           if isPendingRequest {
-                               Button(action: cancelFollowRequest) {
-                                   Text("Cancel Request")
-                                       .frame(maxWidth: .infinity)
-                                       .padding(.vertical, 8)
-                                       .background(Color.blue)
-                                       .foregroundColor(.white)
-                                       .cornerRadius(5)
-                               }
-                           } else {
-                               Button(action: isFollowing ? cancelFollowRequest : sendFollowRequest) {
-                                   Text(isFollowing ? "Unfollow" : "Follow")
-                                       .frame(maxWidth: .infinity)
-                                       .padding(.vertical, 8)
-                                       .background(isFollowing ? Color.blue : Color.blue)
-                                       .foregroundColor(.white)
-                                       .cornerRadius(5)
-                               }
-                           }
-              
-            }
             
-            if showConfirmationButtons {
-                            HStack {
-                                Button(action: {
-                                    confirmFollowRequest() // Confirm follow request
-                                }) {
-                                    Text("Confirm")
+            HStack{
+                            if isFollowUnFollow{
+                                Button(action: isFollowing ? cancelFollowRequest : sendFollowRequest) {
+                                    Text(isFollowing ? "Unfollow" : "Follow")
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 8)
-                                        .background(Color.blue)
+                                        .background(isFollowing ? Color.blue : Color.blue)
                                         .foregroundColor(.white)
                                         .cornerRadius(5)
                                 }
-                                .padding(.trailing, 8)
-
-                                Button(action: {
-                                    rejectFollowRequest() // Reject follow request
-                                }) {
-                                    Text("Reject")
+                            }
+                        }
+                        
+                        HStack {
+                            if isPendingRequest {
+                                Button(action: cancelFollowRequest) {
+                                    Text("Cancel Request")
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 8)
                                         .background(Color.blue)
@@ -169,9 +146,54 @@ struct FollowUnfollowView: View {
                                         .cornerRadius(5)
                                 }
                             }
-                            .padding(.trailing, 8)
+                            
                         }
-            
+                        
+
+            if showConfirmationButtons {
+                HStack {
+                    Button(action: {
+                        confirmFollowRequest() // Confirm follow request
+                    }) {
+                        Text("Confirm")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(5)
+                    }
+                    .padding(.trailing, 8)
+                    
+                    Button(action: {
+                        rejectFollowRequest() // Reject follow request
+                    }) {
+                        Text("Reject")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(5)
+                    }
+                }
+                .padding(.trailing, 8)
+            }
+            HStack {
+                if isFollowedBack {
+                    Button(action: {
+                        followBack() // Reject follow request
+                    }) {
+                        Text("Follow Back")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(5)
+                    }
+                  
+                }
+                
+            }
+           
             
             if !userPosts.isEmpty {
                 let columns = [
@@ -219,10 +241,10 @@ struct FollowUnfollowView: View {
         .onAppear {
             fetchUserDetails()
             fetchUserPosts()
-            checkUserFollowStatus(userId)
+            
         }
         .alert(isPresented: $showingAlert) {
-            Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Success"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
                     Group {
                         if showReportDialog {
@@ -243,6 +265,8 @@ struct FollowUnfollowView: View {
             self.profilePicture = userData["profilepicture"] as? String ?? ""
             
             followService.getFollowCounts(for: userId, callback: self)
+            
+            checkPendingFollowRequestsForCancel(userIdToCheck : userId)
         }
     }
 
@@ -258,42 +282,118 @@ struct FollowUnfollowView: View {
             }
         }
     }
-    private func checkFollowingStatus() {
+    private func checkPendingFollowRequestsForCancel(userIdToCheck: String) {
            let currentUserId = sessionManager.getUserID()
-           followService.getFollowAndFollowerIdsByUserId(userId: currentUserId) { ids, error in
-               if let error = error {
-                   print("Error fetching follow status: \(error.localizedDescription)")
-                   return
-               }
-               if let ids = ids {
-                   self.isFollowing = ids.contains(userId)
-               }
-           }
-       }
-
-    
-    private func checkUserFollowStatus(_ userIdToCheck: String) {
-           followService.checkUserFollowStatus(currentUserId: sessionManager.getUserID(), userIdToCheck: userIdToCheck) { result in
+           followService.checkPendingRequestsForCancel(currentUserId: currentUserId, userIdToCheck: userIdToCheck) { result in
                switch result {
-               case .success(let following):
-                   isFollowing = following
-                   isPendingRequest = false // Resetting pending request status
-                   checkPendingFollowRequestsForCancel(userIdToCheck)
+               case .success(let pending):
+                   print("cancel request true : \(pending)")
+                   self.isPendingRequest = pending
+                   if(!pending)
+                   {
+                       checkPendingforFollowingUser(userIdToCheck: userIdToCheck)
+                   }
                case .failure:
-                   isFollowing = false
-                   isPendingRequest = false
+                   print("cancel request false")
+                   self.isPendingRequest = false
+                   checkPendingforFollowingUser(userIdToCheck: userIdToCheck)
                }
            }
        }
+    private func checkPendingforFollowingUser(userIdToCheck: String) {
+           let currentUserId = sessionManager.getUserID()
+           followService.checkPendingForFollowingUser(currentUserId: currentUserId, userIdToCheck: userIdToCheck) { result in
+               switch result {
+               case .success(let pending):
+                   
+                   self.showConfirmationButtons = pending
+                   if(!pending){
+                       print("haspending false")
+                       checkFollowBack(userIdToCheck : userIdToCheck) ;
+                   }
+                   else{
+                       print("haspending true")
+                   }
+                  
+               case .failure:
+                   self.showConfirmationButtons = false
+                   print("haspending false")
+                   checkFollowBack(userIdToCheck : userIdToCheck) ;
+               }
+           }
+       }
+   
+    func checkFollowBack(userIdToCheck: String) {
+        let currentUserId = sessionManager.getUserID()
+
+        // Check if current user is following the user to check
+        followService.checkIfFollowed(currentUserId: currentUserId, userIdToCheck: userIdToCheck) { result in
+            switch result {
+            case .success(let isFollowing):
+                if isFollowing {
+                   
+                    self.isFollowedBack = true
+                    
+                    self.followService.checkIfFollowed(currentUserId: userIdToCheck, userIdToCheck: currentUserId) { result in
+                      switch result {
+                      case .success(let isFollowedBack):
+                          if isFollowedBack {
+                              self.isFollowedBack = false
+                              self.updateUIForUnfollowButton()
+                          }
+                      case .failure:
+                          self.isFollowedBack = true
+                      }
+                  }
+                } else {
+                    
+                    // Current user is not following, check if the user to check follows back
+                      self.followService.checkIfFollowed(currentUserId: userIdToCheck, userIdToCheck: currentUserId) { result in
+                        switch result {
+                        case .success(let isFollowedBack):
+                            if isFollowedBack {
+                                self.updateUIForUnfollowButton()
+                            } else {
+                                // Show follow button
+                                self.showFollowButton()
+                            }
+                        case .failure:
+                            self.showFollowButton()
+                        }
+                    }
+                  
+                }
+            case .failure:
+                self.showFollowButton()
+            }
+        }
+    }
+
+    private func updateUIForUnfollowButton() {
+        self.isFollowUnFollow = true
+        self.isFollowing = true // Assuming you have a state variable to track this
+       
+    }
+
+    private func showFollowButton() {
+        self.isFollowUnFollow = true
+        self.isFollowing = false
+       
+    }
+
+ 
+  
     
     private func sendFollowRequest() {
             let currentUserId = sessionManager.getUserID()
             followService.sendFollowRequest(currentUserId: currentUserId, userIdToFollow: userId) { result in
                 switch result {
                 case .success:
+                    self.isFollowUnFollow = false
                     self.isPendingRequest = true
                     alertMessage = "Follow request sent!"
                     showingAlert = true
+                    
                 case .failure(let error):
                     alertMessage = "Error sending follow request: \(error.localizedDescription)"
                     showingAlert = true
@@ -307,38 +407,25 @@ struct FollowUnfollowView: View {
                 switch result {
                 case .success:
                     self.isPendingRequest = false
-                    self.isFollowing = false
+                    self.showFollowButton()
                     alertMessage = "Follow request canceled!"
                     showingAlert = true
                 case .failure(let error):
+                    self.isPendingRequest = true
                     alertMessage = "Error canceling follow request: \(error.localizedDescription)"
                     showingAlert = true
                 }
             }
         }
-    
-    private func checkPendingFollowRequestsForCancel(_ userIdToCheck: String) {
-           let currentUserId = sessionManager.getUserID()
-           followService.checkPendingRequestsForCancel(currentUserId: currentUserId, userIdToCheck: userIdToCheck) { result in
-               switch result {
-               case .success(let pending):
-                   self.isPendingRequest = pending
-               case .failure:
-                   self.isPendingRequest = false
-               }
-           }
-       }
-    
-    
-
     private func confirmFollowRequest() {
           let currentUserId = sessionManager.getUserID()
         followService.confirmFollowRequest(currentUserId: currentUserId, userIdToFollow: userId) { result in
               switch result {
               case .success:
                   alertMessage = "Follow request confirmed!"
-                  isFollowing = true
-                  isPendingRequest = false
+                  
+                  showConfirmationButtons = false
+                  isFollowedBack = true
                   showingAlert = true
                   // Additional logic if needed
               case .failure(let error):
@@ -355,8 +442,7 @@ struct FollowUnfollowView: View {
               case .success:
                   alertMessage = "Follow request rejected!"
                   isPendingRequest = false
-                  isFollowing = false
-                  showingAlert = true
+                  showFollowButton()
                   // Update UI to reflect changes
               case .failure(let error):
                   alertMessage = "Error: \(error.localizedDescription)"
@@ -364,42 +450,18 @@ struct FollowUnfollowView: View {
               }
           }
       }
-    func checkFollowBack(userIdToCheck: String) {
-        let currentUserId = sessionManager.getUserID()
-
-        followService.checkIfFollowed(currentUserId: currentUserId, userIdToCheck: userIdToCheck) { result in
-            // Directly use self since FollowUnfollowView is a struct
-            switch result {
-            case .success(let isFollowing):
-                self.isFollowing = isFollowing
-                self.isFollowedBack = isFollowing // User is following
-
-            case .failure:
-                self.isFollowing = false
-            }
-
-            // Check if followed back if not following
-            if !self.isFollowing {
-                self.followService.checkIfFollowed(currentUserId: userIdToCheck, userIdToCheck: currentUserId) { result in
-                    switch result {
-                    case .success(let isFollowedBack):
-                        self.isFollowedBack = isFollowedBack
-                    case .failure:
-                        self.isFollowedBack = false
-                    }
-                }
-            }
-        }
-    }
+   
 
     private func followBack() {
         let currentUserId = sessionManager.getUserID()
-        
-        followService.followBack(currentUserId: currentUserId, userIdToFollow: userId) { result in
+        print("followback call")
+        followService.confirmFollowBack(currentUserId: currentUserId, userIdToFollow: userId) { result in
             switch result {
             case .success:
+                isFollowedBack = false
                 showAlert(message: "You are now following this user!")
-                updateUIForFollowBack()
+                updateUIForUnfollowButton()
+             //   updateUIForFollowBack()
             case .failure(let error):
                 showAlert(message: "Error: \(error.localizedDescription)")
             }
@@ -407,13 +469,13 @@ struct FollowUnfollowView: View {
     }
 
 
-    private func updateUIForFollowBack() {
-        showFollowSection = false
-        showUnfollowSection = true
-        showConfirmSection = false
-        showFollowBackSection = false
-        showCancelRequestSection = false
-    }
+ //   private func updateUIForFollowBack() {
+     //   showFollowSection = false
+     //   showUnfollowSection = true
+     //   showConfirmSection = false
+    //    showFollowBackSection = false
+   //     showCancelRequestSection = false
+    //}
 
     private func unfollowUser() {
            let currentUserId = sessionManager.getUserID()
@@ -421,7 +483,7 @@ struct FollowUnfollowView: View {
                switch result {
                case .success:
                    DispatchQueue.main.async {
-                       self.isFollowing = false
+                       showFollowButton()
                        showAlert(message: "You have successfully unfollowed the user.")
                    }
                case .failure(let error):
@@ -439,11 +501,6 @@ struct FollowUnfollowView: View {
         showingAlert = true
     }
 
-
-
-
-
-   
 }
 
 extension FollowUnfollowView: DataOperationCallback {
@@ -462,3 +519,9 @@ struct FollowUnfollowView_Previews: PreviewProvider {
         FollowUnfollowView(userId: "sample_user_id")
     }
 }
+
+
+
+
+
+
