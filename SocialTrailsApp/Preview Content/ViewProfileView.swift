@@ -4,6 +4,7 @@
 
     struct ViewProfileView: View {
         
+
         @StateObject private var userService = UserService()
         @StateObject private var followService = FollowService()
         @State private var username: String = "User"
@@ -74,16 +75,19 @@
                                         .foregroundColor(.black)
                                 }.padding(.leading, 15)
                                 
-                                NavigationLink(destination: FollowersListView()) {
-                                    VStack {
-                                        Text("\(followersCount) ")
-                                            .font(.system(size: 14))
-                                            .foregroundColor(.black)
-                                        Text("Followers")
-                                            .font(.system(size: 14))
-                                            .foregroundColor(.black)
+                                if let currentUser = sessionManager.getCurrentUser() {
+                                    let userId = currentUser.id 
+                                    NavigationLink(destination: FollowersListView(userId: userId)) {
+                                        VStack {
+                                            Text("\(followersCount) ")
+                                                .font(.system(size: 14))
+                                                .foregroundColor(.black)
+                                            Text("Followers")
+                                                .font(.system(size: 14))
+                                                .foregroundColor(.black)
+                                        }
+                                        .padding(.leading, 20)
                                     }
-                                    .padding(.leading, 20)
                                 }
                                 
                                 NavigationLink(destination: FollowingsListView()) {
