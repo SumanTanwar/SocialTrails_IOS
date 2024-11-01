@@ -25,7 +25,7 @@ struct AdminBottomNavigationView: View {
                 .tag(1)
            
 
-            AdminDashboardView()
+            AdminReportListView()
                 .tabItem {
                     Image(systemName: "exclamationmark.triangle")
                     

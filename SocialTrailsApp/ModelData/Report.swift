@@ -1,10 +1,3 @@
-//
-//  Report.swift
-//  SocialTrailsApp
-//
-//  Created by Admin on 10/28/24.
-//
-
 import Foundation
 
 class Report {
@@ -16,7 +9,8 @@ class Report {
     var reason: String
     var status: ReportStatus
     var createdon: String
-
+    var username: String?
+    var userprofilepicture: String?
     // Default initializer
     init() {
         self.reporterId = ""
@@ -36,7 +30,7 @@ class Report {
         self.status = .pending
         self.createdon = Utils.getCurrentDatetime()
     }
-    
+
     // Initializer to create a Report from a dictionary
     convenience init(dictionary: [String: Any]) {
         self.init() // Call the default initializer
@@ -49,6 +43,8 @@ class Report {
         let statusString = dictionary["status"] as? String ?? "pending"
         self.status = ReportStatus(rawValue: statusString) ?? .pending
         self.createdon = dictionary["createdon"] as? String ?? Utils.getCurrentDatetime()
+        self.username = dictionary["username"] as? String ?? ""
+        self.userprofilepicture = dictionary["userprofilepicture"] as? String ?? ""
     }
 
     // Convert Report object to dictionary
@@ -64,4 +60,6 @@ class Report {
             "createdon": createdon
         ]
     }
+
+   
 }
