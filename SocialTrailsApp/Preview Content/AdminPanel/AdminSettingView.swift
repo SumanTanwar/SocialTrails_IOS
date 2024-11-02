@@ -7,6 +7,8 @@ struct AdminSettingsView: View {
     @State private var navigateToSignIn = false
     private var auth = Auth.auth()
     @State private var isAdmin: Bool = false
+    
+    @ObservedObject private var sessionManager = SessionManager.shared
 
     var body: some View {
         NavigationStack {
@@ -96,11 +98,12 @@ struct AdminSettingsView: View {
     }
 
     private func checkIfAdmin() {
-        if let user = auth.currentUser {
-            
-            isAdmin = user.email?.hasSuffix("socialtrails2024.com") ?? false
-        }
-    }
+           if let role = sessionManager.getCurrentUser()?.roleType {
+               isAdmin = (role == UserRole.admin.role) // Adjust this line based on your role definition
+           } else {
+               isAdmin = false
+           }
+       }
 }
 
 struct AdminSettingsView_Previews: PreviewProvider {

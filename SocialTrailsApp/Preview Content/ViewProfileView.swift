@@ -90,7 +90,9 @@
                                     }
                                 }
                                 
-                                NavigationLink(destination: FollowingsListView()) {
+                                if let currentUser = sessionManager.getCurrentUser() {
+                                    let userId = currentUser.id
+                                NavigationLink(destination: FollowingsListView(userId: userId)) {
                                     VStack {
                                         Text("\(followingsCount) ")
                                             .font(.system(size: 14))
@@ -98,6 +100,7 @@
                                         Text("Followings")
                                             .font(.system(size: 14))
                                             .foregroundColor(.black)
+                                    }
                                     }.padding(.leading, 20)
                                 }
                             }

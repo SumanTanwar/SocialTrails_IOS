@@ -84,7 +84,7 @@ struct AdminUserManageView: View {
                             }.padding(.leading, 20)
                         }
                         
-                        NavigationLink(destination: FollowingsListView()) {
+                        NavigationLink(destination: FollowingsListView(userId: userId)) {
                             VStack {
                                 Text("\(followingsCount) ")
                                     .font(.system(size: 14))
