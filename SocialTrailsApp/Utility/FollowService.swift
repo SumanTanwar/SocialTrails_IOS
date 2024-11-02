@@ -68,19 +68,25 @@ class FollowService: ObservableObject {
                     if let ds = child as? DataSnapshot,
                        var userFollow = ds.value as? [String: Any] {
                         
-                        // Update following IDs
+                        // Check if followingIds exists
                         if var followingIds = userFollow["followingIds"] as? [String: Bool] {
+                            // Update the followingIds to include the userIdToFollow
                             followingIds[userIdToFollow] = false
                             userFollow["followingIds"] = followingIds
-                            ds.ref.updateChildValues(userFollow) { error, _ in
-                                if let error = error {
-                                    completion(.failure(error))
-                                } else {
-                                    completion(.success(()))
-                                }
+                        } else {
+                            // If followingIds doesn't exist, create it and add userIdToFollow
+                            userFollow["followingIds"] = [userIdToFollow: false]
+                        }
+
+                        // Update the follow entry in the database
+                        ds.ref.updateChildValues(userFollow) { error, _ in
+                            if let error = error {
+                                completion(.failure(error))
+                            } else {
+                                completion(.success(()))
                             }
                         }
-                        return // Exit loop after updating
+                        return // Exit the loop after updating
                     }
                 }
             } else {
@@ -466,37 +472,62 @@ class FollowService: ObservableObject {
                }
        }
 
-       func unfollowUser(currentUserId: String, userIdToUnfollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
-           reference.child(_collection)
-               .queryOrdered(byChild: "userId")
-               .queryEqual(toValue: currentUserId)
-               .observeSingleEvent(of: .value) { snapshot in
-                   for child in snapshot.children {
-                       if let ds = child as? DataSnapshot,
-                          var userFollow = ds.value as? [String: Any],
-                          let followingIds = userFollow["followingIds"] as? [String: Bool],
-                          followingIds[userIdToUnfollow] == true {
-                           
-                           // Remove the user from followingIds
-                           var updatedFollowingIds = followingIds
-                           updatedFollowingIds.removeValue(forKey: userIdToUnfollow)
-                           userFollow["followingIds"] = updatedFollowingIds
-                           
-                           ds.ref.setValue(userFollow) { error, _ in
-                               if let error = error {
-                                   completion(.failure(error))
-                               } else {
-                                   completion(.success(())) // Successfully unfollowed
-                               }
-                           }
-                           return // Exit after processing the user
-                       }
-                   }
-                   completion(.failure(NSError(domain: "", code: 404, userInfo: [NSLocalizedDescriptionKey: "User not found in following list."])))
-               } withCancel: { error in
-                   completion(.failure(error)) // Handle error
-               }
-       }
+    func unfollowUser(currentUserId: String, userIdToUnfollow: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let currentUserRef = reference.child(_collection).queryOrdered(byChild: "userId").queryEqual(toValue: currentUserId)
+
+        // Step 1: Update the current user's following list
+        currentUserRef.observeSingleEvent(of: .value) { snapshot in
+            guard let child = snapshot.children.allObjects.first as? DataSnapshot,
+                  var userFollow = child.value as? [String: Any],
+                  var followingIds = userFollow["followingIds"] as? [String: Bool],
+                  followingIds[userIdToUnfollow] == true else {
+                return completion(.failure(NSError(domain: "", code: 404, userInfo: [NSLocalizedDescriptionKey: "User not found in following list."])))
+            }
+
+            // Remove the user from followingIds
+            followingIds.removeValue(forKey: userIdToUnfollow)
+            userFollow["followingIds"] = followingIds
+
+            // Update the current user's following list
+            child.ref.setValue(userFollow) { error, _ in
+                if let error = error {
+                    return completion(.failure(error))
+                }
+
+              
+
+                // Step 2: Update the unfollowed user's followers list
+                let unfollowedUserRef = self.reference.child(self._collection).queryOrdered(byChild: "userId").queryEqual(toValue: userIdToUnfollow)
+                unfollowedUserRef.observeSingleEvent(of: .value) { snapshot in
+                    guard let followerChild = snapshot.children.allObjects.first as? DataSnapshot,
+                          var userFollowers = followerChild.value as? [String: Any],
+                          var followersIds = userFollowers["followersIds"] as? [String: Bool],
+                          followersIds[currentUserId] == true else {
+                        return completion(.failure(NSError(domain: "", code: 404, userInfo: [NSLocalizedDescriptionKey: "User to unfollow not found in followers list."])))
+                    }
+
+                    // Remove the current user from followersIds
+                    followersIds.removeValue(forKey: currentUserId)
+                    userFollowers["followersIds"] = followersIds
+
+                    // Update the unfollowed user's followers list
+                    followerChild.ref.setValue(userFollowers) { error, _ in
+                        if let error = error {
+                            completion(.failure(error))
+                        } else {
+                            print("Successfully updated followers list: \(followersIds)")
+                            completion(.success(()))
+                        }
+                    }
+                } withCancel: { error in
+                    completion(.failure(error))
+                }
+            }
+        } withCancel: { error in
+            completion(.failure(error))
+        }
+    }
+
 
        func checkUserFollowStatus(currentUserId: String, userIdToCheck: String, completion: @escaping (Result<Bool, Error>) -> Void) {
            reference.child(_collection)
@@ -634,21 +665,15 @@ class FollowService: ObservableObject {
                         }
                     }
                 }
-
                 if followerIds.isEmpty {
-                    print("isempty")
-                    // If no follower IDs, return an empty array
                     completion(.success([]))
                 } else {
-                    print("no empty")
                     self.fetchUserDetails(followerIds: followerIds, completion: completion)
                 }
             } withCancel: { error in
                 completion(.failure(error))
             }
     }
-
-
     func getFollowingDetails(userId: String, completion: @escaping (Result<[Users], Error>) -> Void) {
         reference.child(_collection)
             .queryOrdered(byChild: "userId")
@@ -661,18 +686,13 @@ class FollowService: ObservableObject {
                     for child in snapshot.children {
                         if let childSnapshot = child as? DataSnapshot,
                            let userFollow = childSnapshot.value as? [String: Any],
-                           let followingIdsDict = userFollow["followingIds"] as? [String: Bool] {
-                            for (id, isFollowing) in followingIdsDict {
-                                if isFollowing {
-                                    followingIds.append(id)
-                                }
-                            }
+                           let ids = userFollow["followingIds"] as? [String: Bool] {
+                            // Extract keys (user IDs) from the dictionary
+                            followingIds.append(contentsOf: ids.keys)
                         }
                     }
                 }
-
                 if followingIds.isEmpty {
-                    // If no following IDs, return an empty array
                     completion(.success([]))
                 } else {
                     self.fetchUserDetails(followerIds: followingIds, completion: completion)
@@ -681,6 +701,7 @@ class FollowService: ObservableObject {
                 completion(.failure(error))
             }
     }
+
 
     private func fetchUserDetails(followerIds: [String], completion: @escaping (Result<[Users], Error>) -> Void) {
         var users: [Users] = []

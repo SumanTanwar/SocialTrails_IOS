@@ -1,11 +1,10 @@
 import SwiftUI
 
 struct FollowingsListView: View {
+    var userId: String
     @State private var followingsList: [Users] = []
     @State private var isLoading = true
-    private var followService = FollowService()
-    let currentUserID = SessionManager.shared.getUserID()
-    
+
     var body: some View {
         NavigationView {
             VStack {
@@ -61,9 +60,10 @@ struct FollowingsListView: View {
             }
         }
     }
-    
+
     private func loadFollowings() {
-        followService.getFollowingDetails(userId: currentUserID) { result in
+        let followService = FollowService()
+        followService.getFollowingDetails(userId: userId) { result in
             switch result {
             case .success(let followings):
                 DispatchQueue.main.async {
@@ -77,11 +77,5 @@ struct FollowingsListView: View {
                 }
             }
         }
-    }
-}
-
-struct FollowingsListView_Previews: PreviewProvider {
-    static var previews: some View {
-        FollowingsListView()
     }
 }

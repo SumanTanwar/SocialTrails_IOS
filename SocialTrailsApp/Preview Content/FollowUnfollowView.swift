@@ -96,7 +96,7 @@ struct FollowUnfollowView: View {
                             }.padding(.leading, 25)
                         }
                         
-                        NavigationLink(destination: FollowingsListView()) {
+                        NavigationLink(destination: FollowingsListView(userId: userId)) {
                             VStack {
                                 Text("\(followingsCount) ")
                                     .font(.system(size: 14))
@@ -110,17 +110,21 @@ struct FollowUnfollowView: View {
                 }
             }
             .padding(.top, 10)
-            
+          
+            HStack {
             Text(bio)
                 .font(.system(size: 12))
                 .foregroundColor(.black)
                 .padding(.leading, 10)
+                Spacer()
             Button(action: {
                 showReportDialog.toggle()
             }) {
                 Image(systemName: "exclamationmark.triangle")
                     .foregroundColor(.red)
+                    .padding(.trailing,10)
             }
+        }
             
             HStack{
                             if isFollowUnFollow{
@@ -442,6 +446,7 @@ struct FollowUnfollowView: View {
               case .success:
                   alertMessage = "Follow request rejected!"
                   isPendingRequest = false
+                  showConfirmationButtons = false
                   showFollowButton()
                   // Update UI to reflect changes
               case .failure(let error):
@@ -468,14 +473,6 @@ struct FollowUnfollowView: View {
         }
     }
 
-
- //   private func updateUIForFollowBack() {
-     //   showFollowSection = false
-     //   showUnfollowSection = true
-     //   showConfirmSection = false
-    //    showFollowBackSection = false
-   //     showCancelRequestSection = false
-    //}
 
     private func unfollowUser() {
            let currentUserId = sessionManager.getUserID()
