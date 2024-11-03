@@ -121,6 +121,7 @@ struct PostDetailRowView: View {
                                   Image(systemName: post.isliked ?? false ? "heart.fill" : "heart")
                                       .resizable()
                                       .frame(width: 18, height: 18)
+                                      .foregroundColor(post.isliked ?? false ? .red : .primary)
                               }
 
                               Text("\(post.likecount ?? 0)")
@@ -187,15 +188,10 @@ struct PostDetailRowView: View {
         .onAppear(){
             checkLikeStatus()
         }
-        
-        .overlay(
-                    Group {
-                        if showReportPopup {
-                           
-                            ReportPopup(isPresented: $showReportPopup, reportedId: post.postId,reportType:ReportType.post.rawValue)
-                        }
-                    }
-                )
+        .sheet(isPresented: $showReportPopup) {
+            ReportPopup(isPresented: $showReportPopup, reportedId: post.postId, reportType: ReportType.post.rawValue)
+        }
+
     
     }
    

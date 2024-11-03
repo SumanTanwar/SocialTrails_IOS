@@ -1,7 +1,5 @@
 import SwiftUI
 
-import SwiftUI
-
 struct ReportPopup: View {
     @Binding var isPresented: Bool
     @State private var reportReason: String = ""
@@ -19,7 +17,7 @@ struct ReportPopup: View {
                     .font(.headline)
                     .padding()
 
-                Text("Why are you reporting this post?")
+                Text("Why are you reporting?")
                     .font(.subheadline)
 
                 Text("Your report is anonymous. If someone is in immediate danger, call the local emergency service.")

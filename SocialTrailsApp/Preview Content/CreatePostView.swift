@@ -198,9 +198,10 @@ struct CreatePostView: View {
 
         userPostService.createPost(userPost: userPost) { result in
             switch result {
-            case .success:
+            case .success(let newItemKey):
                 DispatchQueue.main.async {
-                    self.navigateToSuccess = true
+                    self.sendNotify(newItemKey: newItemKey)
+                  
                 }
             case .failure(_):
                 alertMessage = "Create post failed! Please try again later."
@@ -208,6 +209,50 @@ struct CreatePostView: View {
             }
         }
     }
+    private func sendNotify(newItemKey: String) {
+        let followService = FollowService()
+        let notificationService = NotificationService()
+        let userId = sessionManager.getCurrentUser()?.id ?? ""
+        
+        followService.getFollowAndFollowerIdsByUserId(userId: userId) { followedUserIds, error in
+            if let error = error {
+                print("Error fetching followed user IDs: \(error.localizedDescription)")
+                return
+            }
+
+           
+            guard let followedUserIds = followedUserIds else {
+                print("No followed user IDs found.")
+                return
+            }
+
+            let pendingRequests = DispatchGroup()
+
+            for followedUserId in followedUserIds {
+                pendingRequests.enter()
+                
+              
+                let notification = Notification(notifyto: followedUserId, notifyBy: userId, type: "post", message: " just shared a new post .Check it out!!", relatedId: newItemKey)
+                
+               
+                notificationService.sendNotificationToUser(notification: notification)
+
+                // Leave immediately after sending the notification
+                pendingRequests.leave()
+            }
+
+            pendingRequests.notify(queue: .main) {
+                // Redirect to the new page after all notifications are sent
+                DispatchQueue.main.async {
+                    self.navigateToSuccess = true
+                }
+                print("All notifications sent.")
+            }
+        }
+    }
+
+
+
 }
 
 struct CreatePostView_Previews: PreviewProvider {
