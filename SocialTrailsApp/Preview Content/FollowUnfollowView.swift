@@ -125,10 +125,13 @@ struct FollowUnfollowView: View {
                     .padding(.trailing,10)
             }
         }
+            .sheet(isPresented: $showReportDialog) {
+                ReportPopup(isPresented: $showReportDialog, reportedId: userId, reportType: ReportType.user.rawValue)
+            }
             
             HStack{
                             if isFollowUnFollow{
-                                Button(action: isFollowing ? cancelFollowRequest : sendFollowRequest) {
+                                Button(action: isFollowing ? unfollowUser : sendFollowRequest) {
                                     Text(isFollowing ? "Unfollow" : "Follow")
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 8)
@@ -250,12 +253,7 @@ struct FollowUnfollowView: View {
         .alert(isPresented: $showingAlert) {
             Alert(title: Text("Success"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
-                    Group {
-                        if showReportDialog {
-                           
-                            ReportPopup(isPresented: $showReportDialog, reportedId: userId,reportType:ReportType.user.rawValue)
-                        }
-                    }
+                   
     }
 
     private func fetchUserDetails() {
@@ -395,6 +393,7 @@ struct FollowUnfollowView: View {
                 case .success:
                     self.isFollowUnFollow = false
                     self.isPendingRequest = true
+                    sendNotify(notifyTo: userId, text: " has send follow request to you", notifyBy: currentUserId)
                     alertMessage = "Follow request sent!"
                     showingAlert = true
                     
@@ -412,6 +411,7 @@ struct FollowUnfollowView: View {
                 case .success:
                     self.isPendingRequest = false
                     self.showFollowButton()
+                    sendNotify(notifyTo: userId, text: " has cancelled the follow request", notifyBy: currentUserId)
                     alertMessage = "Follow request canceled!"
                     showingAlert = true
                 case .failure(let error):
@@ -431,6 +431,7 @@ struct FollowUnfollowView: View {
                   showConfirmationButtons = false
                   isFollowedBack = true
                   showingAlert = true
+                  sendNotify(notifyTo: userId, text: " has started following you", notifyBy: currentUserId)
                   // Additional logic if needed
               case .failure(let error):
                   alertMessage = "Error: \(error.localizedDescription)"
@@ -448,6 +449,7 @@ struct FollowUnfollowView: View {
                   isPendingRequest = false
                   showConfirmationButtons = false
                   showFollowButton()
+                  sendNotify(notifyTo: userId, text: " has rejected the following request", notifyBy: currentUserId)
                   // Update UI to reflect changes
               case .failure(let error):
                   alertMessage = "Error: \(error.localizedDescription)"
@@ -466,6 +468,7 @@ struct FollowUnfollowView: View {
                 isFollowedBack = false
                 showAlert(message: "You are now following this user!")
                 updateUIForUnfollowButton()
+                sendNotify(notifyTo: userId, text: " has started following you", notifyBy: currentUserId)
              //   updateUIForFollowBack()
             case .failure(let error):
                 showAlert(message: "Error: \(error.localizedDescription)")
@@ -482,6 +485,7 @@ struct FollowUnfollowView: View {
                    DispatchQueue.main.async {
                        showFollowButton()
                        showAlert(message: "You have successfully unfollowed the user.")
+                       sendNotify(notifyTo: userId, text: " has unfollowed you", notifyBy: currentUserId)
                    }
                case .failure(let error):
                    DispatchQueue.main.async {
@@ -496,6 +500,12 @@ struct FollowUnfollowView: View {
     private func showAlert(message: String) {
         alertMessage = message
         showingAlert = true
+    }
+    private func sendNotify(notifyTo: String, text: String, notifyBy: String) {
+        let notification = Notification(notifyto: notifyTo, notifyBy: notifyBy, type: "follow", message: " \(text)", relatedId: notifyBy)
+        let notificationService = NotificationService()
+        
+        notificationService.sendNotificationToUser(notification: notification)
     }
 
 }

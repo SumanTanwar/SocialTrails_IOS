@@ -7,7 +7,7 @@ struct SearchUserView: View {
     let currentUserID = SessionManager.shared.getUserID()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
               
                 Text("All Users")
@@ -55,7 +55,7 @@ struct SearchUserView: View {
                                         .font(.headline)
                                 }
                                 
-                                Spacer()
+                              //  Spacer()
                             }
                         }
                     }

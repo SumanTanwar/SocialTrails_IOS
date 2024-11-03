@@ -22,7 +22,7 @@ class UserPostService: ObservableObject {
         reference = Database.database().reference()
     }
 
-    func createPost(userPost: UserPost, completion: @escaping (Result<Void, Error>) -> Void) {
+    func createPost(userPost: UserPost, completion: @escaping (Result<String, Error>) -> Void) {
         guard let newItemKey = reference.child(collectionName).childByAutoId().key else {
             completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to generate a unique key."])))
             return
@@ -38,7 +38,7 @@ class UserPostService: ObservableObject {
                     self.postImagesService.uploadImages(postId: newItemKey, imageUris: imageUris) { result in
                         switch result {
                         case .success:
-                            completion(.success(()))
+                            completion(.success(newItemKey)) // Pass the newItemKey on success
                         case .failure(let error):
                             completion(.failure(error))
                         }
@@ -49,6 +49,7 @@ class UserPostService: ObservableObject {
             }
         }
     }
+
     
 
 
