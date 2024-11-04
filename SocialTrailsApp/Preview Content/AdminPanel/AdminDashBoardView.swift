@@ -7,12 +7,14 @@ struct AdminDashboardView: View {
     @State private var numberOfUsers: String = "0"
     @State private var numberOfPosts: String = "0"
     @State private var numberOfReports: String = "0"
+    @State private var numberOfWarnings: String = "0"
     @State private var userRole: String = ""
     
     
     @StateObject private var userService = UserService()
     @StateObject private var followService = FollowService()
     @StateObject private var reportService = ReportService()
+    @StateObject private var issueWarningService = IssueWarningService()
     @StateObject private var userPostService = UserPostService()
     @ObservedObject private var sessionManager = SessionManager.shared
 
@@ -42,7 +44,7 @@ struct AdminDashboardView: View {
                 
                 HStack {
                     MetricSection(title: "Number of Reports", value: numberOfReports, imageName: "reports")
-                    MetricSection(title: "Number of Warnings", value: "0", imageName: "warning") // Placeholder
+                    MetricSection(title: "Number of Warnings", value: numberOfWarnings, imageName: "warning") // Placeholder
                 }
                 .padding(.top, 10)
                 
@@ -77,6 +79,7 @@ struct AdminDashboardView: View {
                 getRegularUserList()
                 getAllUserPost()
                 fetchTotalReports()
+                fetchTotalWarningss()
             }
             .background(Color.white)
             .padding()
@@ -126,6 +129,16 @@ struct AdminDashboardView: View {
             case .failure:
                 numberOfReports = "0"
             }
+        }
+    }
+    private func fetchTotalWarningss() {
+        issueWarningService.fetchWarningCount { result in
+               switch result {
+               case .success(let count):
+                   numberOfWarnings = "\(count)"
+               case .failure:
+                   numberOfWarnings = "0"
+               }
         }
     }
 }

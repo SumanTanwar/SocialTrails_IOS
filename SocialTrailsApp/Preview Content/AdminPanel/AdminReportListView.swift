@@ -6,6 +6,7 @@ struct AdminReportListView: View {
     @State private var selectedReportId: String?
     @State private var isPostDetailActive = false
     @State private var isUserProfileActive = false
+    @State private var isWarningDialogActive = false
 
     var body: some View {
         NavigationView {
@@ -35,6 +36,7 @@ struct AdminReportListView: View {
                     EmptyView()
                 }
             )
+            
         }
     }
 
@@ -80,24 +82,38 @@ struct AdminReportListView: View {
             
             Spacer()
             
+         
             // Eye icon to select the report
             Button(action: {
-                self.selectedReportId = report.reportedId
-                if report.reporttype == ReportType.post.rawValue {
-                    self.isPostDetailActive = true
-                } else if report.reporttype == ReportType.user.rawValue {
-                    self.isUserProfileActive = true
-                } else {
-                    // Show a message if the report type is invalid
-                    print("No valid action for this report type")
+                            self.selectedReportId = report.reportedId
+                            if report.reporttype == ReportType.post.rawValue {
+                                self.isPostDetailActive = true
+                            } else if report.reporttype == ReportType.user.rawValue {
+                                self.isUserProfileActive = true
+                            } else {
+                                // Show a message if the report type is invalid
+                                print("No valid action for this report type")
+                            }
+                        }) {
+                            HStack{
+                                Image(systemName: "eye")
+                                    .foregroundColor(.blue)
+                                    .padding()
+                                 
+                            }
+                        }
+                        
+                        // Exclamation mark icon to open warning dialog
+            Button(action: {
+                          self.isWarningDialogActive.toggle()
+                      }) {
+                          Image(systemName: "exclamationmark.triangle.fill")
+                              .foregroundColor(.blue)
+                              .padding()
+                      }
+                    }
                 }
-            }) {
-                Image(systemName: "eye")
-                    .foregroundColor(.blue)
-            }
-        }
-    }
-    
+                
     private func fetchReports() {
         reportService.fetchReports { result in
             switch result {
