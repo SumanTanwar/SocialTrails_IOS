@@ -11,7 +11,9 @@ class Report {
     var createdon: String
     var username: String?
     var userprofilepicture: String?
-    // Default initializer
+    var reviewedby: String?
+    var actiontakenby: String?
+
     init() {
         self.reporterId = ""
         self.reportedId = ""
@@ -21,7 +23,6 @@ class Report {
         self.createdon = Utils.getCurrentDatetime()
     }
 
-    // Initializer for creating a report with specific values
     init(reporterId: String, reportedId: String, reportType: String, reason: String) {
         self.reporterId = reporterId
         self.reportedId = reportedId
@@ -31,9 +32,8 @@ class Report {
         self.createdon = Utils.getCurrentDatetime()
     }
 
-    // Initializer to create a Report from a dictionary
     convenience init(dictionary: [String: Any]) {
-        self.init() // Call the default initializer
+        self.init()
         self.reportId = dictionary["reportId"] as? String
         self.reporterId = dictionary["reporterId"] as? String ?? ""
         self.reportedId = dictionary["reportedId"] as? String ?? ""
@@ -45,9 +45,10 @@ class Report {
         self.createdon = dictionary["createdon"] as? String ?? Utils.getCurrentDatetime()
         self.username = dictionary["username"] as? String ?? ""
         self.userprofilepicture = dictionary["userprofilepicture"] as? String ?? ""
+        self.reviewedby = dictionary["reviewedby"] as? String
+        self.actiontakenby = dictionary["actiontakenby"] as? String
     }
 
-    // Convert Report object to dictionary
     func toDictionary() -> [String: Any?] {
         return [
             "reportId": reportId,
@@ -57,9 +58,9 @@ class Report {
             "reporttype": reporttype,
             "reason": reason,
             "status": status.reportStatus,
-            "createdon": createdon
+            "createdon": createdon,
+            "reviewedby": reviewedby,
+            "actiontakenby": actiontakenby
         ]
     }
-
-   
 }

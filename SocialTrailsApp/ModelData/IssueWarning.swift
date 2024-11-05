@@ -13,14 +13,14 @@ struct IssueWarning: Identifiable, Codable {
     var userprofilepicture: String?
 
     // Initializer
-    init(issuewarnby: String, issuewarnto: String, issuewarnId: String, warningtype: String, reason: String,username: String?) {
+    init(issuewarnby: String, issuewarnto: String, issuewarnId: String, warningtype: String, reason: String) {
         self.issuewarnby = issuewarnby
         self.issuewarnto = issuewarnto
         self.issuewarnId = issuewarnId
         self.warningtype = warningtype
         self.reason = reason
         self.createdon = Utils.getCurrentDatetime()
-        self.username = username
+        
     }
 
     
