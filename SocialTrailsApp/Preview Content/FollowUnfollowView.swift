@@ -215,7 +215,7 @@ struct FollowUnfollowView: View {
                         if let imageUrls = post.uploadedImageUris, !imageUrls.isEmpty {
                            
                             if let firstImageUrl = imageUrls.first {
-                                NavigationLink(destination: AdminPostDetailView(postDetailId: post.postId)) {
+                                NavigationLink(destination: AdminPostDetailView(postDetailId: post.postId,reportId: "")) {
                                     AsyncImage(url: URL(string: firstImageUrl)) { image in
                                         image
                                             .resizable()

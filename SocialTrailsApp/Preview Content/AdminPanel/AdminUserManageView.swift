@@ -24,7 +24,18 @@ struct AdminUserManageView: View {
     @StateObject private var userService = UserService()
     @StateObject private var followService = FollowService()
     @StateObject private var userPostService = UserPostService()
-
+    @StateObject private var reportService = ReportService()
+    @State private var reporterNameText: String = ""
+    @State private var reasonText: String = ""
+    @State private var statusText: String = ""
+    @State private var reportDateText: String = ""
+    @State private var reviewedByText: String = ""
+    @State private var actionTakenByText: String = ""
+    @State private var actionTakenByShowText = false
+    @State private var reportprofileImageURL: String?
+    @State private var isReviewedButtonVisible = false
+    @State private var isActionButtonVisible = false
+    var reportId: String
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
@@ -186,7 +197,7 @@ struct AdminUserManageView: View {
                         if let imageUrls = post.uploadedImageUris, !imageUrls.isEmpty {
                            
                             if let firstImageUrl = imageUrls.first {
-                                NavigationLink(destination: AdminPostDetailView(postDetailId: post.postId)) {
+                                NavigationLink(destination: AdminPostDetailView(postDetailId: post.postId,reportId: "")) {
                                     AsyncImage(url: URL(string: firstImageUrl)) { image in
                                         image
                                             .resizable()
@@ -210,12 +221,108 @@ struct AdminUserManageView: View {
                 }
                 .padding(.horizontal, 17)
             }
+           if !reportId.isEmpty {
+                VStack(alignment: .leading, spacing: 5) {
+                    Divider().padding(.top, 5)
+                    
+                    Text("Report")
+                        .font(.system(size: 18, weight: .bold))
+                        .padding(.top, 5)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    
+                    Divider()
+                    
+                    VStack(alignment: .leading) {
+                        Text("Reported By")
+                            .font(.system(size: 16, weight: .bold))
+                            .padding(.bottom, 5)
+                        
+                        HStack(alignment: .top, spacing: 8) {
+                            
+                            if let url = reportprofileImageURL, let imageUrl = URL(string: url) {
+                                AsyncImage(url: imageUrl) { image in
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 80, height: 80)
+                                        .clipShape(Circle())
+                                        .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                                } placeholder: {
+                                    Image(systemName: "person.circle.fill")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 80, height: 80)
+                                        .foregroundColor(Color(.systemGray4))
+                                        .clipShape(Circle())
+                                }
+                            } else {
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 80, height: 80)
+                                    .foregroundColor(Color(.systemGray4))
+                                    .clipShape(Circle())
+                            }
+                            
+                           
+                            VStack(alignment: .leading) {
+                                Text(reporterNameText)
+                                    .font(.system(size: 16, weight: .bold))
+                                
+                                Text(reasonText)
+                                    .font(.system(size: 14))
+                                
+                                Text(statusText)
+                                    .font(.system(size: 14))
+                                
+                                if !isReviewedButtonVisible{
+                                    Text(reviewedByText)
+                                        .font(.system(size: 14))
+                                }
+                                
+                                if actionTakenByShowText {
+                                    Text(actionTakenByText)
+                                        .font(.system(size: 14))
+                                }
+                                
+                                Text(reportDateText)
+                                    .font(.system(size: 14))
+                                
+                                HStack {
+                                    if isReviewedButtonVisible {
+                                        Button("Review") {
+                                            startReviewedReport()
+                                        }
+                                        .frame(width: 120, height: 40)
+                                        .background(Color.blue)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(5)
+                                    }
+                                    if isActionButtonVisible {
+                                        Button("Take Action") {
+                                            actionTakenForReport()
+                                        }
+                                        .frame(width: 120, height: 40)
+                                        .background(Color.green)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(5)
+                                    }
+                                }
+                                .padding(.top, 8)
+                            }
+                        }
+                    }
+                }
+            }
+
+            
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .onAppear {
             fetchUserDetails()
-            fetchUserPosts() // Fetch user posts on appear
+            fetchUserPosts()
+            getReportDetails()
         }
         .alert(isPresented: $showingAlert) {
             Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -223,6 +330,54 @@ struct AdminUserManageView: View {
         Spacer()
     }
 
+    func getReportDetails() {
+        reportService.fetchReportByReportedId(reportId: reportId) { result in
+            switch result {
+            case .success(let report):
+                DispatchQueue.main.async {
+                    print("report data : \(report.reason)")
+                    self.reporterNameText = report.username ?? ""
+                    self.reasonText = "Reason: \(report.reason)"
+                    self.statusText = "Status: \(report.status)"
+                    self.reportDateText = "Reported On: \(report.createdon)"
+                    self.reviewedByText = "Reviewed By: \(report.reviewedby ?? "")"
+                    self.actionTakenByText = "Action Taken By: \(report.actiontakenby ?? "")"
+                    
+                    self.isReviewedButtonVisible = report.reviewedby == nil || report.reviewedby!.isEmpty
+                    self.actionTakenByShowText = report.actiontakenby != nil && !report.actiontakenby!.isEmpty
+                    self.isActionButtonVisible = (report.reviewedby != nil && !report.reviewedby!.isEmpty) && (report.actiontakenby == nil || report.actiontakenby!.isEmpty)
+                    
+                    self.reportprofileImageURL = report.userprofilepicture ?? ""
+                }
+                
+            case .failure(let error):
+                print("Failed to fetch report: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func startReviewedReport() {
+        let username = sessionManager.getCurrentUser()?.username ?? "Admin"
+        reportService.startReviewedReport(reportId: reportId, reviewedBy: username) { result in
+                switch result {
+                case .success:
+                    self.getReportDetails()
+                case .failure(let errMessage):
+                    print("Error: \(errMessage)")
+                }
+            }
+        }
+    func actionTakenForReport() {
+        let username = sessionManager.getCurrentUser()?.username ?? "Admin"
+        reportService.actionTakenReport(reportId: reportId,actionTakenBy: username) { result in
+               switch result {
+               case .success:
+                   self.getReportDetails()
+               case .failure(let errMessage):
+                   print("Error: \(errMessage)")
+               }
+           }
+       }
     private func fetchUserDetails() {
         userService.adminGetUserByID(withID: userId) { userData in
             guard let userData = userData else {
@@ -344,8 +499,3 @@ extension AdminUserManageView: DataOperationCallback {
     }
 }
 
-struct AdminUserManageView_Previews: PreviewProvider {
-    static var previews: some View {
-        AdminUserManageView(userId: "m2IMctFyVmS4jVZzPdl0EgIXSBL2")
-    }
-}

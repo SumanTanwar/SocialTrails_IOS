@@ -97,7 +97,7 @@ struct NotificationRow: View {
             }
             VStack(alignment: .leading) {
                             
-                            Text("\(notification.username ?? "")\(notification.message)")
+                            Text("\(notification.username ?? "Warning issue by admin :  ")\(notification.message)")
                                 .font(.system(size: 14))
                                 .foregroundColor(.black)
                                 .lineLimit(2)

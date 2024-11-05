@@ -5,7 +5,8 @@ struct WarningPopup: View {
     @State private var warningReason: String = ""
     @State private var alertMessage: String?
     @State private var showAlert = false
-    var warningId: String
+    var issueWarnId: String
+    var issueWarnto: String
     var warningType: String
 
     var body: some View {
@@ -71,18 +72,25 @@ struct WarningPopup: View {
 
         let currentUser = SessionManager.shared.getCurrentUser() // Get the current user
         let warning = IssueWarning(
-            issuewarnby: currentUser?.id ?? "", // User ID of the person issuing the warning
-            issuewarnto: warningId, // User ID of the person being warned
-            issuewarnId: UUID().uuidString, // Generate a new UUID for warningId
+            issuewarnby: currentUser?.username ?? "Admin", // User ID of the person issuing the warning
+            issuewarnto: issueWarnto, // User ID of the person being warned
+            issuewarnId: issueWarnId, // Generate a new UUID for warningId
             warningtype: warningType, // Type of warning
-            reason: warningReason, // Reason for the warning
-            username: currentUser?.username // Pass the username if available
+            reason: warningReason// Reason for the warning
+            
         )
 
         let warningService = IssueWarningService()
         warningService.addWarning(data: warning) { result in
             switch result {
             case .success:
+                let notificationService = NotificationService()
+                let userId = SessionManager.shared.getCurrentUser()?.id ?? ""
+                
+                let notification = Notification(notifyto: issueWarnto, notifyBy: userId, type:warningType, message: warningReason, relatedId: issueWarnId)
+                
+                notificationService.sendNotificationToUser(notification: notification)
+                
                 alertMessage = "Warning submitted successfully!"
                 showAlert = true
                 isPresented = false

@@ -18,7 +18,7 @@ struct AdminUserList: View {
                         .padding()
                 } else {
                     List(usersList) { user in
-                        NavigationLink(destination: AdminUserManageView(userId: user.userId)) {
+                        NavigationLink(destination: AdminUserManageView(userId: user.userId,reportId: "")) {
                             HStack {
                                 // Profile Image or Default Image
                                 if let profilePictureURL = user.profilepicture, !profilePictureURL.isEmpty,

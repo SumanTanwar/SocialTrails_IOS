@@ -95,4 +95,69 @@ class ReportService: ObservableObject {
             completion(.failure(error))
         }
     }
+    func fetchReportByReportedId(reportId: String, completion: @escaping (Result<Report, Error>) -> Void) {
+        print("reportId: \(reportId)")
+        reference.child(collectionName).queryOrdered(byChild: "reportId").queryEqual(toValue: reportId)
+            .observeSingleEvent(of: .value) { snapshot in
+                print("Snapshot exists: \(snapshot.exists())")
+                
+                guard snapshot.exists(), let dataSnapshot = snapshot.children.allObjects.first as? DataSnapshot,
+                      let reportData = dataSnapshot.value as? [String: Any] else {
+                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No report found for reportId: \(reportId)"])))
+                    return
+                }
+                
+                let report = Report(dictionary: reportData)
+                
+               
+                self.retrieveUserDetails(userId: report.reporterId) { userDetails, error in
+                    if let userDetails = userDetails {
+                        report.username = userDetails.username
+                        report.userprofilepicture = userDetails.profilepicture
+                       
+                        completion(.success(report))
+                    } else if let error = error {
+                        print("Error retrieving user details: \(error.localizedDescription)")
+                      
+                        completion(.success(report))
+                    } else {
+                        
+                        completion(.success(report))
+                    }
+                }
+            } withCancel: { error in
+                print("Firebase error: \(error.localizedDescription)")
+                completion(.failure(error)) 
+            }
+    }
+
+        func startReviewedReport(reportId: String, reviewedBy: String, completion: @escaping (Result<Void, Error>) -> Void) {
+            let updates: [String: Any] = [
+                "reviewedby": reviewedBy,
+                "status": ReportStatus.reviewing.rawValue
+            ]
+            reference.child(collectionName).child(reportId).updateChildValues(updates) { error, _ in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
+
+        func actionTakenReport(reportId: String, actionTakenBy: String, completion: @escaping (Result<Void, Error>) -> Void) {
+            let updates: [String: Any] = [
+                "actiontakenby": actionTakenBy,
+                "status": ReportStatus.actioned.rawValue
+            ]
+            
+            reference.child(collectionName).child(reportId).updateChildValues(updates) { error, _ in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
+    
 }
