@@ -146,41 +146,43 @@ struct AdminUserManageView: View {
                         .cornerRadius(5)
                 }
                 
-                HStack {
-                    Button(action: {
-                        if isSuspended {
-                            adminUnSuspendProfile()
-                        } else {
-                            showSuspendDialog()
+                if sessionManager.getCurrentUser()?.email.lowercased() == "socialtrails2024@gmail.com" {
+                    HStack {
+                        Button(action: {
+                            if isSuspended {
+                                adminUnSuspendProfile()
+                            } else {
+                                showSuspendDialog()
+                            }
+                        }) {
+                            Text(isSuspended ? "UnSuspend Profile" : "Suspend Profile")
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
+                                .background(Color.gray.opacity(0.2))
+                                .foregroundColor(.black)
+                                .cornerRadius(5)
                         }
-                    }) {
-                        Text(isSuspended ? "UnSuspend Profile" : "Suspend Profile")
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 8)
-                            .background(Color.gray.opacity(0.2))
-                            .foregroundColor(.black)
-                            .cornerRadius(5)
+                        .padding(.horizontal, 8)
+                        
+                        Button(action: {
+                            if profiledeleted {
+                                adminUnDeleteProfile()
+                            } else {
+                                adminDeleteProfile()
+                            }
+                        }) {
+                            Text(profiledeleted ? "Activate Profile" : "Delete Profile")
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
+                                .background(Color.gray.opacity(0.2))
+                                .foregroundColor(.black)
+                                .cornerRadius(5)
+                        }
+                        .padding(.horizontal, 8)
                     }
-                    .padding(.horizontal, 8)
+                    .padding(.top, 10)
                     
-                    Button(action: {
-                        if profiledeleted {
-                            adminUnDeleteProfile()
-                        } else {
-                            adminDeleteProfile()
-                        }
-                    }) {
-                        Text(profiledeleted ? "Activate Profile" : "Delete Profile")
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 8)
-                            .background(Color.gray.opacity(0.2))
-                            .foregroundColor(.black)
-                            .cornerRadius(5)
-                    }
-                    .padding(.horizontal, 8)
                 }
-                .padding(.top, 10)
-               
             }
             
             // User Posts Section
